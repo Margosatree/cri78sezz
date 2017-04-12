@@ -23,15 +23,15 @@ class CreateUserMastersTable extends Migration
         $table->enum('physically_challenged', ['yes', 'no']);
         $table->string('phone');
         $table->string('email');
-        $table->integer('is_verify_phone');
-        $table->integer('is_verify_email');
-        $table->string('username');
-        $table->string('address');
-        $table->string('suburb');
-        $table->string('city');
-        $table->string('state');
-        $table->string('country');
-        $table->integer('pin');
+        $table->integer('is_verify_phone')->default(0);
+        $table->integer('is_verify_email')->default(0);
+        $table->string('username')->nullable();
+        $table->string('address')->nullable();
+        $table->string('suburb')->nullable();
+        $table->string('city')->nullable();
+        $table->string('state')->nullable();
+        $table->string('country')->nullable();
+        $table->integer('pin')->nullable();
         $table->timestamps();
       });
     }
