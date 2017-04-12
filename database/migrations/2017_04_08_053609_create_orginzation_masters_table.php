@@ -25,6 +25,7 @@ class CreateOrginzationMastersTable extends Migration
          $table->string('business_type')->nullable();
          $table->string('business_operation');
          $table->string('spoc');
+         $table->integer('is_verified');
          $table->timestamps();
        });
      }

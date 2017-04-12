@@ -22,7 +22,16 @@ class CreateUserMastersTable extends Migration
         $table->enum('gender', ['male', 'female','others']);
         $table->enum('physically_challenged', ['yes', 'no']);
         $table->string('phone');
+        $table->string('email');
+        $table->integer('is_verify_phone');
+        $table->integer('is_verify_email');
         $table->string('username');
+        $table->string('address');
+        $table->string('suburb');
+        $table->string('city');
+        $table->string('state');
+        $table->string('country');
+        $table->integer('pin');
         $table->timestamps();
       });
     }

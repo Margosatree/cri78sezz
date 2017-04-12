@@ -21,6 +21,8 @@ class CreateUserOrganizationsTable extends Migration
         $table->date('registration_date');
         $table->string('email');
         $table->string('password');
+        $table->enum('role', ['admin', 'organizer' ,'user']);
+        $table->rememberToken();
         $table->timestamps();
       });
     }
