@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/criProfile/update">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
                             <label for="shiftid" class="col-md-4 control-label">Select Role</label>
@@ -29,7 +29,7 @@
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Lefthand
+                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Yes
 
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -38,7 +38,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > Righthand
+                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > No
 
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -66,7 +66,7 @@
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Lefthand
+                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Yes
 
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -75,7 +75,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > Righthand
+                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > No
 
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -100,7 +100,7 @@
                         <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
                             <label for="description" class="col-md-4 control-label">Description</label>
                             <div class="col-md-6">
-                                <input id="description" type="text" class="form-control" name="description" value="{{ old('description') ? old('description') :  }}" required>
+                                <input id="description" type="text" class="form-control" name="description" value="{{ old('description') }}" required>
                                 @if ($errors->has('description'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('description') }}</strong>
@@ -115,18 +115,21 @@
                                     Submit
                                 </button>
                             </div>
-                            
+                            <div class="col-md-3">
+                                <button type="button" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" 
+                                    style="width: 100%" class="btn btn-primary">
+                                    Skip
+                                </button>
+                            </div>
                         </div>
+                    </form>
+                    <form id="frmskip" method="get" action="{{ route('home') }}">
+                        {{ csrf_field() }}
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    @if($Cri_Profile->your_role == 1){
-        alert('DASDAS');
-    }
-</script>
 @endsection
