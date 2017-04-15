@@ -13,30 +13,53 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+                        <div class="form-group{{ $errors->has('verify_email') ? ' has-error' : '' }}">
+                            <label for="verify_email" class="col-md-4 control-label">E-Mail OTP</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                                <input id="verify_email" type="verify_email" class="form-control" name="verify_email" value="{{ old('verify_email') }}">
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
+                                        <strong>{{ $errors->first('verify_email') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('verify_phone') ? ' has-error' : '' }}">
+                            <label for="verify_phone" class="col-md-4 control-label">Phone OTP</label>
+
+                            <div class="col-md-6">
+                                <input id="verify_phone" type="verify_phone" class="form-control" name="verify_phone" value="{{ old('verify_phone') }}" required>
+
+                                @if ($errors->has('email'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('verify_phone') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Send Password Reset Link
+                            <div class="col-md-3 col-md-offset-4">
+                                <button type="submit" style="width: 100%"class="btn btn-primary">
+                                    Verify
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" 
+                                    style="width: 100%" class="btn btn-primary">
+                                    Skip
                                 </button>
                             </div>
                         </div>
+                    </form>
+                    <form id="frmskip" method="get" action="{{ route('userBio.create') }}">
+                        
                     </form>
                 </div>
             </div>

@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
-use App\User;
+use Illuminate\Http\Request;
+use App\User_Organisation;
+use App\User_Master;
+use Illuminate\Support\Facades\Auth;
+use App\UserOrganisation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -27,15 +30,33 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/verify/create';
 
+//    protected function redirectTo()
+//    {
+//        $data = User_Master::find(Auth::user()->user_master_id);
+//        dd($data);
+//        $data->username->first();
+//        $user_data = array('username' => $data->username->first());
+//        dd($user_data);
+//        return '/verify';
+//        return view('/verify',$user_data)->url()->compact();
+//        if(Auth::user()->role == 2){
+//            return redirect()->route('verify.create');
+//        }else if(Auth::user()->role == 3){
+//            return redirect()->route('org.create');
+//        }
+//        return redirect()->to('/post/'.$id);
+//    }
+    
+    
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('guest');
     }
 
@@ -45,9 +66,9 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
-    {
+    protected function validator(array $data){
         return Validator::make($data, [
+            'username' => 'required|max:255',
             'first_name' => 'required|max:255',
             'middle_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -56,6 +77,7 @@ class RegisterController extends Controller
             'physically_challenged' => 'in:no,yes',
             'phone' => 'required|min:10|numeric',
             'email' => 'required|email|unique:user_masters',
+            'password' => 'required|confirmed'
         ]);
     }
 
@@ -65,18 +87,28 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data)
-    {
-        dd($data);
-        return User::create([
-            'first_name' => $data['first_name'],
-            'middle_name' => $data['middle_name'],
-            'last_name' => $data['last_name'],
-            'date_of_birth' => $data['date_of_birth'],
-            'gender' => $data['gender'],
-            'physically_challenged' => $data['physically_challenged'],
-            'phone' => $data['phone'],
-            'email' => $data['email'],
+    protected function create(array $data){
+        
+        $User_master = new User_Master;
+        $User_master->username = $data['username'];
+        $User_master->first_name = $data['first_name'];
+        $User_master->middle_name = $data['middle_name'];
+        $User_master->last_name = $data['last_name'];
+        $User_master->date_of_birth = $data['date_of_birth'];
+        $User_master->gender = $data['gender'];
+        $User_master->physically_challenged = $data['physically_challenged'];
+        $User_master->phone = $data['phone'];
+        $User_master->email = $data['email'];
+        $User_master->save();
+        
+        return User_Organisation::create([
+            'user_master_id' => $User_master->id,
+            'organization_master_id' => 0,
+            'email' => $User_master->email,
+            'password' => bcrypt($data['password']),
+            'role' => $data['is_organisation'],
         ]);
+
     }
+    
 }

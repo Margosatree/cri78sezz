@@ -17,8 +17,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home');
 
+Route::Resource('/verify','UserVerifyController');
 
+Route::Resource('/userBio','UsersBioController');
+
+Route::Resource('/org','OrganizationMasterController');
+
+Route::Resource('/criprofile','UserCricketProfileController');
 
 Route::get('/Admin', 'AdminsController@index');
+Route::get('/test', 'HomeController@test');

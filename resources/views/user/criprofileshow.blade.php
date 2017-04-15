@@ -7,91 +7,115 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('register') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="/criProfile/update">
                         {{ csrf_field() }}
+                        <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
+                            <label for="shiftid" class="col-md-4 control-label">Select Role</label>
+                                <div class="col-md-6">
+                                    <select name="your_role" class="form-control">
+                                        <option  value="1">Bowller</option>
+                                        <option  value="2">BatsMan</option>
+                                        <option  value="3">AllRounder</option>
+                                    </select>
+                                    @if ($errors->has('your_role'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('your_role') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('batsman_style') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label">Batsman Style</label>
+                            
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Lefthand
 
-                        <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-                            <label for="first_name" class="col-md-4 control-label">First Name</label>
+                                    @if ($errors->has('batsman_style'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('batsman_style') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > Righthand
 
+                                    @if ($errors->has('batsman_style'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('batsman_style') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group{{ $errors->has('batsman_order') ? ' has-error' : '' }}">
+                            <label for="batsman_order" class="col-md-4 control-label">Batsman Order</label>
                             <div class="col-md-6">
-                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
-
-                                @if ($errors->has('first_name'))
+                                <input id="batsman_order" type="number" min="1" max="12" class="form-control" name="batsman_order" value="{{ old('batsman_order') }}" required autofocus>
+                                @if ($errors->has('batsman_order'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('first_name') }}</strong>
+                                        <strong>{{ $errors->first('batsman_order') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group{{ $errors->has('middle_name') ? ' has-error' : '' }}">
-                            <label for="middle_name" class="col-md-4 control-label">Middle Name</label>
+                        
+                        <div class="form-group{{ $errors->has('bowler_style') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label">Bowler Style</label>
+                            
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Lefthand
 
+                                    @if ($errors->has('bowler_style'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('bowler_style') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > Righthand
+
+                                    @if ($errors->has('bowler_style'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('bowler_style') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group{{ $errors->has('player_type') ? ' has-error' : '' }}">
+                            <label for="player_type" class="col-md-4 control-label">Player Type</label>
                             <div class="col-md-6">
-                                <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}" required autofocus>
-
-                                @if ($errors->has('middle_name'))
+                                <input id="player_type" type="text" class="form-control" name="player_type" value="{{ old('player_type') }}" required>
+                                @if ($errors->has('country'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('middle_name') }}</strong>
+                                        <strong>{{ $errors->first('player_type') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-                            <label for="last_name" class="col-md-4 control-label">Last Name</label>
-
+                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
+                            <label for="description" class="col-md-4 control-label">Description</label>
                             <div class="col-md-6">
-                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
-
-                                @if ($errors->has('last_name'))
+                                <input id="description" type="text" class="form-control" name="description" value="{{ old('description') ? old('description') :  }}" required>
+                                @if ($errors->has('description'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('last_name') }}</strong>
+                                        <strong>{{ $errors->first('description') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
+                        
                         <div class="form-group">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Register
+                            <div class="col-md-3 col-md-offset-4">
+                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                    Submit
                                 </button>
                             </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -99,4 +123,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    @if($Cri_Profile->your_role == 1){
+        alert('DASDAS');
+    }
+</script>
 @endsection

@@ -14,11 +14,13 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+    
 </head>
 <body>
     <div id="app">
@@ -55,7 +57,7 @@
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ Auth::user()->email}} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
@@ -65,7 +67,11 @@
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
-
+                                        <a href="/userBio/show">Bio</a>
+                                        <a href="/criProfile/show">Cricket Profile</a>
+                                        @if(Auth::user()->role == "organizer")
+                                            <a href="/org/show">Org Bio</a>
+                                        @endif
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
