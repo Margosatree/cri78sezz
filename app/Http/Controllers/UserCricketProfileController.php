@@ -72,7 +72,7 @@ class UserCricketProfileController extends Controller
     {
         $id = Auth::user()->user_master_id;
         $Cri_Profile = User_Cricket_Profile::where(['user_master_id',$id]);
-        dd($Cri_Profile);
+//        dd($Cri_Profile);
 //        dd($Cri_Profile->query);
         return view('user.criprofileshow', compact('Cri_Profile'));
     }
