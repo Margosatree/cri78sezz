@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/userBio/update">
+                    <form class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">

@@ -10,7 +10,7 @@ class UsersBioController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth');
+        $this->middleware('auth:admin');
     }
     
     /**
@@ -20,7 +20,10 @@ class UsersBioController extends Controller
      */
     public function index()
     {
-        //
+        $User_Bios = User_Master::all();
+//        dd($User_Bios);
+        return view('user.bioshowall',compact('User_Bios'));
+//        return view('user.bioshowall');
     }
 
     /**
@@ -88,7 +91,7 @@ class UsersBioController extends Controller
      */
     public function edit($id){
         $Bio = User_Master::find($id);
-        return view('user.bio', compact('Bio'));
+        return view('user.bioshow', compact('Bio'));
     }
 
     /**
@@ -100,6 +103,24 @@ class UsersBioController extends Controller
      */
     public function update(Request $request, $id){
         
+        $this->validate(request(), [
+            'address' => 'required|max:255',
+            'suburb' => 'required|max:255',
+            'city' => 'required|max:255',
+            'state' => 'required|max:255',
+            'country' => 'required|max:255',
+            'pin' => 'required|digits:6|numeric',
+        ]);
+        $bio = User_Master::find($id);
+        
+        $bio->address = request('address');
+        $bio->suburb = request('suburb');
+        $bio->city = request('city');
+        $bio->state = request('state');
+        $bio->country = request('country');
+        $bio->pin = request('pin');
+        $bio->save();
+        return redirect()->route('userBio.index');
     }
 
     /**
