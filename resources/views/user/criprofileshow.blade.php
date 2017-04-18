@@ -7,8 +7,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('criProfile.store') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="/criProfile/update">
                         {{ csrf_field() }}
+                        {{ method_field('PATCH') }}
                         <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
                             <label for="shiftid" class="col-md-4 control-label">Select Role</label>
                                 <div class="col-md-6">
@@ -132,4 +133,7 @@
         </div>
     </div>
 </div>
+
+
+
 @endsection

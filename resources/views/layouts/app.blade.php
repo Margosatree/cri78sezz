@@ -68,9 +68,9 @@
                                             Logout
                                         </a>
                                         <a href="/userBio/show">Bio</a>
-                                        <a href="/criProfile/show">Cricket Profile</a>
+                                        <a href="/criProfile/show/">Cricket Profile</a>
                                         @if(Auth::user()->role == "organizer")
-                                            <a href="/org/show">Org Bio</a>
+                                            <a href="/org/show/">Org Bio</a>
                                         @endif
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}

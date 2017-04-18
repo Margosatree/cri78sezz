@@ -68,11 +68,16 @@ class UsersBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
         $id = Auth::user()->user_master_id;
         $Bio = User_Master::find($id);
-        return view('user.bioshow', compact('Bio'));
+        if($Bio == null){
+            return view('user.bioshow');
+        }else{
+            return view('user.bioshow', compact('Bio'));
+        }
+        
     }
 
     /**
@@ -82,8 +87,8 @@ class UsersBioController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id){
-//        $Bio = User_Master::find($id);
-//        return view('user.bio', compact('Bio'));
+        $Bio = User_Master::find($id);
+        return view('user.bio', compact('Bio'));
     }
 
     /**
@@ -95,25 +100,6 @@ class UsersBioController extends Controller
      */
     public function update(Request $request, $id){
         
-        $this->validate(request(), [
-            'address' => 'required|max:255',
-            'suburb' => 'required|max:255',
-            'city' => 'required|max:255',
-            'state' => 'required|max:255',
-            'country' => 'required|max:255',
-            'pin' => 'required|digits:6|numeric',
-        ]);
-        
-        $id = Auth::user()->user_master_id;
-        $bio = User_Master::find($id);
-        $bio->address = request('address');
-        $bio->suburb = request('suburb');
-        $bio->city = request('city');
-        $bio->state = request('state');
-        $bio->country = request('country');
-        $bio->pin = request('pin');
-        $bio->save();
-        return redirect()->route('home');
     }
 
     /**

@@ -25,7 +25,12 @@ Route::Resource('/userBio','UsersBioController');
 
 Route::Resource('/org','OrganizationMasterController');
 
-Route::Resource('/criprofile','UserCricketProfileController');
+Route::Resource('/criProfile','UserCricketProfileController');
 
-Route::get('/Admin', 'AdminsController@index');
+Route::prefix('admin')->group(function(){
+    Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+    Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
+});
+
 Route::get('/test', 'HomeController@test');

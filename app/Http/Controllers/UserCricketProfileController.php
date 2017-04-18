@@ -68,12 +68,12 @@ class UserCricketProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
         $id = Auth::user()->user_master_id;
-        $Cri_Profile = User_Cricket_Profile::where(['user_master_id',$id]);
+        $Cri_Profile = User_Cricket_Profile::all()->where('user_master_id','=',$id);
 //        dd($Cri_Profile);
-//        dd($Cri_Profile->query);
+//        $Cri_Profile = $id;
         return view('user.criprofileshow', compact('Cri_Profile'));
     }
 
@@ -97,6 +97,8 @@ class UserCricketProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+//        dd(request()->all());
         $this->validate($request,[
             'your_role' => 'required|numeric',
             'batsman_style' => 'required|in:Lefthand,Righthand',
