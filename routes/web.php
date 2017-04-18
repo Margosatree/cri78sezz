@@ -19,6 +19,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-
+Route::post('/password/check', 'Auth\ForgetMiddleController@checkData')
+		->name('password.check');
 
 Route::get('/Admin', 'AdminsController@index');
