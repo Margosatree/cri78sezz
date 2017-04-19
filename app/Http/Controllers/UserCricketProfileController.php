@@ -8,7 +8,8 @@ class UserCricketProfileController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth');
+//        $this->middleware('auth:admin');
+//        $this->middleware('auth');
     }
     
     /**
@@ -18,7 +19,8 @@ class UserCricketProfileController extends Controller
      */
     public function index()
     {
-        //
+        $Cri_Profiles = User_Cricket_Profile::all();
+        return view('user.criprofile.index',compact('Cri_Profiles'));
     }
 
     /**
@@ -70,11 +72,8 @@ class UserCricketProfileController extends Controller
      */
     public function show($id)
     {
-        $id = Auth::user()->user_master_id;
-        $Cri_Profile = User_Cricket_Profile::all()->where('user_master_id','=',$id);
-//        dd($Cri_Profile);
-//        $Cri_Profile = $id;
-        return view('user.criprofileshow', compact('Cri_Profile'));
+        $Cri_Profile = User_Cricket_Profile::find($id);
+        return view('user.criprofile.show',compact('Cri_Profile'));
     }
 
     /**
@@ -85,7 +84,8 @@ class UserCricketProfileController extends Controller
      */
     public function edit($id)
     {
-        
+        $Cri_Profile = User_Cricket_Profile::find($id);
+        return view('user.criprofile.edit',compact('Cri_Profile'));
     }
 
     /**
@@ -110,7 +110,6 @@ class UserCricketProfileController extends Controller
 //            'is_completed' => 'required|numeric',
         ]);
         
-        $id = Auth::user()->user_master_id;
         $Cri_Profile = User_Cricket_Profile::find($id);
         $Cri_Profile->your_role = request('your_role');
         $Cri_Profile->batsman_style = request('batsman_style');
@@ -119,7 +118,7 @@ class UserCricketProfileController extends Controller
         $Cri_Profile->player_type = request('player_type');
         $Cri_Profile->description = request('description');
         $Cri_Profile->save();
-        return redirect()->route('home');
+        return redirect()->route('criProfile.index');
     }
 
     /**

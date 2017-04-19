@@ -10,7 +10,8 @@ class UsersBioController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth:admin');
+//        $this->middleware('auth');
+//        $this->middleware('auth:admin');
     }
     
     /**
@@ -21,9 +22,7 @@ class UsersBioController extends Controller
     public function index()
     {
         $User_Bios = User_Master::all();
-//        dd($User_Bios);
-        return view('user.bioshowall',compact('User_Bios'));
-//        return view('user.bioshowall');
+        return view('user.bio.index',compact('User_Bios'));
     }
 
     /**
@@ -73,13 +72,8 @@ class UsersBioController extends Controller
      */
     public function show($id)
     {
-        $id = Auth::user()->user_master_id;
         $Bio = User_Master::find($id);
-        if($Bio == null){
-            return view('user.bioshow');
-        }else{
-            return view('user.bioshow', compact('Bio'));
-        }
+        return view('user.bio.show',compact('Bio'));
         
     }
 
@@ -91,7 +85,7 @@ class UsersBioController extends Controller
      */
     public function edit($id){
         $Bio = User_Master::find($id);
-        return view('user.bioshow', compact('Bio'));
+        return view('user.bio.edit', compact('Bio'));
     }
 
     /**
@@ -102,8 +96,16 @@ class UsersBioController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        
         $this->validate(request(), [
+//            'username' => 'required|max:255',
+//            'first_name' => 'required|max:255',
+//            'middle_name' => 'required|max:255',
+//            'last_name' => 'required|max:255',
+//            'date_of_birth' => 'date',
+//            'gender' => 'in:female,male,others',
+//            'physically_challenged' => 'in:no,yes',
+//            'phone' => 'required|min:10|numeric',
+//            'email' => 'required|email|unique:user_masters',
             'address' => 'required|max:255',
             'suburb' => 'required|max:255',
             'city' => 'required|max:255',
@@ -111,16 +113,30 @@ class UsersBioController extends Controller
             'country' => 'required|max:255',
             'pin' => 'required|digits:6|numeric',
         ]);
-        $bio = User_Master::find($id);
+        $Bio = User_Master::find($id);
+//        $Bio->username = request('username');
+//        $Bio->first_name = request('first_name');
+//        $Bio->middle_name = request('middle_name');
+//        $Bio->last_name = request('last_name');
+//        $Bio->date_of_birth = request('date_of_birth');
+//        $Bio->gender = request('gender');
+//        $Bio->physically_challenged = request('physically_challenged');
+//        $Bio->phone = request('phone');
+//        $Bio->email = request('email');
+        $Bio->address = request('address');
+        $Bio->suburb = request('suburb');
+        $Bio->city = request('city');
+        $Bio->state = request('state');
+        $Bio->country = request('country');
+        $Bio->pin = request('pin');
+        $Bio->save();
+        if(Auth::user()->role == "admin"){
+            return redirect()->route('userBio.index');
+        }else{
+            return view('user.bio.show',compact('Bio'));
+        }
         
-        $bio->address = request('address');
-        $bio->suburb = request('suburb');
-        $bio->city = request('city');
-        $bio->state = request('state');
-        $bio->country = request('country');
-        $bio->pin = request('pin');
-        $bio->save();
-        return redirect()->route('userBio.index');
+        
     }
 
     /**
@@ -131,6 +147,6 @@ class UsersBioController extends Controller
      */
     public function destroy($id)
     {
-        //
+        dd("i am at destroy");
     }
 }

@@ -9,6 +9,8 @@ class UserBio extends Model
     protected $table = 'user_masters';
     
     protected $fillable = [
-        'address','suburb', 'city', 'state','country', 'pin'
+        'first_name','middle_name', 'last_name', 'date_of_birth','gender', 'physically_challenged',
+        'phone','email', 'username','address','suburb', 'city', 'state','country', 'pin'
+        
     ];
 }

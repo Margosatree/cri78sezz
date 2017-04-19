@@ -9,7 +9,8 @@ class OrganizationMasterController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth');
+//        $this->middleware('auth:admin');
+//        $this->middleware('auth');
     }
     
     /**
@@ -19,7 +20,8 @@ class OrganizationMasterController extends Controller
      */
     public function index()
     {
-        //
+        $Orgs = Organisation_Master::all();
+        return view('user.org.index',compact('Orgs'));
     }
 
     /**
@@ -67,16 +69,8 @@ class OrganizationMasterController extends Controller
      */
     public function show($id)
     {
-        $id = Auth::user()->organization_master_id;
-        $User_Org = User_Organisation::find($id);
-//        dd($User_Org);
-//        if($User_Org == null){
-//            return view('user.organisationshow');
-//        }else{
-        return view('user.organisationshow', compact('User_Org'));
-//        }
-        
-//        return view('user.organisationshow');
+        $Org = Organisation_Master::find($id);
+        return view('user.org.show',compact('Org'));
     }
 
     /**
@@ -87,7 +81,8 @@ class OrganizationMasterController extends Controller
      */
     public function edit($id)
     {
-        //
+        $Org = Organisation_Master::find($id);
+        return view('user.org.edit', compact('Org'));
     }
 
     /**
@@ -99,7 +94,7 @@ class OrganizationMasterController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        dd("DASDAS");
+//        dd("in edit");
         $this->validate($request,[
             'name' => 'required|max:191',
             'address' => 'required|max:191',
@@ -112,43 +107,24 @@ class OrganizationMasterController extends Controller
             'business_operation' => 'required|max:191',
             'spoc' => 'required|max:191',
         ]);
-        
-        $id = Auth::user()->organization_master_id;
+//        dd("in edit Valid");
         $Org = Organisation_Master::find($id);
-//        dd($User_Org);
-        if($Org != null){
-            $Org->name = request('name');
-            $Org->address = request('address');
-            $Org->landmark = request('landmark');
-            $Org->city = request('city');
-            $Org->state = request('state');
-            $Org->country = request('country');
-            $Org->pincode = request('pincode');
-            $Org->business_type = request('business_type');
-            $Org->business_operation = request('business_operation');
-            $Org->spoc = request('spoc');
-            $Org->save();
-        }else{
-            $Org = new Organisation_Master;
-            $Org->name = request('name');
-            $Org->address = request('address');
-            $Org->landmark = request('landmark');
-            $Org->city = request('city');
-            $Org->state = request('state');
-            $Org->country = request('country');
-            $Org->pincode = request('pincode');
-            $Org->business_type = request('business_type');
-            $Org->business_operation = request('business_operation');
-            $Org->spoc = request('spoc');
-            $Org->save();
-            
-            $User_Org = User_Organisation::find(Auth::user()->id);
-            $User_Org->organization_master_id = $Org->id;
-            $User_Org->save();
+        $Org->name = request('name');
+        $Org->address = request('address');
+        $Org->landmark = request('landmark');
+        $Org->city = request('city');
+        $Org->state = request('state');
+        $Org->country = request('country');
+        $Org->pincode = request('pincode');
+        $Org->business_type = request('business_type');
+        $Org->business_operation = request('business_operation');
+        if(request('is_verified')){
+            $Org->is_verified = request('is_verified');
         }
+        $Org->spoc = request('spoc');
+        $Org->save();
+        return redirect()->route('org.index');   
         
-        
-        return redirect()->route('home');
     }
 
     /**
