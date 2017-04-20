@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Organisation_Master;
+use App\User_Master;
 use Illuminate\Http\Request;
 use Auth;
 use \App\User_Organisation;
@@ -30,7 +31,8 @@ class OrganizationMasterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(){
-        return view('user.organisation');
+//        dd('in create');
+        return view('user.org.add');
     }
 
     /**
@@ -56,9 +58,23 @@ class OrganizationMasterController extends Controller
             
         ]);
         $Org = new Organisation_Master;
-        $Org->fill($request->all());
+        $Org->name = request('name');
+        $Org->address = request('address');
+        $Org->landmark = request('landmark');
+        $Org->city = request('city');
+        $Org->state = request('state');
+        $Org->country = request('country');
+        $Org->pincode = request('pincode');
+        $Org->business_type = request('business_type');
+        $Org->business_operation = request('business_operation');
+        $Org->is_verified = 0;
+        $Org->spoc = request('spoc');
         $Org->save();
-        return redirect()->to('/verify');
+        
+        $User_Org = User_Organisation::find(Auth::user()->id);
+        $User_Org->organization_master_id = $Org->id;
+        $User_Org->save();
+        return redirect()->to('/verify/create');
     }
 
     /**
@@ -69,8 +85,9 @@ class OrganizationMasterController extends Controller
      */
     public function show($id)
     {
+        $Bio = User_Master::find(Auth::user()->user_master_id);
         $Org = Organisation_Master::find($id);
-        return view('user.org.show',compact('Org'));
+        return view('user.org.show',compact('Org','Bio'));
     }
 
     /**
@@ -123,8 +140,12 @@ class OrganizationMasterController extends Controller
         }
         $Org->spoc = request('spoc');
         $Org->save();
-        return redirect()->route('org.index');   
-        
+        if(Auth::user()->role == "admin"){
+            return redirect()->route('org.index');
+        }else{
+            $Bio = User_Master::find(Auth::user()->user_master_id);
+            return view('user.org.show',compact('Org','Bio'));
+        }
     }
 
     /**

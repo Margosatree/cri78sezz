@@ -13,8 +13,8 @@
                         </lable>
                         
                         <br><lable><b>DOB : </b></lable>{{$Bio->date_of_birth}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Gender : </b></lable>{{$Bio->gender}}
-                        <br><lable><b>Phone : </b></lable>{{$Bio->phone}} <i class="fa fa-check-circle"></i>
-                        <br><lable><b>Email : </b></lable>{{$Bio->email}} <i class="fa fa-times-circle"></i>
+                        <br><lable><b>Phone : </b></lable>{{$Bio->phone}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
+                        <br><lable><b>Email : </b></lable>{{$Bio->email}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
                         <br><lable><b>Address : </b></lable>{{$Bio->address.','.$Bio->suburb.','.$Bio->city.'('.$Bio->pin.')'}}
                         <br><lable><b>State : </b></lable>{{$Bio->state}} 
                         <br><lable><b>Country : </b></lable>{{$Bio->country}} 

@@ -10,7 +10,7 @@ class UsersBioController extends Controller
 {
     
     public function __construct(){
-//        $this->middleware('auth');
+//        $this->middleware(['auth'=>'admin','auth']);
 //        $this->middleware('auth:admin');
     }
     
@@ -32,7 +32,7 @@ class UsersBioController extends Controller
      */
     public function create()
     {
-        return view('user.bio');
+        return view('user.bio.add');
     }
 
     /**

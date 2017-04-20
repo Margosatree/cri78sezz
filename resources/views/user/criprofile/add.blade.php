@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
+                <div class="panel-heading">Cricket Profile</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
@@ -29,7 +29,7 @@
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Yes
+                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Lefthand
 
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -38,7 +38,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > No
+                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > Righthand
 
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -66,7 +66,7 @@
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Yes
+                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Lefthand
 
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -75,7 +75,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > No
+                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > Righthand
 
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">

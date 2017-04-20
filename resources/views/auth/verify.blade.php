@@ -59,7 +59,7 @@
                         </div>
                     </form>
                     <form id="frmskip" method="get" action="{{ route('userBio.create') }}">
-                        
+                        {{ csrf_field() }}
                     </form>
                 </div>
             </div>

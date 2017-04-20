@@ -32,8 +32,14 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/verify/create';
 
-//    protected function redirectTo()
-//    {
+//    protected function redirectTo(){
+////        dd(Auth::user()->role);
+//        if(Auth::user()->role == 2){
+//            return '/org/create';
+//        }else{
+//            return '/verify/create';
+//        }
+//    }
 //        $data = User_Master::find(Auth::user()->user_master_id);
 //        dd($data);
 //        $data->username->first();
@@ -100,6 +106,12 @@ class RegisterController extends Controller
         $User_master->phone = $data['phone'];
         $User_master->email = $data['email'];
         $User_master->save();
+        
+        if($data['is_organisation'] == 2){
+            $this->redirectTo = '/org/create';
+        }else{
+            $this->redirectTo = '/verify/create';
+        }
         
         return User_Organisation::create([
             'user_master_id' => $User_master->id,
