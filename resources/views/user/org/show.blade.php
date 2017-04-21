@@ -10,7 +10,7 @@
                     <div  class="alert alert-success">
                         <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
                         </lable>
-                        <br><lable><h4 style="display:inline;">{{ $Org->name }}</h4>&nbsp;<i class="fa fa-check-circle"></i>
+                        <br><lable><h4 style="display:inline;">{{ $Org->name }}</h4>&nbsp;@if($Org->is_verified)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
                             <a href="/org/{{ $Org->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                         </lable>
                         

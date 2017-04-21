@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Cric8pro') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -86,6 +86,8 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a><b>Profile</b></a>
+                                            <!--<div role="separator" class="divider"></div>-->
                                         @if(Auth::user()->role == "user")
                                             <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
                                             <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
@@ -95,6 +97,7 @@
                                             <a href="/org/{{Auth::user()->organization_master_id}}">Org Bio</a>
                                         @elseif(Auth::user()->role == "admin")
                                         @endif
+                                        <div role="separator" class="divider"></div>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

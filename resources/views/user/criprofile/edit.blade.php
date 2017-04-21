@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
+                <div class="panel-heading">Edit Cricket Profile</div>
                 <div class="panel-body">
                     @if($Cri_Profile->id > 0 )
                         <form class="form-horizontal" role="form" method="POST" action="/criProfile/{{$Cri_Profile->id}}">
@@ -66,12 +66,28 @@
                             </div>
 
                             <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
+                                <div class="col-md-3 col-md-offset-4">
                                     <button type="submit" style="width: 100%" class="btn btn-primary">
                                         Submit
                                     </button>
                                 </div>
+                                <div class="col-md-3">
+                                    <button type="button" onclick="event.preventDefault();
+                                        document.getElementById('frmskip').submit();" 
+                                        style="width: 100%" class="btn btn-primary">
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
+                        </form>
+                        <form id="frmskip" method="get" action="{{
+                            @if(Auth::user()->role == "admin")
+                                '/criProfile/'
+                            @else
+                                '/criProfile/'.$Cri_Profile->id
+                            @endif
+                              ">
+                            {{ csrf_field() }}
                         </form>
                     @endif
                 </div>

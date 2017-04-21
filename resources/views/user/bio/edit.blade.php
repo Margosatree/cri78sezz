@@ -52,12 +52,22 @@
                         </div>
                         
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
+                            <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" style="width: 100%" class="btn btn-primary">
                                     Update
                                 </button>
                             </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" 
+                                    style="width: 100%" class="btn btn-primary">
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
+                    </form>
+                    <form id="frmskip" method="get" action="/userBio/{{$Bio->id}}">
+                        {{ csrf_field() }}
                     </form>
                     @endif
                 </div>

@@ -58,7 +58,7 @@ class UserCricketProfileController extends Controller
         $User_Cri_Profile->your_role = request('your_role');
         $User_Cri_Profile->batsman_style = request('batsman_style');
         $User_Cri_Profile->batsman_order = request('batsman_order');
-        $Cri_Profile->bowler_style = request('bowler_style');
+        $User_Cri_Profile->bowler_style = request('bowler_style');
         $User_Cri_Profile->player_type = request('player_type');
         $User_Cri_Profile->description = request('description');
         $User_Cri_Profile->save();
@@ -74,9 +74,11 @@ class UserCricketProfileController extends Controller
      */
     public function show($id)
     {
+//        dd($id);
         $User_Exists = User_Cricket_Profile::selectRaw('count(id) as count')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+//        dd($User_Exists->count);
         if($User_Exists->count){
-            $Bio = User_Master::find($id);
+            $Bio = User_Master::find(Auth::user()->user_master_id);
             $Cri_Profile = User_Cricket_Profile::select('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
             return view('user.criprofile.show',compact('Cri_Profile','Bio'));
         }else{
