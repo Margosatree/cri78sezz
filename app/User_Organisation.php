@@ -17,7 +17,7 @@ class User_Organisation extends Authenticatable
      */
     protected $fillable = [
         'user_master_id','organization_master_id', 'registration_type',
-        'registration_date','email', 'password','role', 'remember_token'
+        'registration_date','email', 'password','role', 'remember_token','current_password'
     ];
 
     public function user(){

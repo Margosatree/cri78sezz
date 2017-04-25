@@ -10,6 +10,12 @@
                 <div class="panel-body">
                     You are logged in As User!
                 </div>
+                @if(Session::has('message'))
+                    <div class="panel-body ">
+                        You are logged in As User!
+                    </div>
+                @endif
+                
             </div>
         </div>
     </div>

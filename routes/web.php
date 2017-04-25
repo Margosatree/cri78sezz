@@ -27,6 +27,9 @@ Route::Resource('/org','OrganizationMasterController');
 
 Route::Resource('/criProfile','UserCricketProfileController');
 
+Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
+Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
+
 Route::prefix('admin')->group(function(){
     Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');

@@ -98,6 +98,7 @@
                                         @elseif(Auth::user()->role == "admin")
                                         @endif
                                         <div role="separator" class="divider"></div>
+                                        <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
