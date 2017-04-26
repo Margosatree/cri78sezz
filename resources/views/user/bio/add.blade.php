@@ -18,7 +18,7 @@
                         <div class="form-group">
                             <label for="pin"  class="col-md-4 control-label">Zip Code</label>
                             <div class="col-md-6">
-                                <input id="pin" onblur="validPin();" type="number" class="form-control" max="999999" minlength="6" maxlength="6" name="pin" value="{{ old('pin') }}" required>
+                                <input id="pin" onblur="validPin();" data-inputmask="'mask' : '999999'" type="number" class="form-control"  name="pin" value="{{ old('pin') }}" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -70,6 +70,13 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+//        $("#pin").inputmask();
+        $(":input").inputmask();
+      });
+</script>
 <script>
     function getAddressfromZip(){
         console.log("http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true");
@@ -88,7 +95,7 @@
                         }
                     }
                 }else{
-                    alert('Data Not Found');
+                    alert('Please Insert Valid Pin Code');
                 }
             }
         });
@@ -111,43 +118,25 @@
         }
         if($('#city').val() == ""){
             $('#city').attr('readonly',false);
+        }else{
+            $('#city').attr('readonly',true);
         }
         if($('#state').val() == ""){
             $('#state').attr('readonly',false);
+        }else{
+            $('#state').attr('readonly',true);
         }
         if($('#country').val() == ""){
             $('#country').attr('readonly',false);
+        }else{
+            $('#country').attr('readonly',true);
         }
     }
 </script>
 <script type="text/javascript">
         function validPin(){
-//            var valid_pin=/^[0-9]{1,6}$/;
-//            if(!valid_pin.test($('#pin').value)){
-//                alert("Pin code should be 6 digits ");
-//                return false;
-//            }else{
-                getAddressfromZip();
-//            }
+            getAddressfromZip();
         }
-        function validPhone(){
-            var valid_phone=/^[0-9]{1,10}$/;
-            if(!pattern.test(user_mobile.value)){
-                alert("Phone nubmer is in 0123456789 format ");
-                user_mobile.focus();
-                return false;
-            }
-        }
-        function validMail(){
-            var valid_email=/^([a-z A-Z 0-9 _\.\-])+\@(([a-z A-Z 0-9\-])+\.)+([a-z A-z 0-9]{3,3})+$/;
-            if(!valid_email.test($('#pin').value)){
-                alert("Email is in www.gmail.com format");
-                $('#pin').focus();
-                return false;
-            }
-        }
-        
-        
         
 </script>
 @endsection

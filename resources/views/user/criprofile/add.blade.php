@@ -15,7 +15,8 @@
                                     <select name="your_role" class="form-control">
                                         <option  value="1">Bowller</option>
                                         <option  value="2">BatsMan</option>
-                                        <option  value="3">AllRounder</option>
+                                        <option  value="3">Wicket Keeper</option>
+                                        <option  value="4">AllRounder</option>
                                     </select>
                                     @if ($errors->has('your_role'))
                                         <span class="help-block">

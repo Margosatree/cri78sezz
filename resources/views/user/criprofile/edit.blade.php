@@ -15,9 +15,10 @@
                                 <label for="shiftid" class="col-md-4 control-label">Select Role</label>
                                 <div class="col-md-6">
                                     <select name="your_role" class="form-control">
-                                        <option  value="1">Bowller</option>
-                                        <option  value="2">BatsMan</option>
-                                        <option  value="3">AllRounder</option>
+                                        <option @if($Cri_Profile->your_role == 1) selected @endif value="1">Bowller</option>
+                                        <option @if($Cri_Profile->your_role == 2) selected @endif value="2">BatsMan</option>
+                                        <option @if($Cri_Profile->your_role == 3) selected @endif value="3">Wicket Keeper</option>
+                                        <option @if($Cri_Profile->your_role == 4) selected @endif value="4">AllRounder</option>
                                     </select>
                                 </div>
                             </div>
@@ -25,10 +26,10 @@
                                 <label for="email" class="col-md-4 control-label">Batsman Style</label>
                                 <div class="col-md-offset-4">
                                     <div class="col-md-3">
-                                        <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Lefthand
+                                        <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" @if( $Cri_Profile->batsman_style == 'Lefthand') checked @endif > Lefthand
                                     </div>
                                     <div class="col-md-3">
-                                        <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > Righthand
+                                        <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" @if( $Cri_Profile->batsman_style == 'Righthand') checked @endif > Righthand
                                     </div>
                                 </div>
                             </div>
@@ -44,10 +45,10 @@
                                 <label for="email" class="col-md-4 control-label">Bowler Style</label>
                                 <div class="col-md-offset-4">
                                     <div class="col-md-3">
-                                        <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Lefthand
+                                        <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" @if( $Cri_Profile->bowler_style == 'Lefthand') checked @endif> Lefthand
                                     </div>
                                     <div class="col-md-3">
-                                        <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > Righthand
+                                        <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" @if( $Cri_Profile->bowler_style == 'Righthand') checked @endif> Righthand
                                     </div>
                                 </div>
                             </div>
@@ -80,13 +81,13 @@
                                 </div>
                             </div>
                         </form>
-                        <form id="frmskip" method="get" action="{{
+                        <form id="frmskip" method="get" 
                             @if(Auth::user()->role == "admin")
-                                '/criProfile/'
+                                action="/criProfile/"
                             @else
-                                '/criProfile/'.$Cri_Profile->id
+                                action="/criProfile/".{{$Cri_Profile->id}}
                             @endif
-                              ">
+                            >
                             {{ csrf_field() }}
                         </form>
                     @endif

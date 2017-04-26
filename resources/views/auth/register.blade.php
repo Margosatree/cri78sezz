@@ -74,7 +74,7 @@
                             <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="phone" data-inputmask="'mask' : '9999999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                                <input id="phone" type="number" data-inputmask="'mask': '999-9999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
                             </div>
                         </div>
                         
@@ -91,10 +91,13 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
+                                <span class="help-block">
+                                    <strong>1 Uppercase, 1 Lowercase, 1 Special Char, 1 Number</strong>
+                                </span>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group ">
                             <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
 
                             <div class="col-md-6">
@@ -144,7 +147,8 @@
 <script>
     
     $(document).ready(function() {
-        $("#phone").inputmask();
+//        $("#phone").inputmask();
+        $(":input").inputmask();
       });
 </script>
 @endsection

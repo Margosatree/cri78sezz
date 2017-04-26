@@ -9,6 +9,7 @@ use App\UserOrganisation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Hash;
 
 class RegisterController extends Controller
 {
@@ -56,15 +57,19 @@ class RegisterController extends Controller
 //        $password = $data['password'];
 //        dd($data);
         return Validator::make($data, [
-            'username' => 'required|max:50|alpha',
+            'username' => 'required|max:50|alpha_num',
             'first_name' => 'required|max:50|alpha',
             'middle_name' => 'required|max:50|alpha',
             'last_name' => 'required|max:50|alpha',
             'date_of_birth' => 'required|date|before:'.date('Y-m-d', strtotime('-5 year')),
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
-            'phone' => 'required|min:10|numeric',
-//            'email' => 'required|email|unique:user_masters|regex:',
+            'phone' => [
+                'required',
+                'min:10',
+                'numeric',
+                'regex:/(7|8|9)\d{9}/'
+            ],
             'email' => [
                 'required',
                 'email',
@@ -131,7 +136,7 @@ class RegisterController extends Controller
             'user_master_id' => $User_master->id,
             'organization_master_id' => 0,
             'email' => $User_master->email,
-            'password' => bcrypt($data['password']),
+            'password' => Hash::make($data['password']),
             'role' => $data['is_organisation'],
         ]);
 
