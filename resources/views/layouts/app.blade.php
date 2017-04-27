@@ -86,8 +86,9 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a><b>Profile</b></a>
+                                        <a href="/Profile/{{Auth::user()->user_master_id}}"><b>Profile</b></a>
                                             <!--<div role="separator" class="divider"></div>-->
+                                        {{--
                                         @if(Auth::user()->role == "user")
                                             <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
                                             <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
@@ -97,6 +98,7 @@
                                             <a href="/org/{{Auth::user()->organization_master_id}}">Org Bio</a>
                                         @elseif(Auth::user()->role == "admin")
                                         @endif
+                                        --}}
                                         <div role="separator" class="divider"></div>
                                         <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"

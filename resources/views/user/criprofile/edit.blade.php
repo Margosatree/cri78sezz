@@ -83,12 +83,11 @@
                         </form>
                         <form id="frmskip" method="get" 
                             @if(Auth::user()->role == "admin")
-                                action="/criProfile/"
+                                action="{{route('criProfile.index')}}"
                             @else
-                                action="/criProfile/".{{$Cri_Profile->id}}
+                                action="{{route('Profile.show',Auth::user()->user_master_id)}}"
                             @endif
                             >
-                            {{ csrf_field() }}
                         </form>
                     @endif
                 </div>

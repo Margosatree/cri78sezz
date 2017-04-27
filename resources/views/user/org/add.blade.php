@@ -40,6 +40,14 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="pincode" class="col-md-4 control-label">PIN</label>
+                            <div class="col-md-6">
+                                <input id="pin" onblur="validPin();" type="number" class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="" required>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
                             <label for="city" class="col-md-4 control-label">City</label>
                             <div class="col-md-6">
                                 <input id="city" type="text" class="form-control" name="city" value="" required autofocus>
@@ -56,16 +64,11 @@
                         <div class="form-group">
                             <label for="country" class="col-md-4 control-label">Country</label>
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control " name="country" value="" required>
+                                <input id="country" type="text" class="form-control " name="country" value="" required>
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="pincode" class="col-md-4 control-label">PIN</label>
-                            <div class="col-md-6">
-                                <input id="pincode" type="number" class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="" required>
-                            </div>
-                        </div>
+                        
                         <div class="form-group">
                             <label for="spoc" class="col-md-4 control-label">Spoc</label>
                             <div class="col-md-6">
@@ -86,4 +89,66 @@
         </div>
     </div>
 </div>
+<script>
+    function getAddressfromZip(){
+        console.log("http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true");
+        $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            url: "http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true",
+            success: function(data){
+                if(data.status == "OK" || data.status == "ok"){
+                    var obj = data.results;
+                    if(obj != ""){
+                        console.log(JSON.stringify(obj[0]));
+                        if(obj[0] != ""){
+                            var obj1 = obj[0];
+                            SetAddress(obj1.formatted_address);
+                        }
+                    }
+                }else{
+                    alert('Please Insert Valid Pin Code');
+                }
+            }
+        });
+    }
+    function SetAddress(data){
+        var add = data.split(',');
+        console.log(add);
+        console.log(add.length);
+        $('#city').val('');
+        $('#state').val('');
+        $('#country').val('');
+        if(add.length == 2){
+            $('#state').val(add[0].substring(0,add[0].indexOf(" ")).trim());
+            $('#country').val(add[1].trim());
+        }else if(add.length == 3){
+            $('#city').val(add[0].trim());
+            $('#state').val(add[1].substring(0,add[1].trim().indexOf(" ")+1).trim());
+            $('#country').val(add[2].trim());
+            
+        }
+        if($('#city').val() == ""){
+            $('#city').attr('readonly',false);
+        }else{
+            $('#city').attr('readonly',true);
+        }
+        if($('#state').val() == ""){
+            $('#state').attr('readonly',false);
+        }else{
+            $('#state').attr('readonly',true);
+        }
+        if($('#country').val() == ""){
+            $('#country').attr('readonly',false);
+        }else{
+            $('#country').attr('readonly',true);
+        }
+    }
+</script>
+<script type="text/javascript">
+        function validPin(){
+            getAddressfromZip();
+        }
+        
+</script>
 @endsection

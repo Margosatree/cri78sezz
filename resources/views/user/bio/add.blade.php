@@ -63,7 +63,6 @@
                         </div>
                     </form>
                     <form id="frmskip" method="get" action="{{ route('criProfile.create') }}">
-                        {{ csrf_field() }}
                     </form>
                 </div>
             </div>
@@ -104,6 +103,7 @@
         var add = data.split(',');
         console.log(add);
         console.log(add.length);
+        $('#suburb').val('');
         $('#city').val('');
         $('#state').val('');
         $('#country').val('');

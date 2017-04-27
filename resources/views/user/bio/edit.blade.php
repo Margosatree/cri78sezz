@@ -48,7 +48,7 @@
                         <div class="form-group">
                             <label for="country" class="col-md-4 control-label">Country</label>
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control " name="country" value="{{ $Bio->country }}" required>
+                                <input id="country" type="text" class="form-control " name="country" value="{{ $Bio->country }}" required>
                             </div>
                         </div>
                         
@@ -69,8 +69,13 @@
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get" action="/userBio/{{$Bio->id}}">
-                        {{ csrf_field() }}
+                    <form id="frmskip" method="get" 
+                        @if(Auth::user()->role == "admin")
+                            action="{{route('userBio.index')}}"
+                        @else
+                            action="{{route('Profile.show',Auth::user()->user_master_id)}}"
+                        @endif
+                        >
                     </form>
                     @endif
                 </div>
@@ -112,6 +117,7 @@
         var add = data.split(',');
         console.log(add);
         console.log(add.length);
+        $('#suburb').val('');
         $('#city').val('');
         $('#state').val('');
         $('#country').val('');

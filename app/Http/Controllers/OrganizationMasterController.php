@@ -85,6 +85,9 @@ class OrganizationMasterController extends Controller
      */
     public function show($id)
     {
+//        if(Auth::user()->role == "admin"){
+//            return redirect()->route('org.index');
+//        }
         $Bio = User_Master::find(Auth::user()->user_master_id);
         $Org = Organisation_Master::find($id);
         return view('user.org.show',compact('Org','Bio'));
@@ -124,7 +127,7 @@ class OrganizationMasterController extends Controller
             'business_operation' => 'required|max:191',
             'spoc' => 'required|max:191',
         ]);
-//        dd("in edit Valid");
+//        dd(request()->all());
         $Org = Organisation_Master::find($id);
         $Org->name = request('name');
         $Org->address = request('address');
@@ -135,9 +138,11 @@ class OrganizationMasterController extends Controller
         $Org->pincode = request('pincode');
         $Org->business_type = request('business_type');
         $Org->business_operation = request('business_operation');
-        if(request('is_verified')){
-            $Org->is_verified = request('is_verified');
-        }
+//        if(request('is_verified')){
+        $Org->is_verified = request('is_verified');
+//        }else{
+//            $Org->is_verified = 0;
+//        }
         $Org->spoc = request('spoc');
         $Org->save();
         if(Auth::user()->role == "admin"){

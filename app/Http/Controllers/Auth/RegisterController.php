@@ -126,11 +126,11 @@ class RegisterController extends Controller
         $User_master->email = $data['email'];
         $User_master->save();
         
-        if($data['is_organisation'] == 2){
-            $this->redirectTo = '/org/create';
-        }else{
-            $this->redirectTo = '/verify/create';
-        }
+//        if($data['is_organisation'] == 2){
+//            $this->redirectTo = '/org/create';
+//        }else{
+//            $this->redirectTo = '/verify/create';
+//        }
         
         return User_Organisation::create([
             'user_master_id' => $User_master->id,

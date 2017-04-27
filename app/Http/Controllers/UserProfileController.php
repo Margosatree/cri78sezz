@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Organisation_Master;
+use App\User_Cricket_Profile;
+use App\User_Master;
+use Auth;
 use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
@@ -46,13 +49,9 @@ class UserProfileController extends Controller
     public function show($id)
     {
         $Bio = User_Master::find($id);
-        $User_Exists = User_Cricket_Profile::selectRaw('count(id) as count')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        if($User_Exists->count){
-            
-        }
-        $Cri_Profile = User_Cricket_Profile::select('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $Org = Organisation_Master::find($id);
-        return view('user.bio.show',compact('Bio'));
+        $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+        $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
+        return view('user.profile.show', compact('Bio','Cri_Profile','Org'));
     }
 
     /**

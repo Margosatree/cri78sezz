@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">physically challenged</label>
+                            <label for="physically_challenged" class="col-md-4 control-label">physically challenged</label>
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
@@ -74,7 +74,7 @@
                             <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="number" data-inputmask="'mask': '999-9999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                                <input id="mobile" type="number" data-inputmask="'mask': '999-9999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
                             </div>
                         </div>
                         
@@ -142,13 +142,15 @@
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<script src="https://bowercdn.net/c/jquery.inputmask-3.3.0/dist/min/jquery.inputmask.bundle.min.js"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/phone-codes/phone.min.js"></script>-->
 <script>
     
     $(document).ready(function() {
-//        $("#phone").inputmask();
-        $(":input").inputmask();
+//        alert('dasdas');
+        $("#mobile").inputmask();
+//        $(":input").inputmask();
+        
       });
 </script>
 @endsection
