@@ -74,7 +74,7 @@ class OrganizationMasterController extends Controller
         $User_Org = User_Organisation::find(Auth::user()->id);
         $User_Org->organization_master_id = $Org->id;
         $User_Org->save();
-        return redirect()->to('/verify/create');
+        return redirect()->route('userBio.create');
     }
 
     /**

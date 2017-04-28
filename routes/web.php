@@ -21,6 +21,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::Resource('/verify','UserVerifyController');
 
+Route::get('/verifes/{token}','UserVerifyController@showVerify');
+
+Route::post('/verifyguest','UserVerifyController@storeGuest')->name('verifes.guest');
+
 Route::Resource('/userBio','UsersBioController');
 
 Route::Resource('/org','OrganizationMasterController');
@@ -40,3 +44,19 @@ Route::prefix('admin')->group(function(){
 
 Route::get('/admin','AdminController@dashboard')->name('admin.dashboard');
 Route::get('/test', 'HomeController@test');
+
+
+//For Reset Password
+
+Route::get('passwords/reset','Auth\PassswordController@showResetForm')->name('password.show');
+Route::post('passwords/email','Auth\PassswordController@sendResetLinkEmail');
+
+Route::get('passwords/reset/{token}','Auth\PassswordController@showResetEmailForm');
+
+Route::post('passwords/reset','Auth\PassswordController@reset')->name('passwords.reset');
+//For sms To Reset Password
+
+Route::post('password/resetSms','Auth\PassswordController@resetSms')
+	  ->name('password.resetSms');
+
+//End of Reset Password

@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label for="pin" class="col-md-4 control-label">Zip Code</label>
                             <div class="col-md-6">
-                                <input id="pin" type="number" onblur="validPin();" class="form-control" data-inputmask="'mask' : '999999'" name="pin" value="{{ $Bio->pin }}" required>
+                                <input id="pin"  onblur="validPin();" class="form-control" data-inputmask="'mask' : '999999'" name="pin" value="{{ $Bio->pin }}" required>
                             </div>
                         </div>
                         
@@ -86,8 +86,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
-//        $("#pin").inputmask();
-        $(":input").inputmask();
+        $("#pin").inputmask();
       });
 </script>
 <script>
@@ -151,7 +150,6 @@
         function validPin(){
             getAddressfromZip();
         }
-        
 </script>
 
 @endsection

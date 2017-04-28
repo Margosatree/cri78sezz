@@ -44,7 +44,7 @@
                         <div class="form-group">
                             <label for="pincode" class="col-md-4 control-label">PIN</label>
                             <div class="col-md-6">
-                                <input id="pin" onblur="validPin();" type="number" class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="{{ $Org->pincode }}" required>
+                                <input id="pin" onblur="validPin();"  class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="{{ $Org->pincode }}" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,16 +118,20 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/phone-codes/phone.min.js"></script>-->
+<script>
+    $(document).ready(function() {
+        $("#pin").inputmask();
+      });
+</script>
 <script>
     $( "#is_verified" ).trigger( "change" );
     $('#is_verified').on('click', function() {
         if ($('#is_verified').is(":checked")){
             $('#is_verified').val(1);
-//            alert($('#is_verified').val());
         }else{
             $('#is_verified').val(2);
-//            alert($('#is_verified').val());
         }
     });
 </script>

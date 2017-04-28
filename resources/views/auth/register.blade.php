@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="physically_challenged" class="col-md-4 control-label">physically challenged</label>
+                            <label for="email" class="col-md-4 control-label">physically challenged</label>
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
@@ -74,7 +74,7 @@
                             <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
-                                <input id="mobile" type="number" data-inputmask="'mask': '999-9999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                                <input id="phone" type="phone" data-inputmask="'mask' : '9999999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
                             </div>
                         </div>
                         
@@ -91,13 +91,10 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
-                                <span class="help-block">
-                                    <strong>1 Uppercase, 1 Lowercase, 1 Special Char, 1 Number</strong>
-                                </span>
                             </div>
                         </div>
 
-                        <div class="form-group ">
+                        <div class="form-group">
                             <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
 
                             <div class="col-md-6">
@@ -142,15 +139,12 @@
 </div>
 
 
-<script src="https://bowercdn.net/c/jquery.inputmask-3.3.0/dist/min/jquery.inputmask.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/phone-codes/phone.min.js"></script>-->
 <script>
     
     $(document).ready(function() {
-//        alert('dasdas');
-        $("#mobile").inputmask();
-//        $(":input").inputmask();
-        
+        $("#phone").inputmask();
       });
 </script>
 @endsection

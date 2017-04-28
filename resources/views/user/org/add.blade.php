@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label for="pincode" class="col-md-4 control-label">PIN</label>
                             <div class="col-md-6">
-                                <input id="pin" onblur="validPin();" type="number" class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="" required>
+                                <input id="pin" onblur="validPin();" data-inputmask="'mask' : '999999'"  class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="" required>
                             </div>
                         </div>
                         
@@ -89,6 +89,12 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#pin").inputmask();
+      });
+</script>
 <script>
     function getAddressfromZip(){
         console.log("http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true");
@@ -149,6 +155,5 @@
         function validPin(){
             getAddressfromZip();
         }
-        
 </script>
 @endsection

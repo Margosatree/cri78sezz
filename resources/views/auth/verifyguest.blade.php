@@ -6,6 +6,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Reset Password</div>
+                @if(count($token))
                 <div class="panel-body">
                     @if (session('status'))
                         <div class="alert alert-success">
@@ -13,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('verify.store') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('verifes.guest') }}">
                         {{ csrf_field() }}
 
                         <input type="hidden" name="token" value="{{ $token or old('token') }}">
@@ -52,24 +53,22 @@
                                 </button>
                             </div>
                             <div class="col-md-3">
-
-                                <button type="button" onclick="event.preventDefault();
-                                    document.getElementById('frmskip').submit();" 
-                                    style="width: 100%" class="btn btn-primary">
-                                    Skip
+                            <button type="reset" style="width: 100%"class="btn btn-primary">
+                                    Reset
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get"
-                        @if(Auth::user()->role == "organizer")
-                           action="{{route('org.create')}}"
-                       @else
-                           action="{{route('userBio.create')}}"
-                       @endif
-                        {{ csrf_field() }}
-                    </form>
                 </div>
+                @else
+                <div class="panel-body">
+                    @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                </div>
+                @endif
             </div>
         </div>
     </div>
