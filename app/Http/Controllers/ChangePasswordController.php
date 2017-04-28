@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User_Organisation;
+use App\User_Master;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
@@ -25,7 +26,6 @@ class ChangePasswordController extends Controller
     }
     
     public function update(Request $request){
-//        dd('in');
         $this->validate($request,[
             'current_password' => [
                 'required',
@@ -56,6 +56,55 @@ class ChangePasswordController extends Controller
 //            dd('Not Valid User');
         }
         return redirect()->route();
+    }
+    
+    public function adminrequest($id){
+        $User = User_Master::find($id);
+        if($User){
+            return view('auth.passwords.adminchange', compact('User'));
+        }else{
+            Session::flash('message', 'Invalid User');
+            return redirect()->back();
+        }
+        
+    }
+    
+    public function adminupdate(Request $request,$id){
+//        dd(Auth::user()->role);
+        if(Auth::user()->role == "admin"){
+            $this->validate($request,[
+                'password' => [
+                    'required',
+                    'confirmed',
+                    'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
+                ]
+            ]);
+            if(is_numeric($id) && $id > 0){
+                $User_Master = User_Master::find($id);
+                if($User_Master->id){
+                    $User = User_Organisation::selectRaw('*')->where('user_master_id',$User_Master->id)->get()->first();
+                    if($User){
+                        $User->password = Hash::make(request('password'));
+                        $User->save();
+                        Session::flash('message', 'Password Save Sucessfuly');
+                        return redirect()->route('home');
+                    }else{
+                        Session::flash('message', 'You Are Not Valid User');
+                        return redirect()->back();
+                    }
+                }else{
+                    Session::flash('message', 'Invalid User');
+                    return redirect()->back();
+                }
+            }else{
+                Session::flash('message', 'Invalid User');
+                return redirect()->back();
+            }
+        }else{
+            Session::flash('message', 'You Are Not Valid User');
+            return redirect()->back();
+        }
+        
     }
     
 }

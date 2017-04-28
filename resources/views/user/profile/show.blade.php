@@ -73,14 +73,13 @@
                             <br><lable><b>Description : </b></lable>{{$Cri_Profile->description}} 
                         </div>
                     @else
+                        <hr>
                         <div  class="alert alert-success">
                             <lable><h3 style="display:inline;">Cric8profile Not Available Please Add</h3>
                                 <a href="{{route('criProfile.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                             </lable>
                         </div>
-                        <hr>
                     @endif
-                    
                 </div>
             </div>
         </div>

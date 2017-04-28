@@ -11,27 +11,30 @@
                         <table id="example" class="display" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>DOB</th>
-                                    <th>Gender</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Address</th>
-                                    <th>Action</th>
+                                    <th style="width: 20%">Name</th>
+                                    <th style="width: 10%">DOB</th>
+                                    <th style="width: 10%">Gender</th>
+                                    <th style="width: 10%">Email</th>
+                                    <th style="width: 10%">Phone</th>
+                                    <th style="width: 25%">Address</th>
+                                    <th style="width: 15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($User_Bios as $User_Bio)
                                     <tr>
-                                        <td>{{ $User_Bio->first_name .' '. $User_Bio->last_name}}</td>
-                                        <td>{{ $User_Bio->date_of_birth }}</td>
-                                        <td>{{ $User_Bio->gender }}</td>
-                                        <td>{{ $User_Bio->email }}</td>
-                                        <td>{{ $User_Bio->phone }}</td>
-                                        <td>{{ $User_Bio->address.','.$User_Bio->suburb.','.$User_Bio->city.','.$User_Bio->state.','.$User_Bio->country }}</td>
-                                        <td>
+                                        <td style="width: 20%">{{ $User_Bio->first_name .' '. $User_Bio->middle_name .' '. $User_Bio->last_name}}</td>
+                                        <td style="width: 10%">{{ $User_Bio->date_of_birth }}</td>
+                                        <td style="width: 10%">{{ $User_Bio->gender }}</td>
+                                        <td style="width: 10%">{{ $User_Bio->email }}</td>
+                                        <td style="width: 10%">{{ $User_Bio->phone }}</td>
+                                        <td style="width: 25%">{{ $User_Bio->address.', '.$User_Bio->suburb.', '.$User_Bio->city.', '.$User_Bio->state.', '.$User_Bio->country }}</td>
+                                        <td style="width: 15%">
                                             <a href="userBio/{{$User_Bio->id}}/edit" class="btn btn-info">
                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                            <a href="pass/{{$User_Bio->id}}/adminrequest" class="btn btn-info">
+                                                <span  class="glyphicon glyphicon-user"></span>
                                             </a>
                                         </td>
                                     </tr>

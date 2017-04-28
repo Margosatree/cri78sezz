@@ -35,6 +35,8 @@ Route::Resource('/Profile','UserProfileController');
 
 Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
 Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
+Route::get('/pass/{id}/adminrequest','ChangePasswordController@adminrequest')->name('pass.adminrequest');
+Route::post('/pass/{id}/adminupdate','ChangePasswordController@adminupdate')->name('pass.adminupdate');
 
 Route::prefix('admin')->group(function(){
     Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
