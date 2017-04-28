@@ -16,9 +16,9 @@ class CreateUserOrganizationsTable extends Migration
       Schema::create('user_organizations', function (Blueprint $table) {
         $table->increments('id');
         $table->integer('user_master_id');
-        $table->integer('organization_master_id');
-        $table->enum('registration_type', ['open', 'registered']);
-        $table->date('registration_date');
+        $table->integer('organization_master_id')->default(null);
+        $table->enum('registration_type', ['open', 'registered'])->nullable();
+        $table->date('registration_date')->nullable();
         $table->string('email');
         $table->string('password');
         $table->enum('role', ['admin', 'organizer' ,'user']);

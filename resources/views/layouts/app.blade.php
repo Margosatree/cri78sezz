@@ -8,17 +8,27 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Cric8pro') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
+    
     <!-- Scripts -->
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+    
 </head>
 <body>
     <div id="app">
@@ -36,7 +46,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        {{ config('app.name', 'Cric8pro') }}
                     </a>
                 </div>
 
@@ -53,19 +63,49 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
+                            @if(Auth::user()->role == "admin")
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        Users  <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="{{ route('userBio.index') }}">Bio</a>
+                                            <a href="{{ route('criProfile.index') }}">Cricket Profile</a>
+                                            <a href="{{ route('org.index') }}">Org Bio</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endif
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ Auth::user()->email}} <span class="caret"></span>
                                 </a>
-
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="/Profile/{{Auth::user()->user_master_id}}"><b>Profile</b></a>
+                                            <!--<div role="separator" class="divider"></div>-->
+                                        {{--
+                                        @if(Auth::user()->role == "user")
+                                            <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
+                                            <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
+                                        @elseif(Auth::user()->role == "organizer")
+                                            <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
+                                            <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
+                                            <a href="/org/{{Auth::user()->organization_master_id}}">Org Bio</a>
+                                        @elseif(Auth::user()->role == "admin")
+                                        @endif
+                                        --}}
+                                        <div role="separator" class="divider"></div>
+                                        <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
-
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
@@ -82,6 +122,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <!--<script src="{{ asset('js/app.js') }}"></script>-->
 </body>
 </html>

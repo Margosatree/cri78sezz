@@ -17,9 +17,51 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/password/check', 'Auth\ForgetMiddleController@checkData')
 		->name('password.check');
+		
+Route::Resource('/verify','UserVerifyController');
 
-Route::get('/Admin', 'AdminsController@index');
+Route::get('/verifes/{token}','UserVerifyController@showVerify');
+
+Route::post('/verifyguest','UserVerifyController@storeGuest')->name('verifes.guest');
+
+Route::Resource('/userBio','UsersBioController');
+
+Route::Resource('/org','OrganizationMasterController');
+
+Route::Resource('/criProfile','UserCricketProfileController');
+
+Route::Resource('/Profile','UserProfileController');
+
+Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
+Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
+Route::get('/pass/{id}/adminrequest','ChangePasswordController@adminrequest')->name('pass.adminrequest');
+Route::post('/pass/{id}/adminupdate','ChangePasswordController@adminupdate')->name('pass.adminupdate');
+
+Route::prefix('admin')->group(function(){
+    Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+    //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
+});
+
+Route::get('/admin','AdminController@dashboard')->name('admin.dashboard');
+Route::get('/test', 'HomeController@test');
+
+
+//For Reset Password
+
+Route::get('passwords/reset','Auth\PassswordController@showResetForm')->name('password.show');
+Route::post('passwords/email','Auth\PassswordController@sendResetLinkEmail');
+
+Route::get('passwords/reset/{token}','Auth\PassswordController@showResetEmailForm');
+
+Route::post('passwords/reset','Auth\PassswordController@reset')->name('passwords.reset');
+//For sms To Reset Password
+
+Route::post('password/resetSms','Auth\PassswordController@resetSms')
+	  ->name('password.resetSms');
+
+//End of Reset Password

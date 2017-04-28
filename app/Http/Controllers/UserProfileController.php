@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Organisation_Master;
+use App\User_Cricket_Profile;
+use App\User_Master;
+use Auth;
 use Illuminate\Http\Request;
 
-class AdminsController extends Controller
+class UserProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +16,7 @@ class AdminsController extends Controller
      */
     public function index()
     {
-        return view('auth.adminlogin');
+        //
     }
 
     /**
@@ -45,7 +48,10 @@ class AdminsController extends Controller
      */
     public function show($id)
     {
-        //
+        $Bio = User_Master::find($id);
+        $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+        $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
+        return view('user.profile.show', compact('Bio','Cri_Profile','Org'));
     }
 
     /**

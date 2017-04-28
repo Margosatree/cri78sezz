@@ -1,11 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
-use App\User;
+use Illuminate\Http\Request;
+use App\User_Organisation;
+use App\User_Master;
+use Illuminate\Support\Facades\Auth;
+use App\UserOrganisation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Mail\VerifyUser;
+use Illuminate\Support\Facades\Mail;
+use App\verify_user;
 
 class RegisterController extends Controller
 {
@@ -27,15 +33,17 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/verify/create';
 
+    
+    
+    
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('guest');
     }
 
@@ -45,38 +53,188 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
-    {
+    protected function validator(array $data){
+//        $email = $data['email'];
+//        
+//        $password = $data['password'];
+//        dd($data);
         return Validator::make($data, [
-            'first_name' => 'required|max:255',
-            'middle_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'date_of_birth' => 'date',
-            'gender' => 'in:female,male,others',
+            'username' => 'required|max:50|alpha_num',
+            'first_name' => 'required|max:50|alpha',
+            'middle_name' => 'required|max:50|alpha',
+            'last_name' => 'required|max:50|alpha',
+            'date_of_birth' => 'required|date|before:'.date('Y-m-d', strtotime('-5 year')),
+            'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
-            'phone' => 'required|min:10|numeric',
-            'email' => 'required|email|unique:user_masters',
+            'phone' => [
+                'required',
+                'min:10',
+                'numeric',
+                'regex:/(7|8|9)\d{9}/'
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:user_masters',
+                'regex:/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/',
+                'regex:/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
+            ]
         ]);
+//        
+//        $validator->after(function($validator){
+//            dd($request()->all());
+//            dd('hu sevak tu swami');
+//            if(preg_match('/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/', $email)
+//                && preg_match('/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/', $email)){
+//                echo 'Valid '.$email;
+//            }else{
+//                echo 'Invalid '.$email;
+//            }
+//            if(preg_match('/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',$password)){
+//                echo 'Valid '.$password;
+//            }else{
+//                echo 'Invalid '.$password;
+//            }
+//        });
+//
+//        if ($validator->fails()){
+//            // Handle errors
+//        }
+//        dd($email.' '.$password);
+//        return $validator;
     }
-
+    
     /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data)
-    {
-        dd($data);
-        return User::create([
-            'first_name' => $data['first_name'],
-            'middle_name' => $data['middle_name'],
-            'last_name' => $data['last_name'],
-            'date_of_birth' => $data['date_of_birth'],
-            'gender' => $data['gender'],
-            'physically_challenged' => $data['physically_challenged'],
-            'phone' => $data['phone'],
-            'email' => $data['email'],
+    protected function create(array $data){
+
+        $User_master = new User_Master;
+        $User_master->username = $data['username'];
+        $User_master->first_name = $data['first_name'];
+        $User_master->middle_name = $data['middle_name'];
+        $User_master->last_name = $data['last_name'];
+        $User_master->date_of_birth = $data['date_of_birth'];
+        $User_master->gender = $data['gender'];
+        $User_master->physically_challenged = $data['physically_challenged'];
+        $User_master->phone = $data['phone'];
+        $User_master->email = $data['email'];
+        $User_master->save();
+
+        //This is Verify Logic
+        
+        $status_email = $this->sendEmail($data['email']);
+
+        $status_sms = $this->sendSms($data['phone']);
+
+        $this->redirectTo = '/verify/'.$status_email;
+        
+        return User_Organisation::create([
+            'user_master_id' => $User_master->id,
+            'organization_master_id' => 0,
+            'email' => $User_master->email,
+            'password' => bcrypt($data['password']),
+            'role' => $data['is_organisation'],
         ]);
+
     }
+
+
+    function sendEmail($user_email){
+
+        $random_num = mt_rand(1000,9999);
+        while(true){
+            $check_otp = verify_user::where('email_otp',$random_num)
+                                       ->get();                            
+            if(!count($check_otp)){
+                break;
+            }
+            $random_num = mt_rand(1000,9999);
+        }
+        // dd($user_email);
+        $token_data = str_random(32);
+        // dd($token_data);
+        if(!empty($user_email)){
+            // dd($user_email);
+            $check_email = User_Master::where('email',$user_email)->get();
+            if(count($check_email)){
+                // dd($check_email);
+                Mail::to($user_email)
+                    ->send(new VerifyUser($random_num,$token_data));
+
+                $store_data = ['email'=>$user_email,
+                                'token'=>$token_data,
+                                'email_otp'=>$random_num];
+                $this->storeEmail($store_data);
+                return $token_data;
+            }else{
+                return 0;
+            }
+        }
+        
+    }
+
+    function storeEmail($data){
+
+        $check_dup_email = verify_user::where('email',$data['email'])
+                                            ->get();
+        if(count($check_dup_email)){
+            verify_user::where('email', $data['email'])
+                        ->update(['token' => $data['token'],
+                            'email_otp'=>$data['email_otp']]); 
+        }else{
+            verify_user::create($data);
+        }
+    }
+
+
+    function sendSms($mobile_no){
+
+        $check_mobile = verify_user::where('mobile',$mobile_no)
+                                       ->get();
+        if(count($check_mobile)){
+            verify_user::where('mobile',$mobile_no)->delete();
+        }
+        $random_num = mt_rand(1000,9999);
+        while(true){
+            $check_otp = verify_user::where('mobile_otp',$random_num)
+                                       ->get();                            
+            if(!count($check_otp)){
+                break;
+            }
+            $random_num = mt_rand(1000,9999);
+        }
+        // dd($random_num);
+        // dd($mobile_no);
+
+        if(!empty($mobile_no)){
+            $check_umobile = User_Master::where('phone',$mobile_no)->get();
+            if(count($check_umobile)){
+                foreach($check_umobile as $check_um){
+                    $email = $check_um->email;
+                }
+                $check_email = verify_user::where('email',$email)
+                                       ->get();
+                //Sms logic insert here
+                if(count($check_email)){
+                    verify_user::where('email', $email)
+                        ->update(['mobile' => $mobile_no,'mobile_otp'=>$random_num]);
+                }else{
+                verify_user::create(['mobile'=>$mobile_no,'mobile_otp'=>$random_num]);
+                }
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+    
 }
