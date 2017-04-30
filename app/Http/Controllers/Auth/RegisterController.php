@@ -54,20 +54,12 @@ class RegisterController extends Controller
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data){
-//        $email = $data['email'];
-//        
-//        $password = $data['password'];
-//        dd($data);
+        
         return Validator::make($data, [
-            'username' => 'required|max:50|alpha_num',
-            'first_name' => 'required|max:50|alpha',
-            'middle_name' => 'required|max:50|alpha',
-            'last_name' => 'required|max:50|alpha',
-            'date_of_birth' => 'required|date|before:'.date('Y-m-d', strtotime('-5 year')),
-            'gender' => 'in:female,male',
-            'physically_challenged' => 'in:no,yes',
+            'username' => 'required|max:50|alpha_num|unique:user_masters',
             'phone' => [
                 'required',
+                'unique:user_masters',
                 'min:10',
                 'numeric',
                 'regex:/(7|8|9)\d{9}/'
@@ -85,28 +77,7 @@ class RegisterController extends Controller
                 'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
             ]
         ]);
-//        
-//        $validator->after(function($validator){
-//            dd($request()->all());
-//            dd('hu sevak tu swami');
-//            if(preg_match('/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/', $email)
-//                && preg_match('/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/', $email)){
-//                echo 'Valid '.$email;
-//            }else{
-//                echo 'Invalid '.$email;
-//            }
-//            if(preg_match('/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',$password)){
-//                echo 'Valid '.$password;
-//            }else{
-//                echo 'Invalid '.$password;
-//            }
-//        });
-//
-//        if ($validator->fails()){
-//            // Handle errors
-//        }
-//        dd($email.' '.$password);
-//        return $validator;
+
     }
     
     /**
@@ -119,12 +90,6 @@ class RegisterController extends Controller
 
         $User_master = new User_Master;
         $User_master->username = $data['username'];
-        $User_master->first_name = $data['first_name'];
-        $User_master->middle_name = $data['middle_name'];
-        $User_master->last_name = $data['last_name'];
-        $User_master->date_of_birth = $data['date_of_birth'];
-        $User_master->gender = $data['gender'];
-        $User_master->physically_challenged = $data['physically_challenged'];
         $User_master->phone = $data['phone'];
         $User_master->email = $data['email'];
         $User_master->save();
@@ -142,7 +107,7 @@ class RegisterController extends Controller
             'organization_master_id' => 0,
             'email' => $User_master->email,
             'password' => bcrypt($data['password']),
-            'role' => $data['is_organisation'],
+            'role' => config('constants.role.User'),
         ]);
 
     }

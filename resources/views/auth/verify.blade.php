@@ -47,27 +47,16 @@
 
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%"class="btn btn-primary">
+                                <button type="submit" style="width: 100%" class="btn btn-primary">
                                     Verify
                                 </button>
                             </div>
                             <div class="col-md-3">
-
-                                <button type="button" onclick="event.preventDefault();
-                                    document.getElementById('frmskip').submit();" 
-                                    style="width: 100%" class="btn btn-primary">
-                                    Skip
+                                <button type="reset" style="width: 100%" class="btn btn-primary">
+                                    Clear
                                 </button>
                             </div>
                         </div>
-                    </form>
-                    <form id="frmskip" method="get"
-                        @if(Auth::user()->role == "organizer")
-                           action="{{route('org.create')}}"
-                       @else
-                           action="{{route('userBio.create')}}"
-                       @endif
-                        {{ csrf_field() }}
                     </form>
                 </div>
             </div>

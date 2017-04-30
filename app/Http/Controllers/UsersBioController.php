@@ -44,6 +44,12 @@ class UsersBioController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(), [
+            'first_name' => 'required|max:50|alpha',
+            'middle_name' => 'required|max:50|alpha',
+            'last_name' => 'required|max:50|alpha',
+            'date_of_birth' => 'required|date|before:'.date('Y-m-d', strtotime('-5 year')),
+            'gender' => 'in:female,male',
+            'physically_challenged' => 'in:no,yes',
             'address' => 'required|max:255',
             'suburb' => 'required|max:255',
             'city' => 'required|max:255',
