@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -28,7 +29,13 @@ Route::get('/verifes/{token}','UserVerifyController@showVerify');
 
 Route::post('/verifyguest','UserVerifyController@storeGuest')->name('verifes.guest');
 
-Route::Resource('/userBio','UsersBioController');
+ Route::Resource('/userBio','UsersBioController');
+
+Route::get('/userBio/createInfo','UsersBioController@createInfo')
+	   ->name('userBio.createInfo');
+
+Route::post('/userBio/storeInfo','UsersBioController@storeInfo')
+	   ->name('userBio.storeInfo');
 
 Route::Resource('/org','OrganizationMasterController');
 

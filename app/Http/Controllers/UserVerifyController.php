@@ -75,11 +75,11 @@ class UserVerifyController extends Controller
                     ->update(['is_verify_phone'=>1,'is_verify_email'=>1]);
 
         Session::flash('status','Successfuly Verified'); 
-        if(Auth::user()->role =="organizer"){
-            return redirect()->route('org.create');
-        }else{
-            return redirect()->route('userBio.create');
-        }
+        // if(Auth::user()->role =="organizer"){
+        //     return redirect()->route('org.create');
+        // }else{
+            return redirect()->route('userBio.createInfo');
+        // }
 
         if(Auth::guest()){
             return back()->withInput();
