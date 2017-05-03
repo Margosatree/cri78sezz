@@ -43,6 +43,8 @@ Route::Resource('/criProfile','UserCricketProfileController');
 
 Route::Resource('/Profile','UserProfileController');
 
+Route::Resource('/userAchieve','UserAchievementController');
+
 Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
 Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
 Route::get('/pass/{id}/adminrequest','ChangePasswordController@adminrequest')->name('pass.adminrequest');
