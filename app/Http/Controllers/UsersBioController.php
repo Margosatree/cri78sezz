@@ -30,6 +30,10 @@ class UsersBioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function createInfo(){
+        return view('user.bio.info');
+    }
+
     public function create()
     {
         return view('user.bio.add');
@@ -41,8 +45,8 @@ class UsersBioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+
+    public function storeInfo(Request $request){
         $this->validate(request(), [
             'first_name' => 'required|max:50|alpha',
             'middle_name' => 'required|max:50|alpha',
@@ -50,6 +54,23 @@ class UsersBioController extends Controller
             'date_of_birth' => 'required|date|before:'.date('Y-m-d', strtotime('-5 year')),
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
+        ]);
+//        dd($request->all());
+        $id = Auth::user()->user_master_id;
+        $User_master = User_Master::find($id);
+        $User_master->first_name = $request->first_name;
+        $User_master->middle_name = $request->middle_name;
+        $User_master->last_name = $request->last_name;
+        $User_master->date_of_birth = $request->date_of_birth;
+        $User_master->gender = $request->gender;
+        $User_master->physically_challenged = $request->physically_challenged;
+        $User_master->save();
+        return redirect()->route('userBio.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->validate(request(), [
             'address' => 'required|max:255',
             'suburb' => 'required|max:255',
             'city' => 'required|max:255',

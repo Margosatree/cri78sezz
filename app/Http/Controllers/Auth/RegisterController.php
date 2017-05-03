@@ -62,6 +62,7 @@ class RegisterController extends Controller
                 'unique:user_masters',
                 'min:10',
                 'numeric',
+                //'regex:^\(?082|083|084|072\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$',
                 'regex:/(7|8|9)\d{9}/'
             ],
             'email' => [
