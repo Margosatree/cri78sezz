@@ -191,6 +191,5 @@
         function validPin(){
             getAddressfromZip();
         }
-        
 </script>
 @endsection
