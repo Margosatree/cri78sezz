@@ -16,22 +16,40 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="business_type" class="col-md-4 control-label">Business Type</label>
-                            <div class="col-md-6">
-                                <input id="business_type" type="text" class="form-control" name="business_type" value="" required autofocus>
+                            <label for="name" class="col-md-4 control-label">Name</label>
+                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="" autofocus>
+                            <div class="col-md-5">
+                                <select id="org" name="name" class="form-control">
+                                    <option  value="0" selected disabled>Select Organisation</option>
+                                    @foreach($Orgs as $Org)
+                                        <option  value="{{$Org->id}}">{{$Org->name}}</option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('your_role'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('your_role') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" onclick="$('#orgModal').modal('toggle');" class="btn btn-primary" style="display: block">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="business_operation" class="col-md-4 control-label">Business Operation</label>
+                            <label for="location" class="col-md-4 control-label">Location</label>
                             <div class="col-md-6">
-                                <input id="business_operation" type="text" class="form-control" name="business_operation" value="" required autofocus>
+                                <input id="location" type="text" class="form-control" name="location" value="" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="date_of_birth" class="col-md-4 control-label">Date Of Birth</label>
-
-                            <div class="col-md-6">
-                                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required autofocus>
+                            <label for="start_date" class="col-md-4 control-label">Time Period</label>
+                            <div class="col-md-3">
+                                <input id="start_date" type="date" class="form-control" name="start_date" value="" required autofocus>
+                            </div>
+                            <div class="col-md-3">
+                                <input id="end_date" type="date" class="form-control" name="end_date" value="" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
@@ -47,11 +65,66 @@
         </div>
     </div>
 </div>
+<div id="orgModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Organisation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="comment">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input required="" class="form-control" id="txtModalInput" placeholder="Organisation Name" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="validateOrg()" class="btn btn-primary" style="min-width: 80px;">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    $('#org').change(function(){
+        $('#orgname').val($('#org option:selected').text());
+    });
+    function openModal(){
+        $('#orgModal').modal('toggle');
+    }
+    function validateOrg(){
+        if($('#txtModalInput').val() != ""){
+            var flag = true;
+            $("#org option").each(function(){
+                if($('#txtModalInput').val().toLowerCase() == $(this).text().toLowerCase()){
+//                    $(this).atrr('selected',true);
+//                    var objRide = document.getElementById("cboRide");
+//                    setSelectedValue(objRide, 'No');
+//                    $("#org").trigger("change");
+                    $('#orgModal').modal('hide');
+                    alert('Organisation Already Exist');
+                    flag = false;
+                    return;
+                }
+//                alert(name+' '+org);
+            });
+            if(flag){
+                $('#org').append('<option  value="-1" selected>'+ $('#txtModalInput').val() +'</option>');
+                $("#org").trigger("change");
+                $('#orgModal').modal('hide');
+            }
+        }
+    }
 </script>
 <script>
     function getAddressfromZip(){

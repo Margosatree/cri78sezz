@@ -11,8 +11,24 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Name</label>
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="" required autofocus>
+                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="" autofocus>
+                            <div class="col-md-5">
+                                <select id="org" name="name" class="form-control">
+                                    <option  value="0" selected disabled>Select Organisation</option>
+                                    @foreach($Orgs as $Org)
+                                        <option  value="{{$Org->id}}">{{$Org->name}}</option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('your_role'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('your_role') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" onclick="$('#orgModal').modal('toggle');" class="btn btn-primary" style="display: block">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -89,12 +105,68 @@
         </div>
     </div>
 </div>
+<div id="orgModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Organisation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="comment">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input required="" class="form-control" id="txtModalInput" placeholder="Organisation Name" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="validateOrg()" class="btn btn-primary" style="min-width: 80px;">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
         $("#pin").inputmask();
       });
 </script>
+<script>
+    $('#org').change(function(){
+        $('#orgname').val($('#org option:selected').text());
+    });
+    function openModal(){
+        $('#orgModal').modal('toggle');
+    }
+    function validateOrg(){
+        if($('#txtModalInput').val() != ""){
+            var flag = true;
+            $("#org option").each(function(){
+                if($('#txtModalInput').val().toLowerCase() == $(this).text().toLowerCase()){
+//                    $(this).atrr('selected',true);
+//                    var objRide = document.getElementById("cboRide");
+//                    setSelectedValue(objRide, 'No');
+//                    $("#org").trigger("change");
+                    $('#orgModal').modal('hide');
+                    alert('Organisation Already Exist');
+                    flag = false;
+                    return;
+                }
+//                alert(name+' '+org);
+            });
+            if(flag){
+                $('#org').append('<option  value="-1" selected>'+ $('#txtModalInput').val() +'</option>');
+                $("#org").trigger("change");
+                $('#orgModal').modal('hide');
+            }
+        }
+    }
+</script>
+
 <script>
     function getAddressfromZip(){
         console.log("http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true");

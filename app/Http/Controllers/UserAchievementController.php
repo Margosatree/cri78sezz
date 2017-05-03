@@ -28,7 +28,7 @@ class UserAchievementController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.achieve.add');
     }
 
     /**
