@@ -7,17 +7,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Achievement's</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/org">
+                    <form class="form-horizontal" role="form" method="POST" action="/userAchieve">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="title" class="col-md-4 control-label">Title</label>
                             <div class="col-md-6">
-                                <input id="title" type="text" class="form-control" name="title" value="" required autofocus>
+                                <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Name</label>
-                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="" autofocus>
+                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="{{ old('orgname') }}" autofocus>
                             <div class="col-md-5">
                                 <select id="org" name="name" class="form-control">
                                     <option  value="0" selected disabled>Select Organisation</option>
@@ -38,27 +38,47 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="location" class="col-md-4 control-label">Location</label>
-                            <div class="col-md-6">
-                                <input id="location" type="text" class="form-control" name="location" value="" required autofocus>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="start_date" class="col-md-4 control-label">Time Period</label>
                             <div class="col-md-3">
-                                <input id="start_date" type="date" class="form-control" name="start_date" value="" required autofocus>
+                                <input id="start_date" type="date" class="form-control" name="start_date" value="{{ old('start_date') }}" required autofocus>
                             </div>
                             <div class="col-md-3">
-                                <input id="end_date" type="date" class="form-control" name="end_date" value="" required autofocus>
+                                <input id="end_date" type="date" class="form-control" name="end_date" value="{{ old('end_date') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
+                            <label for="location" class="col-md-4 control-label">Location</label>
+                            <div class="col-md-6">
+                                <input id="location" type="text" class="form-control" name="location" value="{{ old('location') }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" style="width: 100%" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" 
+                                    style="width: 100%" class="btn btn-primary">
+                                    Skip
+                                </button>
+                            </div>
                         </div>
+                        @if(count($errors) > 0)
+                            <div class="from-group" >
+                                <div class="col-md-6 col-md-offset-4 alert alert-danger" style="margin-top: 10px;">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+                    </form>
+                    <form id="frmskip" method="get" action="{{ route('home') }}">
                     </form>
                 </div>
             </div>

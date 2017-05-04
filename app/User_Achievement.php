@@ -9,6 +9,6 @@ class User_Achievement extends Model
     protected $table = 'user_achievements';
     
     protected $fillable = [
-        'title','location', 'start_date', 'end_date'
+        'title','orgname','name','location', 'start_date', 'end_date'
     ];
 }

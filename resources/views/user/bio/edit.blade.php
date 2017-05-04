@@ -11,6 +11,7 @@
                         <form class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
+                        
                         <div class="form-group">
                             <label for="address" class="col-md-4 control-label">Address</label>
                             <div class="col-md-6">

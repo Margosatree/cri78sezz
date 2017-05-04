@@ -31,7 +31,7 @@ class UsersBioController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function createInfo(){
-        return view('user.bio.info');
+        return view('user.bio.addinfo');
     }
 
     public function create()
@@ -88,7 +88,7 @@ class UsersBioController extends Controller
         $bio->country = request('country');
         $bio->pin = request('pin');
         $bio->save();
-        return redirect()->route('criProfile.create');
+        return redirect()->route('orgcriProfile.create');
     }
 
     /**
@@ -110,6 +110,11 @@ class UsersBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function editInfo($id){
+        $Bio = User_Master::find($id);
+        return view('user.bio.editInfo', compact('Bio'));
+    }
+    
     public function edit($id){
         $Bio = User_Master::find($id);
         return view('user.bio.edit', compact('Bio'));
@@ -122,41 +127,50 @@ class UsersBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    
     public function update(Request $request, $id){
-        $this->validate(request(), [
-//            'username' => 'required|max:255',
-//            'first_name' => 'required|max:255',
-//            'middle_name' => 'required|max:255',
-//            'last_name' => 'required|max:255',
-//            'date_of_birth' => 'date',
-//            'gender' => 'in:female,male,others',
-//            'physically_challenged' => 'in:no,yes',
-//            'phone' => 'required|min:10|numeric',
-//            'email' => 'required|email|unique:user_masters',
-            'address' => 'required|max:255',
-            'suburb' => 'required|max:255',
-            'city' => 'required|max:255',
-            'state' => 'required|max:255',
-            'country' => 'required|max:255',
-            'pin' => 'required|digits:6|numeric',
-        ]);
+        $callfrom = "";
+        if(request('first_name') || request('middle_name') || request('last_name') ||
+           request('date_of_birth') || request('gender') || request('physically_challenged')
+                ){
+            $this->validate(request(), [
+                'first_name' => 'required|max:255',
+                'middle_name' => 'required|max:255',
+                'last_name' => 'required|max:255',
+                'date_of_birth' => 'required|date',
+                'gender' => 'required|in:female,male,others',
+                'physically_challenged' => 'required|in:no,yes',
+            ]);
+            $callfrom = 'info';
+        }else{
+            $this->validate(request(), [
+                'address' => 'required|max:255',
+                'suburb' => 'required|max:255',
+                'city' => 'required|max:255',
+                'state' => 'required|max:255',
+                'country' => 'required|max:255',
+                'pin' => 'required|digits:6|numeric',
+            ]);
+        }
+        
         $Bio = User_Master::find($id);
-//        $Bio->username = request('username');
-//        $Bio->first_name = request('first_name');
-//        $Bio->middle_name = request('middle_name');
-//        $Bio->last_name = request('last_name');
-//        $Bio->date_of_birth = request('date_of_birth');
-//        $Bio->gender = request('gender');
-//        $Bio->physically_challenged = request('physically_challenged');
-//        $Bio->phone = request('phone');
-//        $Bio->email = request('email');
-        $Bio->address = request('address');
-        $Bio->suburb = request('suburb');
-        $Bio->city = request('city');
-        $Bio->state = request('state');
-        $Bio->country = request('country');
-        $Bio->pin = request('pin');
-        $Bio->save();
+        if($callfrom == 'info'){
+            $Bio->first_name = request('first_name');
+            $Bio->middle_name = request('middle_name');
+            $Bio->last_name = request('last_name');
+            $Bio->date_of_birth = request('date_of_birth');
+            $Bio->gender = request('gender');
+            $Bio->physically_challenged = request('physically_challenged');
+        }else{
+            $Bio->address = request('address');
+            $Bio->suburb = request('suburb');
+            $Bio->city = request('city');
+            $Bio->state = request('state');
+            $Bio->country = request('country');
+            $Bio->pin = request('pin');
+            $Bio->save();
+        }
+        
         if(Auth::user()->role == "admin"){
             return redirect()->route('userBio.index');
         }else{

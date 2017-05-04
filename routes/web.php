@@ -35,6 +35,9 @@ Route::get('/userBio/createInfo','UsersBioController@createInfo')
 Route::post('/userBio/storeInfo','UsersBioController@storeInfo')
 	   ->name('userBio.storeInfo');
 
+Route::get('/userBio/{userBio}/editInfo','UsersBioController@editInfo')
+	   ->name('userBio.editInfo');
+
 Route::Resource('/userBio','UsersBioController');
 
 Route::Resource('/org','OrganizationMasterController');
@@ -44,6 +47,8 @@ Route::Resource('/criProfile','UserCricketProfileController');
 Route::Resource('/Profile','UserProfileController');
 
 Route::Resource('/userAchieve','UserAchievementController');
+
+Route::Resource('/orgcriProfile','OrgCricketController');
 
 Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
 Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
@@ -56,9 +61,9 @@ Route::prefix('admin')->group(function(){
     //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
 });
 
+
 Route::get('/admin','AdminController@dashboard')->name('admin.dashboard');
 Route::get('/test', 'HomeController@test');
-
 
 //For Reset Password
 

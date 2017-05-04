@@ -5,53 +5,58 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Edit Organization Info</div>
+                <div class="panel-heading">Edit User Bio</div>
                 <div class="panel-body">
-                    @if($User_Achieve->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/userAchieve/{{$User_Achieve->id}}">
+                    @if($Bio->id > 0 )
+                        <form class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
+                        
                         <div class="form-group">
-                            <label for="title" class="col-md-4 control-label">Title</label>
+                            <label for="first_name" class="col-md-4 control-label">First Name</label>
                             <div class="col-md-6">
-                                <input id="title" type="text" class="form-control" name="title" value="{{$User_Achieve->title}}" required autofocus>
+                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">Name</label>
-                            <!--<input id="orgname" type="hidden" class="form-control" name="orgname" value="{{$User_Achieve->id}}" autofocus>-->
-                            <div class="col-md-5">
-                                <select id="org" name="name" class="form-control">
-                                    <option  value="0" selected disabled>Select Organisation</option>
-                                    @foreach($Orgs as $Org)
-                                        <option @if($User_Achieve->organization_master_id == $Org->id) selected @endif value="{{$Org->id}}">{{$Org->name}}</option>
-                                    @endforeach
-                                </select>
-                                @if ($errors->has('your_role'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('your_role') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" onclick="$('#orgModal').modal('toggle');" class="btn btn-primary" style="display: block">
-                                    <span class="glyphicon glyphicon-plus"></span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="start_date" class="col-md-4 control-label">Time Period</label>
-                            <div class="col-md-3">
-                                <input id="start_date" type="date" class="form-control" name="start_date" value="{{$User_Achieve->start_date}}" required autofocus>
-                            </div>
-                            <div class="col-md-3">
-                                <input id="end_date" type="date" class="form-control" name="end_date" value="{{$User_Achieve->end_date}}" required autofocus>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="location" class="col-md-4 control-label">Location</label>
+                            <label for="middle_name" class="col-md-4 control-label">Middle Name</label>
                             <div class="col-md-6">
-                                <input id="location" type="text" class="form-control" name="location" value="{{$User_Achieve->location}}" required autofocus>
+                                <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name" class="col-md-4 control-label">Last Name</label>
+                            <div class="col-md-6">
+                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date_of_birth" class="col-md-4 control-label">Date Of Birth</label>
+                            <div class="col-md-6">
+                                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-md-4 control-label">Gender</label>
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="male" type="radio" class="" name="gender" value="male" @if( old('gender') == 'male') checked @endif > Male
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="female" type="radio" class="" name="gender" value="female" @if( old('gender') == 'female') checked @endif > Female
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-md-4 control-label">physically challenged</label>
+                            
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="yes" type="radio" class="" name="physically_challenged" value="yes" @if( old('physically_challenged') == 'yes') checked @endif > Yes
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="no" type="radio" class="" name="physically_challenged" value="no" @if( old('physically_challenged') == 'no') checked @endif > No
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -71,7 +76,7 @@
                     </form>
                     <form id="frmskip" method="get" 
                         @if(Auth::user()->role == "admin")
-                            action="{{route('userAchieve.index')}}"
+                            action="{{route('userBio.index')}}"
                         @else
                             action="{{route('Profile.show',Auth::user()->user_master_id)}}"
                         @endif
@@ -84,21 +89,10 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/phone-codes/phone.min.js"></script>-->
 <script>
     $(document).ready(function() {
         $("#pin").inputmask();
       });
-</script>
-<script>
-    $( "#is_verified" ).trigger( "change" );
-    $('#is_verified').on('click', function() {
-        if ($('#is_verified').is(":checked")){
-            $('#is_verified').val(1);
-        }else{
-            $('#is_verified').val(2);
-        }
-    });
 </script>
 <script>
     function getAddressfromZip(){
@@ -127,6 +121,7 @@
         var add = data.split(',');
         console.log(add);
         console.log(add.length);
+        $('#suburb').val('');
         $('#city').val('');
         $('#state').val('');
         $('#country').val('');
@@ -160,6 +155,6 @@
         function validPin(){
             getAddressfromZip();
         }
-        
 </script>
+
 @endsection

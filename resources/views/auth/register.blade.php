@@ -38,6 +38,9 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
+                                <span class="help-block">
+                                    <strong>One Upper, Lower, special char, and Number</strong>
+                                </span>
                             </div>
                         </div>
 

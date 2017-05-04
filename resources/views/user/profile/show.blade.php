@@ -10,12 +10,17 @@
                     @if(count($Bio) > 0)
                         <div  class="alert alert-success">
                             <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
-                                <a href="/userBio/{{ $Bio->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                <a href="/userBio/{{ $Bio->id }}/editInfo"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                             </lable>
-
                             <br><lable><b>DOB : </b></lable>{{$Bio->date_of_birth}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Gender : </b></lable>{{$Bio->gender}}
                             <br><lable><b>Phone : </b></lable>{{$Bio->phone}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
                             <br><lable><b>Email : </b></lable>{{$Bio->email}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
+                            
+                        </div>
+                        <div  class="alert alert-success">
+                            <lable><h3 style="display:inline;">Personal Info</h3>
+                                <a href="/userBio/{{ $Bio->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                            </lable>
                             <br><lable><b>Address : </b></lable>{{$Bio->address.','.$Bio->suburb.','.$Bio->city.'('.$Bio->pin.')'}}
                             <br><lable><b>State : </b></lable>{{$Bio->state}} 
                             <br><lable><b>Country : </b></lable>{{$Bio->country}} 
@@ -73,12 +78,33 @@
                             <br><lable><b>Description : </b></lable>{{$Cri_Profile->description}} 
                         </div>
                     @else
+                        @if(Auth::user()->role == "user")
+                            <hr>
+                            <div  class="alert alert-success">
+                                <lable><h3 style="display:inline;">Cric8profile Not Available Please Add</h3>
+                                    <a href="{{route('criProfile.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                </lable>
+                            </div>
+                        @endif
+                    @endif
+                    @if(count($User_Achieve) > 0)
                         <hr>
                         <div  class="alert alert-success">
-                            <lable><h3 style="display:inline;">Cric8profile Not Available Please Add</h3>
-                                <a href="{{route('criProfile.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                            <lable><h3 style="display:inline;">Achievement</h3>
+                                <a href="/userAchieve/{{ $User_Achieve->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                             </lable>
+                            <br><lable><b>Title : </b></lable>{{$User_Achieve->title}} &nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Location : </b></lable>{{$User_Achieve->location}}
+                            <br><lable><b>Time Period : </b></lable>{{$User_Achieve->start_date}}&nbsp;&nbsp;To&nbsp;&nbsp;{{$User_Achieve->end_date}}
                         </div>
+                    @else
+                        @if(Auth::user()->role == "user")
+                            <hr>
+                            <div  class="alert alert-success">
+                                <lable><h3 style="display:inline;">Achievement Not Available Please Add</h3>
+                                    <a href="{{route('userAchieve.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                </lable>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

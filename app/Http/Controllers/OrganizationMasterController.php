@@ -32,7 +32,8 @@ class OrganizationMasterController extends Controller
      */
     public function create(){
 //        dd('in create');
-        return view('user.org.add');
+        $Orgs = Organisation_Master::selectRaw('id,name')->get();
+        return view('user.org.add',compact('Orgs'));
     }
 
     /**
@@ -48,7 +49,7 @@ class OrganizationMasterController extends Controller
 //        }
         $this->validate($request,[
             'name' => 'required',// Organisation Id
-            'orgname' => 'required',//Organisation name
+//            'orgname' => 'required',//Organisation name
             'address' => 'required',
             'landmark' => 'required',
             'city' => 'required',
@@ -59,31 +60,32 @@ class OrganizationMasterController extends Controller
             'business_operation' => 'required',
             'spoc' => 'required',
 //            'is_verified' => 'required',
-            
         ]);
-        $OrganisationId = 0;
-        if(request('name') == -1 ){
+        
+//        $OrganisationId = 0;
+//        if(request('name') == -1 ){
             $Org = new Organisation_Master;
-            $Org->name = request('orgname');
+            $Org->name = request('name');
             $Org->address = request('address');
-            $Org->landmark = request('landmark');
             $Org->city = request('city');
             $Org->state = request('state');
             $Org->country = request('country');
             $Org->pincode = request('pincode');
             $Org->business_type = request('business_type');
             $Org->business_operation = request('business_operation');
-            $Org->is_verified = 0;
             $Org->spoc = request('spoc');
+            $Org->is_verified = 0;
             $Org->save();
-            $OrganisationId = $Org->id;
-        }else{
-            $OrganisationId = request('name');
-        }
+//            $OrganisationId = $Org->id;
+//        }else{
+//            $OrganisationId = request('name');
+//        }
         $User_Org = User_Organisation::find(Auth::user()->id);
-        $User_Org->organization_master_id = $OrganisationId;
+        $User_Org->organization_master_id = $Org->id;
+        $User_Org->role = 'organizer';
         $User_Org->save();
-        return redirect()->route('userBio.create');
+        return redirect()->route('home');
+        
     }
 
     /**

@@ -10,16 +10,12 @@
                     <div  class="alert alert-success">
                         <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
                         </lable>
-                        <br><lable><h4 style="display:inline;">{{ $Org->name }}</h4>&nbsp;@if($Org->is_verified)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
-                            <a href="/org/{{ $Org->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                        <br><lable><h4 style="display:inline;">{{ $User_Achieve->title }}</h4>
+                            <a href="/userAchieve/{{ $User_Achieve->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                         </lable>
                         
-                        <br><lable><b>Spoc : </b></lable>{{$Org->spoc}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <br><lable><b>Business Type : </b></lable>{{$Org->business_type}} 
-                        <br><lable><b>Business Operation : </b></lable>{{$Org->business_operation}} 
-                        <br><lable><b>Address : </b></lable>{{$Org->address.','.$Org->landmark.','.$Org->city.'('.$Org->pincode.')'}}
-                        <br><lable><b>State : </b></lable>{{$Org->state}} 
-                        <br><lable><b>Country : </b></lable>{{$Org->country}} 
+                        <br><lable><b>Location : </b></lable>{{$User_Achieve->location}}
+                        <br><lable><b>Time Period : </b></lable>{{$User_Achieve->start_date}} &nbsp;&nbsp;To&nbsp;&nbsp;{{$User_Achieve->end_date}} 
                     </div>
                 </div>
             </div>

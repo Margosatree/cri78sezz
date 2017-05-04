@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get" action="{{ route('criProfile.create') }}">
+                    <form id="frmskip" method="get" action="{{ route('orgcriProfile.create') }}">
                     </form>
                 </div>
             </div>

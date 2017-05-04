@@ -11,38 +11,30 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="first_name" class="col-md-4 control-label">First Name</label>
-
                             <div class="col-md-6">
                                 <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="middle_name" class="col-md-4 control-label">Middle Name</label>
-
                             <div class="col-md-6">
                                 <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_name" class="col-md-4 control-label">Last Name</label>
-
                             <div class="col-md-6">
                                 <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="date_of_birth" class="col-md-4 control-label">Date Of Birth</label>
-
                             <div class="col-md-6">
                                 <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required autofocus>
                             </div>
                         </div>
-
-                        
-                        
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Gender</label>
-                            
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
                                     <input id="male" type="radio" class="" name="gender" value="male" @if( old('gender') == 'male') checked @endif > Male

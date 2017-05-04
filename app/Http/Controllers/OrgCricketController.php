@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Organisation_Master;
-use App\User_Cricket_Profile;
-use App\User_Master;
-use App\User_Achievement;
-use Auth;
 use Illuminate\Http\Request;
 
-class UserProfileController extends Controller
+class OrgCricketController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +23,8 @@ class UserProfileController extends Controller
      */
     public function create()
     {
-        //
+        $Orgs = Organisation_Master::all();
+        return view('user.org_criprofile.add',compact('Orgs'));
     }
 
     /**
@@ -49,11 +46,7 @@ class UserProfileController extends Controller
      */
     public function show($id)
     {
-        $Bio = User_Master::find($id);
-        $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $User_Achieve = User_Achievement::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
-        return view('user.profile.show', compact('Bio','Cri_Profile','Org','User_Achieve'));
+        //
     }
 
     /**

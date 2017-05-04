@@ -5,6 +5,7 @@ use App\User_Cricket_Profile;
 use App\User_Master;
 use Illuminate\Http\Request;
 use Auth;
+use Image;
 class UserCricketProfileController extends Controller
 {
     
@@ -49,6 +50,7 @@ class UserCricketProfileController extends Controller
             'bowler_style' => 'required|in:Lefthand,Righthand',
             'player_type' => 'required|max:255',
             'description' => 'required|max:255',
+            'image'=>'required|image',
 //            'display_img' => 'required|max:255',
 //            'is_completed' => 'required|numeric',
         ]);
@@ -61,9 +63,18 @@ class UserCricketProfileController extends Controller
         $User_Cri_Profile->bowler_style = request('bowler_style');
         $User_Cri_Profile->player_type = request('player_type');
         $User_Cri_Profile->description = request('description');
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $filename = time().base64_encode($User_Cri_Profile->id).'.'.$image->getClientOriginalExtension(); 
+            //use encode('png')  instead of getClientOriginalExtension()
+            $location = public_path('images/'. $filename);
+            //you also store in storage_path('app/image/') or assert();
+            Image::make($image)->resize(800,400)->save($location);
+            $User_Cri_Profile->display_img = $filename;
+        }
         $User_Cri_Profile->save();
         
-        return redirect()->route('home');
+        return redirect()->route('userAchieve.create');
     }
 
     /**
