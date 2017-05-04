@@ -69,8 +69,8 @@ class RegisterController extends Controller
                 'required',
                 'email',
                 'unique:user_masters',
-                'regex:/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/',
-                'regex:/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/',
+                //'regex:/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/',
+                //'regex:/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/',
             ],
             'password' => [
                 'required',
@@ -116,14 +116,14 @@ class RegisterController extends Controller
 
     function sendEmail($user_email){
 
-        $random_num = mt_rand(1000,9999);
+        $random_num = mt_rand(100000,999999);
         while(true){
             $check_otp = verify_user::where('email_otp',$random_num)
                                        ->get();                            
             if(!count($check_otp)){
                 break;
             }
-            $random_num = mt_rand(1000,9999);
+            $random_num = mt_rand(100000,999999);
         }
         // dd($user_email);
         $token_data = str_random(32);
@@ -169,14 +169,14 @@ class RegisterController extends Controller
         if(count($check_mobile)){
             verify_user::where('mobile',$mobile_no)->delete();
         }
-        $random_num = mt_rand(1000,9999);
+        $random_num = mt_rand(100000,999999);
         while(true){
             $check_otp = verify_user::where('mobile_otp',$random_num)
                                        ->get();                            
             if(!count($check_otp)){
                 break;
             }
-            $random_num = mt_rand(1000,9999);
+            $random_num = mt_rand(100000,999999);
         }
         // dd($random_num);
         // dd($mobile_no);

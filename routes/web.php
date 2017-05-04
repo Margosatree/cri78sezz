@@ -25,7 +25,7 @@ Route::post('/password/check', 'Auth\ForgetMiddleController@checkData')
 		
 Route::Resource('/verify','UserVerifyController');
 
-Route::get('/verifes/{token}','UserVerifyController@showVerify');
+Route::get('/verifes/{token}/{otp}','UserVerifyController@showVerify');
 
 Route::post('/verifyguest','UserVerifyController@storeGuest')->name('verifes.guest');
 

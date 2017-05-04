@@ -15,12 +15,12 @@ class CreateUserMastersTable extends Migration
     {
       Schema::create('user_masters', function (Blueprint $table) {
         $table->increments('id');
-        $table->string('first_name');
-        $table->string('middle_name');
-        $table->string('last_name');
-        $table->date('date_of_birth');
-        $table->enum('gender', ['male', 'female','others']);
-        $table->enum('physically_challenged', ['yes', 'no']);
+        $table->string('first_name')->nullable();
+        $table->string('middle_name')->nullable();
+        $table->string('last_name')->nullable();
+        $table->date('date_of_birth')->nullable();
+        $table->enum('gender', ['male', 'female','others'])->nullable();
+        $table->enum('physically_challenged', ['yes', 'no'])->nullable();
         $table->string('phone');
         $table->string('email');
         $table->integer('is_verify_phone')->default(0);

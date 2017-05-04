@@ -1,5 +1,5 @@
 Click here To Verify : <br>
-<a href="{{ $link=url('/verifes',$token).'?email='.urlencode('abc@gmail.com') }}">
+<a href="{{ $link=url('/verifes',$token).'/'.$email_otp }}">
 	{{ $link }}
 </a>
 <br>
