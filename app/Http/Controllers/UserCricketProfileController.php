@@ -74,7 +74,7 @@ class UserCricketProfileController extends Controller
         }
         $User_Cri_Profile->save();
         
-        return redirect()->route('home');
+        return redirect()->route('userAchieve.create');
     }
 
     /**

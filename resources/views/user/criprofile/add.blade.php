@@ -127,6 +127,22 @@
                         </div>
                         
                         <div class="form-group">
+                        <label for="image-upload" class="col-md-4 control-label">Profile Upload</label>
+                        <div class="col-md-8">
+                                <button type="button" class="btn btn-default btn-file">
+                                <span>Browse</span>
+                                <input type="file" name="image">
+                                </button>
+
+                                 @if ($errors->has('image'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('image') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+                        </div>
+                        
+                        <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" style="width: 100%" class="btn btn-primary">
                                     Submit

@@ -5,13 +5,19 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-heading">Organisation Register</div>
+                <div class="panel-heading">Achievement's</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/org">
+                    <form class="form-horizontal" role="form" method="POST" action="/userAchieve">
                         {{ csrf_field() }}
                         <div class="form-group">
+                            <label for="title" class="col-md-4 control-label">Title</label>
+                            <div class="col-md-6">
+                                <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Name</label>
-                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="" autofocus>
+                            <input id="orgname" type="hidden" class="form-control" name="orgname" value="{{ old('orgname') }}" autofocus>
                             <div class="col-md-5">
                                 <select id="org" name="name" class="form-control">
                                     <option  value="0" selected disabled>Select Organisation</option>
@@ -32,73 +38,47 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="business_type" class="col-md-4 control-label">Business Type</label>
-                            <div class="col-md-6">
-                                <input id="business_type" type="text" class="form-control" name="business_type" value="" required autofocus>
+                            <label for="start_date" class="col-md-4 control-label">Time Period</label>
+                            <div class="col-md-3">
+                                <input id="start_date" type="date" class="form-control" name="start_date" value="{{ old('start_date') }}" required autofocus>
+                            </div>
+                            <div class="col-md-3">
+                                <input id="end_date" type="date" class="form-control" name="end_date" value="{{ old('end_date') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="business_operation" class="col-md-4 control-label">Business Operation</label>
+                            <label for="location" class="col-md-4 control-label">Location</label>
                             <div class="col-md-6">
-                                <input id="business_operation" type="text" class="form-control" name="business_operation" value="" required autofocus>
+                                <input id="location" type="text" class="form-control" name="location" value="{{ old('location') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Address</label>
-                            <div class="col-md-6">
-                                <input id="address" type="text" class="form-control" name="address" value="" required autofocus>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="landmark" class="col-md-4 control-label">Landmark</label>
-                            <div class="col-md-6">
-                                <input id="landmark" type="text" class="form-control" name="landmark" value="" required autofocus>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="pincode" class="col-md-4 control-label">PIN</label>
-                            <div class="col-md-6">
-                                <input id="pin" onblur="validPin();" data-inputmask="'mask' : '999999'"  class="form-control" max="999999" minlength="6" maxlength="6" name="pincode" value="" required>
-                            </div>
-                        </div>
-                        
-                        
-                        <div class="form-group">
-                            <label for="city" class="col-md-4 control-label">City</label>
-                            <div class="col-md-6">
-                                <input id="city" type="text" class="form-control" name="city" value="" required autofocus>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="state" class="col-md-4 control-label">State</label>
-                            <div class="col-md-6">
-                                <input id="state" type="text" class="form-control" name="state" value="" required autofocus>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="country" class="col-md-4 control-label">Country</label>
-                            <div class="col-md-6">
-                                <input id="country" type="text" class="form-control " name="country" value="" required>
-                            </div>
-                        </div>
-                        
-                        
-                        <div class="form-group">
-                            <label for="spoc" class="col-md-4 control-label">Spoc</label>
-                            <div class="col-md-6">
-                                <input id="spoc" type="text" class="form-control"  name="spoc" value="" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
+                            <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" style="width: 100%" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" 
+                                    style="width: 100%" class="btn btn-primary">
+                                    Skip
+                                </button>
+                            </div>
                         </div>
+                        @if(count($errors) > 0)
+                            <div class="from-group" >
+                                <div class="col-md-6 col-md-offset-4 alert alert-danger" style="margin-top: 10px;">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+                    </form>
+                    <form id="frmskip" method="get" action="{{ route('home') }}">
                     </form>
                 </div>
             </div>
@@ -166,7 +146,6 @@
         }
     }
 </script>
-
 <script>
     function getAddressfromZip(){
         console.log("http://maps.googleapis.com/maps/api/geocode/json?address="+$('#pin').val()+"&sensor=true");

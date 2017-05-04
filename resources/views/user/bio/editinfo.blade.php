@@ -13,48 +13,52 @@
                         {{ method_field('PATCH') }}
                         
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Address</label>
+                            <label for="first_name" class="col-md-4 control-label">First Name</label>
                             <div class="col-md-6">
-                                <input id="address" type="text" class="form-control" name="address" value="{{ $Bio->address }}" required autofocus>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="pin" class="col-md-4 control-label">Zip Code</label>
-                            <div class="col-md-6">
-                                <input id="pin"  onblur="validPin();" class="form-control" data-inputmask="'mask' : '999999'" name="pin" value="{{ $Bio->pin }}" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="suburb" class="col-md-4 control-label">Suburb</label>
-                            <div class="col-md-6">
-                                <input id="suburb" type="text" class="form-control" name="suburb" value="{{ $Bio->suburb }}" required autofocus>
+                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="city" class="col-md-4 control-label">City</label>
+                            <label for="middle_name" class="col-md-4 control-label">Middle Name</label>
                             <div class="col-md-6">
-                                <input id="city" type="text" class="form-control" name="city" value="{{ $Bio->city }}" required autofocus>
+                                <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}" required autofocus>
                             </div>
                         </div>
-                        
                         <div class="form-group">
-                            <label for="state" class="col-md-4 control-label">State</label>
+                            <label for="last_name" class="col-md-4 control-label">Last Name</label>
                             <div class="col-md-6">
-                                <input id="state" type="text" class="form-control" name="state" value="{{ $Bio->state }}" required autofocus>
+                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label for="country" class="col-md-4 control-label">Country</label>
+                            <label for="date_of_birth" class="col-md-4 control-label">Date Of Birth</label>
                             <div class="col-md-6">
-                                <input id="country" type="text" class="form-control " name="country" value="{{ $Bio->country }}" required>
+                                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required autofocus>
                             </div>
                         </div>
-                        
-                        
-                        
+                        <div class="form-group">
+                            <label for="email" class="col-md-4 control-label">Gender</label>
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="male" type="radio" class="" name="gender" value="male" @if( old('gender') == 'male') checked @endif > Male
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="female" type="radio" class="" name="gender" value="female" @if( old('gender') == 'female') checked @endif > Female
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-md-4 control-label">physically challenged</label>
+                            
+                            <div class="col-md-offset-4">
+                                <div class="col-md-3">
+                                    <input id="yes" type="radio" class="" name="physically_challenged" value="yes" @if( old('physically_challenged') == 'yes') checked @endif > Yes
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="no" type="radio" class="" name="physically_challenged" value="no" @if( old('physically_challenged') == 'no') checked @endif > No
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" style="width: 100%" class="btn btn-primary">
