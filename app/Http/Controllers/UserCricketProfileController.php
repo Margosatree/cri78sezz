@@ -5,7 +5,7 @@ use App\User_Cricket_Profile;
 use App\User_Master;
 use Illuminate\Http\Request;
 use Auth;
-use Image;
+//use Image;
 class UserCricketProfileController extends Controller
 {
     
@@ -69,7 +69,7 @@ class UserCricketProfileController extends Controller
             //use encode('png')  instead of getClientOriginalExtension()
             $location = public_path('images/'. $filename);
             //you also store in storage_path('app/image/') or assert();
-            Image::make($image)->resize(800,400)->save($location);
+            //Image::make($image)->resize(800,400)->save($location);
             $User_Cri_Profile->display_img = $filename;
         }
         $User_Cri_Profile->save();

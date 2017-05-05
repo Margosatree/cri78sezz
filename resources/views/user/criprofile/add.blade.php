@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Cricket Profile</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('criProfile.store') }}">
+                    <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
                             <label for="shiftid" class="col-md-4 control-label">Select Role</label>
