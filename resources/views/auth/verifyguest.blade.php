@@ -23,7 +23,7 @@
                             <label for="verify_email" class="col-md-4 control-label">E-Mail OTP</label>
 
                             <div class="col-md-6">
-                                <input id="verify_email" type="verify_email" class="form-control" name="verify_email" value="{{ old('verify_email') }}">
+                                <input id="verify_email" type="verify_email" class="form-control" name="verify_email" value="{{$email_otp or old('verify_email') }}">
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">

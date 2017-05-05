@@ -11,7 +11,7 @@ class UserVerifyController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('guest',['only'=>['storeGuest','showVerify']]);
+         //$this->middleware('guest',['only'=>['storeGuest','showVerify']]);
          $this->middleware('auth',['except'=>['storeGuest','showVerify']]);
          
     }
@@ -86,12 +86,15 @@ class UserVerifyController extends Controller
         }
        
     }
-    function showVerify($token){
+    function showVerify($token,$email_otp){
 
-        return view('auth.verifyguest',['token'=>$token]);
+        return view('auth.verifyguest',['token'=>$token,'email_otp'=>$email_otp]);
     }
 
     function storeGuest(Request $request){
+        // if(Session::has('key')){
+        //     Session::forget('key');
+        // }
         $this->validate($request,[
             'token' => 'required',
             'verify_email' => 'required|numeric',

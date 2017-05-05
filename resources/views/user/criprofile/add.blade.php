@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Cricket Profile</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="{{ route('criProfile.store') }}">
+                    <form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
                             <label for="shiftid" class="col-md-4 control-label">Select Role</label>
@@ -108,6 +108,22 @@
                                     </span>
                                 @endif
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                        <label for="image-upload" class="col-md-4 control-label">Profile Upload</label>
+                        <div class="col-md-8">
+                                <button type="button" class="btn btn-default btn-file">
+                                <span>Browse</span>
+                                <input type="file" name="image">
+                                </button>
+
+                                 @if ($errors->has('image'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('image') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
                         </div>
                         
                         <div class="form-group">
