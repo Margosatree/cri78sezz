@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('register') }}">
+                    <form id="frm" class="form-horizontal" role="form" method="POST" action="{{ route('register') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="username" class="col-md-4 control-label">User Name</label>
@@ -21,7 +21,7 @@
                             <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="phone" data-inputmask="'mask' : '9999999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                                <input id="phone"  data-inputmask="'mask' : '9999999999'" class="form-control" name="phone" value="{{ old('phone') }}" required>
                             </div>
                         </div>
                         
@@ -36,8 +36,13 @@
                         <div class="form-group">
                             <label for="password" class="col-md-4 control-label">Password</label>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
+                            <div class="col-md-6 ">
+                                <div class="input-group">
+                                    <input id="password" type="password" class="form-control" name="password" required>
+                                    <span class="input-group-addon" onclick="showhidepass();">
+                                        <i id="showhide" class="fa fa-eye-slash" aria-hidden="true" ></i>
+                                    </span>
+                                </div>
                                 <span class="help-block">
                                     <strong>One Upper, Lower, special char, and Number</strong>
                                 </span>
@@ -53,7 +58,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="button" style="width:100%" onclick="Validateform();" class="btn btn-primary">
                                     Register
                                 </button>
                             </div>
@@ -80,9 +85,76 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/phone-codes/phone.min.js"></script>-->
 <script>
-    
     $(document).ready(function() {
         $("#phone").inputmask();
       });
 </script>
+<script>
+    function showhidepass(){
+        if($('#showhide').hasClass('fa-eye-slash')){
+            $('#showhide').removeClass('fa-eye-slash');
+            $('#showhide').addClass('fa-eye');
+            $("#password").prop('type','text');
+        }else{
+            $('#showhide').removeClass('fa-eye');
+            $('#showhide').addClass('fa-eye-slash');
+            $("#password").prop('type','password');
+        }
+    }
+    function Validateform(){
+        if($('#username').val() == "" || $('#username').val() == "undefined" || $('#username').val() == "NaN"){
+            alert('Please Enter Username');
+            return;
+        }else{
+            
+        }
+        if($('#phone').val() == "" || $('#phone').val() == "undefined" || $('#phone').val() == "NaN"){
+            alert('Please Enter Valid Phone');
+            return;
+        }else{
+            if($('#phone').inputmask('unmaskedvalue').length !== 10){
+                alert('Phone Number Should Must Be 10 Digit');
+                return;
+            }
+            var phoneReg = new RegExp(/(7|8|9)\d{9}/);
+            if (!phoneReg.test($('#phone').inputmask('unmaskedvalue'))) {
+                alert('Invalid Phone Number');
+                return;
+            }
+        }
+        if($('#email').val() == "" || $('#email').val() == "undefined" || $('#email').val() == "NaN"){
+            alert('Please Enter email');
+            return;
+        }else{
+            var emailReg = new RegExp(/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/);
+            if (!emailReg.test($('#email').val())) {
+                alert('Please Enter Valid Email Address');
+                return;
+            }
+//            emailReg = new RegExp(/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/);
+//            if (!emailReg.test($('#email').val())) {
+//                alert('Please Enter Valid Email Address');
+//                return;
+//            }
+        }
+        if($('#password').val() == "" || $('#password').val() == "undefined" || $('#password').val() == "NaN"){
+            alert('Please Enter End Date');
+            return;
+        }else{
+            passwordReg = new RegExp(/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/);
+            if (!passwordReg.test($('#password').val())) {
+                alert('Password Formate Invalid');
+                return;
+            }
+            if($('#password').val().toString() !== $('#password-confirm').val().toString()){
+                alert('Password Conrmation Invalid');
+                return;
+            }
+        }
+        alert('out');
+        return;
+        document.getElementById('frm').submit();
+    }
+</script>
+
 @endsection

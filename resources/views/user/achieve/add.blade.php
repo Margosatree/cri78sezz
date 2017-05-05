@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Achievement's</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/userAchieve">
+                    <form id="frm" class="form-horizontal" role="form" method="POST" action="/userAchieve">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="title" class="col-md-4 control-label">Title</label>
@@ -19,7 +19,7 @@
                             <label for="name" class="col-md-4 control-label">Name</label>
                             <input id="orgname" type="hidden" class="form-control" name="orgname" value="{{ old('orgname') }}" autofocus>
                             <div class="col-md-5">
-                                <select id="org" name="name" class="form-control">
+                                <select id="name" name="name" class="form-control">
                                     <option  value="0" selected disabled>Select Organisation</option>
                                     @foreach($Orgs as $Org)
                                         <option  value="{{$Org->id}}">{{$Org->name}}</option>
@@ -54,7 +54,8 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" onclick="Validateform();"
+                                    style="width: 100%" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -116,7 +117,37 @@
       });
 </script>
 <script>
-    $('#org').change(function(){
+    function Validateform(){
+        if($('#title').val() == ""){
+            alert('Please Enter Title');
+            return;
+        }
+        if($('#name').val() == ""){
+            alert('Please Enter Organisation');
+            return;
+        }
+        if($('#start_date').val() == ""){
+            alert('Please Enter Start Date');
+            return;
+        }
+        if($('#end_date').val() == ""){
+            alert('Please Enter End Date');
+            return;
+        }
+        if($('#location').val() == ""){
+            alert('Please Enter Location');
+            return;
+        }
+        if($('#name').val() == ""){
+            alert('Please Enter Organisation');
+            return;
+        }
+        return;
+        document.getElementById('frm').submit();
+    }
+</script>
+<script>
+    $('#name').change(function(){
         $('#orgname').val($('#org option:selected').text());
     });
     function openModal(){
@@ -125,7 +156,7 @@
     function validateOrg(){
         if($('#txtModalInput').val() != ""){
             var flag = true;
-            $("#org option").each(function(){
+            $("#name option").each(function(){
                 if($('#txtModalInput').val().toLowerCase() == $(this).text().toLowerCase()){
 //                    $(this).atrr('selected',true);
 //                    var objRide = document.getElementById("cboRide");
@@ -139,8 +170,8 @@
 //                alert(name+' '+org);
             });
             if(flag){
-                $('#org').append('<option  value="-1" selected>'+ $('#txtModalInput').val() +'</option>');
-                $("#org").trigger("change");
+                $('#name').append('<option  value="-1" selected>'+ $('#txtModalInput').val() +'</option>');
+                $("#name").trigger("change");
                 $('#orgModal').modal('hide');
             }
         }
