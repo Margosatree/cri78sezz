@@ -8,6 +8,8 @@ use App\User_Master;
 use App\User_Organisation;
 use Auth;
 use Excel;
+use Validator;
+use Session;
 class UsersBulkController extends Controller
 {
     
@@ -20,7 +22,7 @@ class UsersBulkController extends Controller
     public function bulkUploadView(){
         return view('user.org.bulk');
     }
-    public function bulkUpload(){
+    public function bulkUpload(Request $request){
 //        dd('dasdas');
         if(Input::hasFile('import_file')){
 //            dd('dasdas1');
@@ -29,12 +31,61 @@ class UsersBulkController extends Controller
             })->get();
                     
             if(!empty($data) && $data->count()){
-                $Arr = array();
-//                dd($data);
+                $Errors = array();
+                $count = 0;
                 foreach ($data as $key => $value) {
+                    if(isset($value['username']) || !isEmpty($value['username'])){
+                        if(strlen(''.$value['username']) > 50){
+                            $username['lengh'] = 'Username Filed Is Too Long';
+                        }    
+                        if(ctype_alnum(''.$value['username'])){
+                            $username['alpha_num'] = 'Must Be Alphanumeric';
+                        }    
+                        $Username_Exists = User_Master::selectRaw('count(id) as count')->where('username',$value['username'])->get()->first();  
+                        if($Username_Exists){
+                            $username['unique'] = 'Username Already Exists';
+                        }
+                    }else{
+                        $username['data'] = 'Data Not Found';
+                    }
+                    if(isset($value['phone']) || !isEmpty($value['phone'])){
+                        if(!is_numeric($value['phone'])){
+                            $phone['numeric'] = 'Should Be A Number';
+                        }
+                        if(strlen(''.$value['phone']) != 10){
+                            $phone['lengh'] = 'Invalid Phone Number';
+                        }
+                        if(!preg_match('/(7|8|9)\d{9}/', $value['phone'])){
+                            $phone['phonenumber'] = 'Phone Number Should Start With 9|8|7';
+                        }
+                        $Phone_Exists = User_Master::selectRaw('count(id) as count')->where('phone',$value['phone'])->get()->first();  
+                        if($Phone_Exists){
+                            $phone['unique'] = 'Phone Already Exists';
+                        }
+                    }else{
+                        $phone['data'] = 'Data Not Found';
+                    }
+                    if(isset($value['email']) || !isEmpty($value['email'])){
+                        if(strlen(''.$value['email']) > 50){
+                            $email['lengh'] = 'email Filed Is Too Long';
+                        }
+                        if(!preg_match('/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/', $value['email'])){
+                            $email['email'] = 'Invalid Email';
+                        }
+                        $email_Exists = User_Master::selectRaw('count(id) as count')->where('email',$value['email'])->get()->first();  
+                        if($email_Exists){
+                            $email['unique'] = 'Email Already Exists';
+                        }
+                    }else{
+                        $email['data'] = 'Data Not Found';
+                    }
+                    $data['username'] = $username;   
+                    $data['phone'] = $phone;   
+                    $data['email'] = $email;
                     
-                    if(isset($value['username']) || isset($value['phone']) || isset($value['email'])
-                    || $value['username'] != "" || $value['phone'] != "" || $value['email'] != ""){
+                    $Errors[$value['id']] = $data;
+                    
+                    if(!isset($username) && !isset($phone) && !isset($email)){
                         $User_master = new User_Master;
                         $User_master->username = $value['username'];
                         $User_master->phone = $value['phone'];
@@ -49,21 +100,17 @@ class UsersBulkController extends Controller
                         $User_Org->role = 'user';
                         $User_Org->save();
                     }else{
-                        array_push($Arr,$value);
+                        $count++;
                     }
                 }
-                if($Arr){
-                    dd($Arr);
-                }
-//                if(!empty($insert)){
-//                    DB::table('users')->insert($insert);
-//                            dd('Insert Record successfully.');
-////                    return view('importExport');
-//                }
+                Session::put('msg','Your '.$count.' Entry Is Not Saved');
+                return Redirect()->back();
             }
         }
         return back();
     }
+    
+    
     
     public function storeInfo(Request $request){
         $this->validate(request(), [

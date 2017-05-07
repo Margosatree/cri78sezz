@@ -22,7 +22,6 @@ class UserAchievementController extends Controller
      */
     public function index()
     {
-        
         $User_Achieve = User_Achievement::all();
         return view('user.achieve.index',compact('User_Achieve'));
     }
