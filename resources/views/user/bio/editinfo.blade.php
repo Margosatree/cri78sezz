@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit User Bio</div>
                 <div class="panel-body">
                     @if($Bio->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
+                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         
@@ -61,7 +61,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%" class="btn btn-primary" onclick="Validateform();">
                                     Update
                                 </button>
                             </div>
@@ -93,6 +93,59 @@
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    function Validateform(){
+        if($('#first_name').val() == "" || $('#first_name').val() == "undefined" || $('#first_name').val() == "NaN"){
+            alert('Please Enter First Name');
+            return;
+        }else{
+            if($("#first_name").val().length > 50){
+                alert('First Name Is Too Long');
+                return;
+            }
+        }
+        if($('#middle_name').val() == "" || $('#middle_name').val() == "undefined" || $('#middle_name').val() == "NaN"){
+            alert('Please Enter Middle Name');
+            return;
+        }else{
+            if($("#middle_name").val().length > 50){
+                alert('Middle Name Is Too Long');
+                return;
+            }
+        }
+        if($('#last_name').val() == "" || $('#last_name').val() == "undefined" || $('#last_name').val() == "NaN"){
+            alert('Last Name Is Too Long');
+            return;
+        }else{
+            if($("#last_name").val().length > 50){
+                alert('Last Name Is Too Long');
+                return;
+            }
+        }
+        if($('#date_of_birth').val() == "" || $('#date_of_birth').val() == "undefined" || $('#date_of_birth').val() == "NaN"){
+            alert('Please Enter Phone OTP');
+            return;
+        }else{
+            var now = new Date();
+            var FiveYearBackDate = new Date(now.getFullYear()-5,now.getMonth(),now.getDay());
+            var EndDate = new Date(Date.parse($("#date_of_birth").val()));
+            console.log(EndDate+' '+FiveYearBackDate);
+            if (EndDate > FiveYearBackDate) {
+                alert('At Least 5 Year Old');
+                return;
+            }
+        }
+        if($('input[name=gender]:checked').length <= 0){
+            alert("Please Select Gender");
+            return;
+        }
+        if($('input[name=physically_challenged]:checked').length <= 0){
+            alert("Please Select Physically Challenged");
+            return;
+        }
+        document.getElementById('frm').submit();
+    }
 </script>
 <script>
     function getAddressfromZip(){

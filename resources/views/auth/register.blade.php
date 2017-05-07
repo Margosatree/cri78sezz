@@ -126,7 +126,7 @@
             alert('Please Enter email');
             return;
         }else{
-            var emailReg = new RegExp(/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/);
+            var emailReg = new RegExp(/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/);
             if (!emailReg.test($('#email').val())) {
                 alert('Please Enter Valid Email Address');
                 return;
@@ -138,7 +138,7 @@
 //            }
         }
         if($('#password').val() == "" || $('#password').val() == "undefined" || $('#password').val() == "NaN"){
-            alert('Please Enter End Date');
+            alert('Please Enter Password');
             return;
         }else{
             passwordReg = new RegExp(/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/);
@@ -151,8 +151,6 @@
                 return;
             }
         }
-        alert('out');
-        return;
         document.getElementById('frm').submit();
     }
 </script>

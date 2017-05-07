@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('userBio.storeInfo') }}">
+                    <form id="frm" class="form-horizontal" role="form" method="POST" action="{{ route('userBio.storeInfo') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="first_name" class="col-md-4 control-label">First Name</label>
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">physically challenged</label>
+                            <label for="physically_challenged" class="col-md-4 control-label">Physically Challenged</label>
                             
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
@@ -59,13 +59,14 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%" onclick="Validateform();" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button type="reset" style="width: 100%" class="btn btn-primary">
-                                    Clear
+                                <button type="submit" style="width: 100%" onclick="event.preventDefault();
+                                    document.getElementById('frmskip').submit();" class="btn btn-primary">
+                                    Skip
                                 </button>
                             </div>
                         </div>
@@ -81,9 +82,64 @@
                             </div>
                         @endif
                     </form>
+                    <form id="frmskip" method="get" action="{{ route('userBio.create') }}">
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function Validateform(){
+        if($('#first_name').val() == "" || $('#first_name').val() == "undefined" || $('#first_name').val() == "NaN"){
+            alert('Please Enter First Name');
+            return;
+        }else{
+            if($("#first_name").val().length > 50){
+                alert('First Name Is Too Long');
+                return;
+            }
+        }
+        if($('#middle_name').val() == "" || $('#middle_name').val() == "undefined" || $('#middle_name').val() == "NaN"){
+            alert('Please Enter Middle Name');
+            return;
+        }else{
+            if($("#middle_name").val().length > 50){
+                alert('Middle Name Is Too Long');
+                return;
+            }
+        }
+        if($('#last_name').val() == "" || $('#last_name').val() == "undefined" || $('#last_name').val() == "NaN"){
+            alert('Last Name Is Too Long');
+            return;
+        }else{
+            if($("#last_name").val().length > 50){
+                alert('Last Name Is Too Long');
+                return;
+            }
+        }
+        if($('#date_of_birth').val() == "" || $('#date_of_birth').val() == "undefined" || $('#date_of_birth').val() == "NaN"){
+            alert('Please Enter Phone OTP');
+            return;
+        }else{
+            var now = new Date();
+            var FiveYearBackDate = new Date(now.getFullYear()-5,now.getMonth(),now.getDay());
+            var EndDate = new Date(Date.parse($("#date_of_birth").val()));
+            console.log(EndDate+' '+FiveYearBackDate);
+            if (EndDate > FiveYearBackDate) {
+                alert('At Least 5 Year Old');
+                return;
+            }
+        }
+        if($('input[name=gender]:checked').length <= 0){
+            alert("Please Select Gender");
+            return;
+        }
+        if($('input[name=physically_challenged]:checked').length <= 0){
+            alert("Please Select Physically Challenged");
+            return;
+        }
+        document.getElementById('frm').submit();
+    }
+</script>
 @endsection

@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit Organization Info</div>
                 <div class="panel-body">
                     @if($User_Achieve->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/userAchieve/{{$User_Achieve->id}}">
+                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/userAchieve/{{$User_Achieve->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         <div class="form-group">
@@ -56,7 +56,8 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%" onclick="Validateform();"
+                                        class="btn btn-primary">
                                     Update
                                 </button>
                             </div>
@@ -89,6 +90,51 @@
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    function Validateform(){
+        if($('#title').val() == "" || $('#title').val() == "undefined" || $('#title').val() == "NaN"){
+            alert('Please Enter Title');
+            return;
+        }else{
+            if($("#title").val().length > 50){
+                alert('Title Is Too Long');
+                return;
+            }
+        }
+        if($('#name').val() == "" || $('#name').val() == "undefined" || $('#name').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }else{
+            
+        }
+        if($('#start_date').val() == "" || $('#start_date').val() == "undefined" || $('#start_date').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }
+        if($('#end_date').val() == "" || $('#end_date').val() == "undefined" || $('#end_date').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }
+        var StartDate = new Date(Date.parse($("#start_date").val()));
+        var EndDate = new Date(Date.parse($("#end_date").val()));
+        console.log(EndDate+' '+StartDate);
+        if (EndDate >= StartDate) {
+            alert('Start Date Grater Then Or Equal To End Date');
+            return;
+        }
+        if($('#location').val() == "" || $('#location').val() == "undefined" || $('#location').val() == "NaN"){
+            alert('Please Enter Location');
+            return;
+        }else{
+            if($("#location").val().length > 50){
+                alert('Location Is Too Long');
+                return;
+            }
+        }
+        return;
+        document.getElementById('frm').submit();
+    }
 </script>
 <script>
     $( "#is_verified" ).trigger( "change" );

@@ -69,7 +69,8 @@ class RegisterController extends Controller
                 'required',
                 'email',
                 'unique:user_masters',
-                'regex:/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/',
+                'regex:/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/',
+//                'regex:/\A[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,4}\z/',
 //                'regex:/^(?=.{1,64}@.{4,64}$)(?=.{6,100}$).*/',
             ],
             'password' => [

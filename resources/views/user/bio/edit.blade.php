@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit User Bio</div>
                 <div class="panel-body">
                     @if($Bio->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
+                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         
@@ -57,7 +57,8 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%" onclick="Validateform();"
+                                        class="btn btn-primary">
                                     Update
                                 </button>
                             </div>
@@ -89,6 +90,86 @@
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    function Validateform(){
+        if($('#address').val() == "" || $('#address').val() == "undefined" || $('#address').val() == "NaN"){
+            alert('Please Enter Address');
+            return;
+        }else{
+            if($("#address").val().length > 70){
+                alert('Address Is Too Long');
+                return;
+            }
+        }
+        if($('#pin').val() == "" || $('#pin').val() == "undefined" || $('#pin').val() == "NaN"){
+            alert('Please Enter Pincode');
+            return;
+        }else{
+            if(!$("#pin").val().length === 6){
+                alert('Please Entre Valid Pincode');
+                return;
+            }
+        }
+        if($('#suburb').val() == "" || $('#suburb').val() == "undefined" || $('#suburb').val() == "NaN"){
+            alert('Please Enter Suburb');
+            return;
+        }else{
+            if($("#suburb").val().length > 20){
+                alert('Suburb Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#suburb').val())) {
+                alert('Invalid Suburb');
+                return;
+            }
+        }
+        if($('#city').val() == "" || $('#city').val() == "undefined" || $('#city').val() == "NaN"){
+            alert('Please Enter City');
+            return;
+        }else{
+            if($("#city").val().length > 20){
+                alert('City Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#city').val())) {
+                alert('Invalid City');
+                return;
+            }
+        }
+        if($('#state').val() == "" || $('#state').val() == "undefined" || $('#state').val() == "NaN"){
+            alert('Please Enter State');
+            return;
+        }else{
+            if($("#state").val().length > 20){
+                alert('State Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#state').val())) {
+                alert('Invalid State');
+                return;
+            }
+        }
+        if($('#country').val() == "" || $('#country').val() == "undefined" || $('#country').val() == "NaN"){
+            alert('Please Enter Country');
+            return;
+        }else{
+            if($("#country").val().length > 20){
+                alert('Country Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#country').val())) {
+                alert('Invalid Country');
+                return;
+            }
+        }
+        
+        document.getElementById('frm').submit();
+    }
 </script>
 <script>
     function getAddressfromZip(){

@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit Cricket Profile</div>
                 <div class="panel-body">
                     @if($Cri_Profile->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/criProfile/{{$Cri_Profile->id}}">
+                        <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/criProfile/{{$Cri_Profile->id}}">
                             {{ csrf_field() }}
                             {{ method_field('PATCH') }}
                             <div class="form-group">
@@ -65,10 +65,33 @@
                                     <input id="description" type="text" class="form-control" name="description" value="{{$Cri_Profile->description}}" required>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="team_image" class="col-md-4 control-label">Team Image</label>
+
+                                <div class="col-md-6">
+                                    <td class="text-center">
+                                        <img src ="{{asset('images/'.$Cri_Profile->display_img)}}" class="img-thumbnail" width=70 heigth=20/>
+                                    </td>
+                                </div>
+                            </div>
 
                             <div class="form-group">
+                                <label for="image-upload" class="col-md-4 control-label">Image Upload</label>
+                                <div class="col-md-8">
+                                    <button type="button" class="btn btn-default btn-file">
+                                        <span>Browse</span>
+                                        <input type="file" name="image">
+                                    </button>
+                                    @if ($errors->has('image'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('image') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <div class="col-md-3 col-md-offset-4">
-                                    <button type="submit" style="width: 100%" class="btn btn-primary">
+                                    <button type="button" style="width: 100%" onclick="Validateform();" class="btn btn-primary">
                                         Submit
                                     </button>
                                 </div>
@@ -95,7 +118,58 @@
         </div>
     </div>
 </div>
-
+<script>
+    function Validateform(){
+        if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }else{
+            
+        }
+        if($('input[name=batsman_style]:checked').length <= 0){
+            alert("Please Select Batsman Style");
+            return;
+        }
+        if($('#batsman_order').val() == "" || $('#batsman_order').val() == "undefined" || $('#batsman_order').val() == "NaN"){
+            alert('Please Enter Batsman Order');
+            return;
+        }else{
+            var phoneReg = new RegExp(/^\d+$/);
+            if (!phoneReg.test($('#batsman_order').val())) {
+                alert('Invalid Batsman Order');
+                return;
+            }
+        }
+        if($('input[name=bowler_style]:checked').length <= 0){
+            alert("Please Select Bowler Style");
+            return;
+        }
+        if($('#player_type').val() == "" || $('#player_type').val() == "undefined" || $('#player_type').val() == "NaN"){
+            alert('Please Enter Player Type');
+            return;
+        }else{
+            if($("#player_type").val().length > 50){
+                alert('Player Type Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#player_type').val())) {
+                alert('Player Type Country');
+                return;
+            }
+        }
+        if($('#description').val() == "" || $('#description').val() == "undefined" || $('#description').val() == "NaN"){
+            alert('Please Enter Description');
+            return;
+        }else{
+            if($("#description").val().length > 50){
+                alert('Description Is Too Long');
+                return;
+            }
+        }
+        document.getElementById('frm').submit();
+    }
+</script>
 
 
 @endsection

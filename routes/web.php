@@ -40,6 +40,11 @@ Route::get('/userBio/{userBio}/editInfo','UsersBioController@editInfo')
 
 Route::Resource('/userBio','UsersBioController');
 
+Route::get('/User/bulkUploadView','UsersBulkController@bulkUploadView')
+	   ->name('User.bulkUploadView');
+Route::post('/User/bulkUpload','UsersBulkController@bulkUpload')
+	   ->name('User.bulkUpload');
+
 Route::Resource('/org','OrganizationMasterController');
 
 Route::Resource('/criProfile','UserCricketProfileController');

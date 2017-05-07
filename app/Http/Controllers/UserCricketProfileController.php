@@ -5,13 +5,16 @@ use App\User_Cricket_Profile;
 use App\User_Master;
 use Illuminate\Http\Request;
 use Auth;
-//use Image;
+use Image;
+use Storage;
+use Session;
 class UserCricketProfileController extends Controller
 {
     
     public function __construct(){
 //        $this->middleware('auth:admin');
-       $this->middleware('auth');
+       $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth',['except'=>['index']]);
     }
     
     /**
@@ -69,8 +72,9 @@ class UserCricketProfileController extends Controller
             //use encode('png')  instead of getClientOriginalExtension()
             $location = public_path('images/'. $filename);
             //you also store in storage_path('app/image/') or assert();
-            //Image::make($image)->resize(800,400)->save($location);
+            Image::make($image)->resize(128,128)->save($location);
             $User_Cri_Profile->display_img = $filename;
+            $request->session()->put('user_img', $User_Cri_Profile->display_img);
         }
         $User_Cri_Profile->save();
         
@@ -127,6 +131,7 @@ class UserCricketProfileController extends Controller
             'bowler_style' => 'required|in:Lefthand,Righthand',
             'player_type' => 'required|max:255',
             'description' => 'required|max:255',
+            'image'=>'required|image',
 //            'display_img' => 'required|max:255',
 //            'is_completed' => 'required|numeric',
         ]);
@@ -138,6 +143,23 @@ class UserCricketProfileController extends Controller
         $Cri_Profile->bowler_style = request('bowler_style');
         $Cri_Profile->player_type = request('player_type');
         $Cri_Profile->description = request('description');
+        
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $filename = time().'.'.$image->getClientOriginalExtension(); 
+            //use encode('png')  instead of getClientOriginalExtension()
+            $location = public_path('images/'. $filename);
+            //you also store in storage_path('app/image/') or assert();
+            Image::make($image)->resize(128,128)->save($location);
+            $olderFileName = $Cri_Profile->display_img;
+
+            //update in database
+            $Cri_Profile->display_img = $filename;
+            //delete old image
+            Storage::delete($olderFileName);
+            $request->session()->put('user_img', $Cri_Profile->display_img);
+        }
+        
         $Cri_Profile->save();
         
         if(Auth::user()->role == "admin"){

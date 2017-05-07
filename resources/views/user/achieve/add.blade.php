@@ -118,29 +118,44 @@
 </script>
 <script>
     function Validateform(){
-        if($('#title').val() == ""){
+        if($('#title').val() == "" || $('#title').val() == "undefined" || $('#title').val() == "NaN"){
             alert('Please Enter Title');
             return;
+        }else{
+            if($("#title").val().length > 50){
+                alert('Title Is Too Long');
+                return;
+            }
         }
-        if($('#name').val() == ""){
-            alert('Please Enter Organisation');
+        if($('#name').val() == "" || $('#name').val() == "undefined" || $('#name').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }else{
+            
+        }
+        if($('#start_date').val() == "" || $('#start_date').val() == "undefined" || $('#start_date').val() == "NaN"){
+            alert('Please Select Role');
             return;
         }
-        if($('#start_date').val() == ""){
-            alert('Please Enter Start Date');
+        if($('#end_date').val() == "" || $('#end_date').val() == "undefined" || $('#end_date').val() == "NaN"){
+            alert('Please Select Role');
             return;
         }
-        if($('#end_date').val() == ""){
-            alert('Please Enter End Date');
+        var StartDate = new Date(Date.parse($("#start_date").val()));
+        var EndDate = new Date(Date.parse($("#end_date").val()));
+        console.log(EndDate+' '+StartDate);
+        if (EndDate >= StartDate) {
+            alert('Start Date Grater Then Or Equal To End Date');
             return;
         }
-        if($('#location').val() == ""){
+        if($('#location').val() == "" || $('#location').val() == "undefined" || $('#location').val() == "NaN"){
             alert('Please Enter Location');
             return;
-        }
-        if($('#name').val() == ""){
-            alert('Please Enter Organisation');
-            return;
+        }else{
+            if($("#location").val().length > 50){
+                alert('Location Is Too Long');
+                return;
+            }
         }
         return;
         document.getElementById('frm').submit();

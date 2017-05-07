@@ -7,12 +7,12 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Cricket Profile</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="{{ route('criProfile.store') }}">
+                    <form id="frmcri" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="{{ route('criProfile.store') }}">
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('your_role') ? ' has-error' : '' }}">
                             <label for="shiftid" class="col-md-4 control-label">Select Role</label>
                             <div class="col-md-6">
-                                <select name="your_role" class="form-control">
+                                <select id="your_role" name="your_role" class="form-control">
                                     <option  value="1">Bowller</option>
                                     <option  value="2">BatsMan</option>
                                     <option  value="3">Wicket Keeper</option>
@@ -26,10 +26,10 @@
                             </div>
                         </div>
                         <div class="form-group{{ $errors->has('batsman_style') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">Batsman Style</label>
+                            <label for="batsman_style" class="col-md-4 control-label">Batsman Style</label>
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" > Lefthand
+                                    <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" @if( old('batsman_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('batsman_style') }}</strong>
@@ -37,7 +37,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" > Righthand
+                                    <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" @if( old('batsman_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('batsman_style') }}</strong>
@@ -62,7 +62,7 @@
                             <label for="email" class="col-md-4 control-label">Bowler Style</label>
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
-                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" > Lefthand
+                                    <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" @if( old('bowler_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('bowler_style') }}</strong>
@@ -70,7 +70,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-3">
-                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" > Righthand
+                                    <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" @if( old('bowler_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('bowler_style') }}</strong>
@@ -107,10 +107,10 @@
                         <div class="col-md-6">
                                 <button type="button" class="btn btn-default btn-file">
                                 <span>Browse</span>
-                                <input type="file" name="image">
+                                <input type="file" name="image" required="">
                                 </button>
 
-                                 @if ($errors->has('image'))
+                                @if ($errors->has('image'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('image') }}</strong>
                                     </span>
@@ -120,7 +120,7 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%" onclick="Validatecri();" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -133,15 +133,19 @@
                             </div>
                         </div>
                         @if(count($errors) > 0)
-                            <div class="from-group" >
-                                <div class="col-md-6 col-md-offset-4 alert alert-danger" style="margin-top: 10px;">
-                                    <ul>
-                                        @foreach($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                            @if ($errors->has('image') || $errors->has('description') || $errors->has('player_type') || 
+                            $errors->has('bowler_style') || $errors->has('batsman_order') || $errors->has('batsman_style')
+                            || $errors->has('your_role'))
+                                <div class="from-group" >
+                                    <div class="col-md-6 col-md-offset-4 alert alert-danger" style="margin-top: 10px;">
+                                        <ul>
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         @endif
                     </form>
                     <form id="frmskip" method="get" action="{{ route('userAchieve.create') }}">
@@ -153,7 +157,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Organisation Register</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="/org">
+                    <form id="frmorg" class="form-horizontal" role="form" method="POST" action="/org">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Name</label>
@@ -217,12 +221,16 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" style="width: 100%" class="btn btn-primary">
+                                <button type="button" style="width: 100%"  onclick="Validateform();" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
                         </div>
                         @if(count($errors) > 0)
+                            @if ($errors->has('name') || $errors->has('business_type') || $errors->has('business_operation') || 
+                                $errors->has('address') || $errors->has('landmark') || $errors->has('pincode') ||
+                                $errors->has('city') || $errors->has('state') || $errors->has('country')
+                                || $errors->has('spoc'))
                             <div class="from-group" >
                                 <div class="col-md-6 col-md-offset-4 alert alert-danger" style="margin-top: 10px;">
                                     <ul>
@@ -232,6 +240,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            @endif
                         @endif
                     </form>
                 </div>
@@ -268,6 +277,165 @@
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    function Validatecri(){
+        if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }else{
+            
+        }
+        if($('input[name=batsman_style]:checked').length <= 0){
+            alert("Please Select Batsman Style");
+            return;
+        }
+        if($('#batsman_order').val() == "" || $('#batsman_order').val() == "undefined" || $('#batsman_order').val() == "NaN"){
+            alert('Please Enter Batsman Order');
+            return;
+        }else{
+            var phoneReg = new RegExp(/^\d+$/);
+            if (!phoneReg.test($('#batsman_order').val())) {
+                alert('Invalid Batsman Order');
+                return;
+            }
+        }
+        if($('input[name=bowler_style]:checked').length <= 0){
+            alert("Please Select Bowler Style");
+            return;
+        }
+        if($('#player_type').val() == "" || $('#player_type').val() == "undefined" || $('#player_type').val() == "NaN"){
+            alert('Please Enter Player Type');
+            return;
+        }else{
+            if($("#player_type").val().length > 50){
+                alert('Player Type Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#player_type').val())) {
+                alert('Player Type Country');
+                return;
+            }
+        }
+        if($('#description').val() == "" || $('#description').val() == "undefined" || $('#description').val() == "NaN"){
+            alert('Please Enter Description');
+            return;
+        }else{
+            if($("#description").val().length > 50){
+                alert('Description Is Too Long');
+                return;
+            }
+        }
+        document.getElementById('frmcri').submit();
+    }
+</script>
+<script>
+    function Validateform(){
+        if($('#name').val() == "" || $('#name').val() == "undefined" || $('#name').val() == "NaN"){
+            alert('Please Enter Organisation Name');
+            return;
+        }else{
+            if($("#name").val().length > 70){
+                alert('Organisation Name Is Too Long');
+                return;
+            }
+        }
+        if($('#business_type').val() == "" || $('#business_type').val() == "undefined" || $('#business_type').val() == "NaN"){
+            alert('Please Enter Business Type');
+            return;
+        }else{
+            if($("#business_type").val().length > 70){
+                alert('Business Type Is Too Long');
+                return;
+            }
+        }
+        if($('#business_operation').val() == "" || $('#business_operation').val() == "undefined" || $('#business_operation').val() == "NaN"){
+            alert('Please Enter Business Operation');
+            return;
+        }else{
+            if($("#business_operation").val().length > 70){
+                alert('Business Operation Is Too Long');
+                return;
+            }
+        }
+        if($('#address').val() == "" || $('#address').val() == "undefined" || $('#address').val() == "NaN"){
+            alert('Please Enter Address');
+            return;
+        }else{
+            if($("#address").val().length > 70){
+                alert('Address Is Too Long');
+                return;
+            }
+        }
+        if($('#landmark').val() == "" || $('#landmark').val() == "undefined" || $('#landmark').val() == "NaN"){
+            alert('Please Enter Landmark');
+            return;
+        }else{
+            if($("#landmark").val().length > 25){
+                alert('Landmark Is Too Long');
+                return;
+            }
+        }
+        if($('#pin').val() == "" || $('#pin').val() == "undefined" || $('#pin').val() == "NaN"){
+            alert('Please Enter Pincode');
+            return;
+        }else{
+            if($('#pin').inputmask('unmaskedvalue').length !== 6){
+                alert('Please Entre Valid Pincode');
+                return;
+            }
+        }
+        if($('#city').val() == "" || $('#city').val() == "undefined" || $('#city').val() == "NaN"){
+            alert('Please Enter City');
+            return;
+        }else{
+            if($("#city").val().length > 20){
+                alert('City Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#city').val())) {
+                alert('Invalid City');
+                return;
+            }
+        }
+        if($('#state').val() == "" || $('#state').val() == "undefined" || $('#state').val() == "NaN"){
+            alert('Please Enter State');
+            return;
+        }else{
+            if($("#state").val().length > 20){
+                alert('State Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#state').val())) {
+                alert('Invalid State');
+                return;
+            }
+        }
+        if($('#country').val() == "" || $('#country').val() == "undefined" || $('#country').val() == "NaN"){
+            alert('Please Enter Country');
+            return;
+        }else{
+            if($("#country").val().length > 20){
+                alert('Country Is Too Long');
+                return;
+            }
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#country').val())) {
+                alert('Invalid Country');
+                return;
+            }
+        }
+        if($('#spoc').val() == "" || $('#spoc').val() == "undefined" || $('#spoc').val() == "NaN"){
+            alert('Please Enter SPOC');
+            return;
+        }else{
+            
+        }
+        document.getElementById('frmorg').submit();
+    }
 </script>
 <script>
     $('#org').change(function(){

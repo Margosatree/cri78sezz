@@ -11,7 +11,7 @@ class AdminLoginController extends Controller
         $this->middleware('guest:admin');
     }
 
-        public function showLoginForm() {
+    public function showLoginForm() {
         return view('admin.adminlogin');
     }
     

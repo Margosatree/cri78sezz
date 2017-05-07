@@ -3,49 +3,68 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use App\User_Master;
+use App\User_Organisation;
 use Auth;
-
-class UsersBioController extends Controller
+use Excel;
+class UsersBulkController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth');
+//        $this->middleware('auth',['except'=>['index']]);
     }
     
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $User_Bios = User_Master::all();
-        return view('user.bio.index',compact('User_Bios'));
+    public function bulkUploadView(){
+        return view('user.org.bulk');
     }
+    public function bulkUpload(){
+//        dd('dasdas');
+        if(Input::hasFile('import_file')){
+//            dd('dasdas1');
+            $path = Input::file('import_file')->getRealPath();
+            $data = Excel::load($path, function($reader) {
+            })->get();
+                    
+            if(!empty($data) && $data->count()){
+                $Arr = array();
+//                dd($data);
+                foreach ($data as $key => $value) {
+                    
+                    if(isset($value['username']) || isset($value['phone']) || isset($value['email'])
+                    || $value['username'] != "" || $value['phone'] != "" || $value['email'] != ""){
+                        $User_master = new User_Master;
+                        $User_master->username = $value['username'];
+                        $User_master->phone = $value['phone'];
+                        $User_master->email = $value['email'];
+                        $User_master->save();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createInfo(){
-        return view('user.bio.addinfo');
+                        $User_Org = new User_Organisation();
+                        $User_Org->user_master_id = $User_master->id;
+                        $User_Org->organization_master_id = 0;
+                        $User_Org->email = $value['email'];
+                        $User_Org->password = $value['username'].'@123';
+                        $User_Org->role = 'user';
+                        $User_Org->save();
+                    }else{
+                        array_push($Arr,$value);
+                    }
+                }
+                if($Arr){
+                    dd($Arr);
+                }
+//                if(!empty($insert)){
+//                    DB::table('users')->insert($insert);
+//                            dd('Insert Record successfully.');
+////                    return view('importExport');
+//                }
+            }
+        }
+        return back();
     }
-
-    public function create()
-    {
-        return view('user.bio.add');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
+    
     public function storeInfo(Request $request){
         $this->validate(request(), [
             'first_name' => 'required|max:50|alpha',

@@ -8,15 +8,29 @@
                 <div class="panel-heading">Profile</div>
                 <div class="panel-body">
                     @if(count($Bio) > 0)
-                        <div  class="alert alert-success">
-                            <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
-                                <a href="/userBio/{{ $Bio->id }}/editInfo"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
-                            </lable>
-                            <br><lable><b>DOB : </b></lable>{{$Bio->date_of_birth}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Gender : </b></lable>{{$Bio->gender}}
-                            <br><lable><b>Phone : </b></lable>{{$Bio->phone}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
-                            <br><lable><b>Email : </b></lable>{{$Bio->email}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
                             
-                        </div>
+                            <div  class="alert alert-success ">
+                            <div  class="row ">
+                                @if(Session::has('user_img'))
+                                    <div class="col-md-2">
+                                        <img src ="{{asset('images/'.Session::get('user_img'))}}" style="width: 100%;height: 100%" class="img-rounded"/>
+                                    </div>
+                                @else
+                                    <div class="col-md-2">
+                                        <img src ="{{asset('images/default128_128.png')}}" style="width: 100%;height: 100%" class="img-rounded"/>
+                                    </div>
+                                @endif
+                                <div class="col-md-10">
+                                    <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
+                                        <a href="/userBio/{{ $Bio->id }}/editInfo"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                    </lable>
+                                    <br><lable><b>DOB : </b></lable>{{$Bio->date_of_birth}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Gender : </b></lable>{{$Bio->gender}}
+                                    <br><lable><b>Phone : </b></lable>{{$Bio->phone}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
+                                    <br><lable><b>Email : </b></lable>{{$Bio->email}} @if($Bio->is_verify_phone)<i class="fa fa-check-circle"></i>@else<i class="fa fa-times-circle"></i>@endif
+                                </div>
+                            </div>
+                                
+                            </div>
                         <div  class="alert alert-success">
                             <lable><h3 style="display:inline;">Personal Info</h3>
                                 <a href="/userBio/{{ $Bio->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>

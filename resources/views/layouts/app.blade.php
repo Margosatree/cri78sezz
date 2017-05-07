@@ -73,32 +73,37 @@
                                             <a href="{{ route('userBio.index') }}">Bio</a>
                                             <a href="{{ route('criProfile.index') }}">Cricket Profile</a>
                                             <a href="{{ route('org.index') }}">Org Bio</a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                {{ csrf_field() }}
-                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @elseif(Auth::user()->role == "organizer")
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        Master's  <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="{{ route('userBio.index') }}">Bulk Upload</a>
                                         </li>
                                     </ul>
                                 </li>
                             @endif
+                            <li >
+                                
+                            </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                
+                                <a href="#" class="dropdown-toggle" style="padding-right: 50px" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    @if (Session::has('user_img'))
+                                        <img src ="{{asset('images/'.Session::get('user_img'))}}" width="32px" class="img-rounded"/>
+                                    @else
+                                        <img src ="{{asset('images/default128_128.png')}}" width="32px" class="img-rounded"/>
+                                    @endif
                                     {{ Auth::user()->email}} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <a href="/Profile/{{Auth::user()->user_master_id}}"><b>Profile</b></a>
-                                            <!--<div role="separator" class="divider"></div>-->
-                                        {{--
-                                        @if(Auth::user()->role == "user")
-                                            <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
-                                            <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
-                                        @elseif(Auth::user()->role == "organizer")
-                                            <a href="/userBio/{{Auth::user()->user_master_id}}">Bio</a>
-                                            <a href="/criProfile/{{Auth::user()->user_master_id}}">Cricket Profile</a>
-                                            <a href="/org/{{Auth::user()->organization_master_id}}">Org Bio</a>
-                                        @elseif(Auth::user()->role == "admin")
-                                        @endif
-                                        --}}
                                         <div role="separator" class="divider"></div>
                                         <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"
@@ -117,7 +122,6 @@
                 </div>
             </div>
         </nav>
-
         @yield('content')
     </div>
 

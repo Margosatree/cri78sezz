@@ -11,7 +11,8 @@ class OrganizationMasterController extends Controller
     
     public function __construct(){
 //        $this->middleware('auth:admin');
-       $this->middleware('auth');
+       $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth',['except'=>['index']]);
     }
 
     /**
