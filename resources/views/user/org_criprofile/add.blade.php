@@ -120,7 +120,7 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="button" style="width: 100%" onclick="Validatecri();" class="btn btn-primary">
+                                <button type="Submit" style="width: 100%" onclick="Validatecri();" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -222,7 +222,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="button" style="width: 100%"  onclick="Validateform();" class="btn btn-primary">
-                                    Submit
+                                    Add
                                 </button>
                             </div>
                         </div>
