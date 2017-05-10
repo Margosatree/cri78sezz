@@ -20,7 +20,8 @@ return [
         'SA'=>'super_admin',
         'TA'=>'tournament_admin',
         'User'=>'user'
-    ]
+    ],
 
+    
 
 ];

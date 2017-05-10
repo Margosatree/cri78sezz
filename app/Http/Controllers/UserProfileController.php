@@ -53,11 +53,12 @@ class UserProfileController extends Controller
      */
     public function show($id)
     {
+        $Sr = 0;
         $Bio = User_Master::find($id);
         $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $User_Achieve = User_Achievement::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+        $User_Achieves = User_Achievement::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get();
         $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
-        return view('user.profile.show', compact('Bio','Cri_Profile','Org','User_Achieve'));
+        return view('user.profile.show', compact('Bio','Cri_Profile','Org','User_Achieves','Sr'));
     }
 
     /**

@@ -42,7 +42,7 @@
                     @else
                         <div  class="alert alert-success">
                             <lable><h3 style="display:inline;">Bio Is Not Available Please Add</h3>
-                                <a href="{{route('userBio.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                <a href="{{route('userBio.create')}}"><span class="badge pull-right"><i class="fa fa-plus"></i></span></a>
                             </lable>
                         </div>
                     @endif
@@ -64,7 +64,7 @@
                             <hr>
                             <div  class="alert alert-success">
                                 <lable><h3 style="display:inline;">Organisation Info Not Available Please Add</h3>
-                                    <a href="{{route('org.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                    <a href="{{route('org.create')}}"><span class="badge pull-right"><i class="fa fa-plus"></i></span></a>
                                 </lable>
                             </div>
                         @endif
@@ -96,26 +96,55 @@
                             <hr>
                             <div  class="alert alert-success">
                                 <lable><h3 style="display:inline;">Cric8profile Not Available Please Add</h3>
-                                    <a href="{{route('criProfile.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                    <a href="{{route('criProfile.create')}}"><span class="badge pull-right"><i class="fa fa-plus"></i></span></a>
                                 </lable>
                             </div>
                         @endif
                     @endif
-                    @if(count($User_Achieve) > 0)
+                    @if(count($User_Achieves) > 0)
                         <hr>
+                        
                         <div  class="alert alert-success">
-                            <lable><h3 style="display:inline;">Achievement</h3>
-                                <a href="/userAchieve/{{ $User_Achieve->id }}/edit"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                            <lable><h3 style="display:inline;">Achievement's</h3>
+                                <a href="{{route('userAchieve.create')}}"><span class="badge pull-right"><i class="fa fa-plus"></i></span></a>
                             </lable>
-                            <br><lable><b>Title : </b></lable>{{$User_Achieve->title}} &nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Location : </b></lable>{{$User_Achieve->location}}
-                            <br><lable><b>Time Period : </b></lable>{{$User_Achieve->start_date}}&nbsp;&nbsp;To&nbsp;&nbsp;{{$User_Achieve->end_date}}
+                            <table id="example" class="display" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Sr</th>
+                                        <th>Title</th>
+                                        <th>Location</th>
+                                        <th>Time Period</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($User_Achieves as $User_Achieve)
+                                        <tr>
+                                            <td>{{ ++$Sr }}</td>
+                                            <td>{{ $User_Achieve->title }}</td>
+                                            <td>{{ $User_Achieve->title }}</td>
+                                            <td>{{ $User_Achieve->location }}</td>
+                                            <td>{{ $User_Achieve->start_date.' To '. $User_Achieve->end_date}}</td>
+                                            <td>
+                                                <a onclick="deleteAchievement({{$User_Achieve->id}})">
+                                                   <span class="badge pull-right"><i class="fa fa-times"></i></span>
+                                                </a>
+                                                <a href="/userAchieve/{{$User_Achieve->id}}/edit">
+                                                   <span class="badge pull-right"><i class="fa fa-pencil"></i></span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     @else
                         @if(Auth::user()->role == "user")
                             <hr>
                             <div  class="alert alert-success">
                                 <lable><h3 style="display:inline;">Achievement Not Available Please Add</h3>
-                                    <a href="{{route('userAchieve.create')}}"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
+                                    <a href="{{route('userAchieve.create')}}"><span class="badge pull-right"><i class="fa fa-plus"></i></span></a>
                                 </lable>
                             </div>
                         @endif
@@ -125,4 +154,38 @@
         </div>
     </div>
 </div>
+<div id="deleteAchieveModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form id='deleteAchieve' method="post" action="">
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Achievement</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="Achieve">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Are You Sure you Want To Delete This Achievement?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" style="min-width: 80px;">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function deleteAchievement(Achieve_id){
+        $('#deleteAchieve').attr('Action', '/userAchieve/' + Achieve_id);
+        $('#deleteAchieveModal').modal('toggle');
+    }
+</script>
 @endsection

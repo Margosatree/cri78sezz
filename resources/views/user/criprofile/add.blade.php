@@ -109,19 +109,24 @@
                                 @endif
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
-                            <label for="image-upload" class="col-md-4 control-label">Profile Upload</label>
+                            <div class="col-md-6">
+                                <div id="upload-demo" style="width:350px"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="image-upload" class="col-md-4 control-label">Image Upload</label>
                             <div class="col-md-8">
                                 <button type="button" class="btn btn-default btn-file">
                                     <span>Browse</span>
-                                    <input type="file" name="image">
+                                    <input type="file"  name="image" id="upload">
+                                    <input type="hidden"  name="imagedata" id="imagedata">
                                 </button>
-
                                 @if ($errors->has('image'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('image') }}</strong>
-                                </span>
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('image') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                         </div>
@@ -147,7 +152,55 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
+<script src="http://demo.itsolutionstuff.com/plugin/croppie.js"></script>
+<script>
+    $uploadCrop = $('#upload-demo').croppie({
+        enableExif: true,
+        viewport: {
+            width: 200,
+            height: 200,
+            type: 'square'
+        },
+        boundary: {
+            width: 300,
+            height: 300
+        }
+    });
+    $('#upload').on('change', function () { 
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function(){
+                console.log('jQuery bind complete');
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
 
+    $('#Save').on('click', function (ev) {
+        alert('dasdas');
+        $uploadCrop.croppie('result', {
+            type: 'canvas',
+            size: 'viewport'
+        }).then(function (resp) {
+            
+            $('#imagedata').val(resp);
+            console.log($('#imagedata').val());
+            Validateform();
+//            $.ajax({
+//                url: "ajaxpro.php",
+//                type: "POST",
+//                data: {"image":resp},
+//                success: function (data) {
+//                    html = '<img src="' + resp + '" />';
+//                    $("#upload-demo-i").html(html);
+//                }
+//            });
+        });
+    });
+</script>
 <script>
     function Validateform(){
         if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
