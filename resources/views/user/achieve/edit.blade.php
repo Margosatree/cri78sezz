@@ -119,8 +119,8 @@
         var StartDate = new Date(Date.parse($("#start_date").val()));
         var EndDate = new Date(Date.parse($("#end_date").val()));
         console.log(EndDate+' '+StartDate);
-        if (EndDate >= StartDate) {
-            alert('Start Date Grater Then Or Equal To End Date');
+        if (!(EndDate >= StartDate)) {
+            alert('Start Date Lesser Then Or Equal To End Date');
             return;
         }
         if($('#location').val() == "" || $('#location').val() == "undefined" || $('#location').val() == "NaN"){
@@ -132,7 +132,6 @@
                 return;
             }
         }
-        return;
         document.getElementById('frm').submit();
     }
 </script>

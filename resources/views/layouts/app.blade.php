@@ -83,7 +83,7 @@
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="{{ route('userBio.index') }}">Bulk Upload</a>
+                                            <a href="{{ route('User.bulkUploadView') }}">Bulk Upload</a>
                                         </li>
                                     </ul>
                                 </li>
