@@ -20,9 +20,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('/password/check', 'Auth\ForgetMiddleController@checkData')
-		->name('password.check');
-		
 Route::Resource('/verify','UserVerifyController');
 
 Route::get('/verifes/{token}/{otp}','UserVerifyController@showVerify');
@@ -63,11 +60,12 @@ Route::post('/pass/{id}/adminupdate','ChangePasswordController@adminupdate')->na
 Route::prefix('admin')->group(function(){
     Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+    Route::get('logout', 'Auth\AdminLoginController@logout');
     //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
 });
 
 
-Route::get('/admin','AdminController@dashboard')->name('admin.dashboard');
+Route::get('/adminhome','AdminController@dashboard')->name('admin.dashboard');
 Route::get('/test', 'HomeController@test');
 
 //For Reset Password
@@ -84,3 +82,26 @@ Route::post('password/resetSms','Auth\PassswordController@resetSms')
 	  ->name('password.resetSms');
 
 //End of Reset Password
+
+
+//ACL
+
+Route::get('/adminhome', 'HomeController@display')->name('adminhome');	  
+Route::get('/create_role', 'Acl\RoleController@create')->name('create_role');
+Route::post('/create_role', 'Acl\RoleController@store');
+
+Route::get('/assign_role', 'Acl\RoleUserController@create')->name('assign_role');
+Route::post('/assign_role', 'Acl\RoleUserController@store');
+
+Route::get('/revoke_role', 'Acl\RoleUserController@displayRoles')->name('revoke_role');
+Route::get('/revoke_role/{id}/{userId}', 'Acl\RoleUserController@destroy')->name('revoke.role');
+
+Route::get('/create_permission', 'Acl\PermissionController@create')->name('create_permission');
+Route::post('/create_permission', 'Acl\PermissionController@store');
+
+Route::get('/assign_permission', 'Acl\PermissionRoleController@create')->name('assign_permission');
+Route::post('/assign_permission', 'Acl\PermissionRoleController@store');
+
+Route::get('/revoke_permission', 'Acl\PermissionRoleController@displayPermissions')->name('revoke_permission');
+Route::get('/revoke_permission/{id}/{userId}', 'Acl\PermissionRoleController@destroy')->name('revoke.permission');
+//end Acl

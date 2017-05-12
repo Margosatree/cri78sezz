@@ -4,26 +4,26 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class AdminLoginController extends Controller
 {
-    public function __construct() {
-        $this->middleware('guest:admin');
+    use AuthenticatesUsers;
+
+    protected $redirectTo = '/adminhome';
+
+    public function __construct()
+    {
+        $this->middleware('guest.admins', ['except' => 'logout']);
     }
+
+    protected $guard = 'admin';
 
     public function showLoginForm() {
         return view('admin.adminlogin');
     }
-    
-    public function login(Request $request) {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        
-        if(Auth::guard('admin')->attempt(['email' => $request->email,'password' => $request->password],$request->remember)){
-            return redirect()->intended(route('admin.dashboard'));
-        }
-        return redirect()->back()->withInput($request->only('email','remember'));
+
+    protected function guard(){
+        return Auth::guard($this->guard);
     }
 }
