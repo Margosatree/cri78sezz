@@ -84,6 +84,8 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a href="{{ route('User.bulkUploadView') }}">Bulk Upload</a>
+                                            <a href="{{ route('tourmst.index') }}">Tournament's</a>
+                                            <a href="{{ route('team.index') }}">Team's</a>
                                         </li>
                                     </ul>
                                 </li>

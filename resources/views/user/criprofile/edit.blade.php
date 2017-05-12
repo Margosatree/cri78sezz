@@ -67,16 +67,20 @@
                             </div>
                             <div class="form-group">
                                 <label for="team_image" class="col-md-4 control-label">Team Image</label>
-
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <td class="text-center">
-                                        <img src ="{{asset('images/'.$Cri_Profile->display_img)}}" class="img-thumbnail" width=70 heigth=20/>
+                                        <img src ="{{asset('images/'.$Cri_Profile->display_img)}}" class="img-thumbnail" />
+                                    </td>
+                                </div>
+                                <div class="col-md-3">
+                                    <td class="text-center">
+                                        <div id="upload-demo" style="padding: 4px;display: none;"></div>
                                     </td>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-6">
-                                    <div id="upload-demo" style="width:350px"></div>
+                                <div class="col-md-6 col-md-offset-4">
+                                    
                                 </div>
                             </div>
                             <div class="form-group">
@@ -84,7 +88,7 @@
                                 <div class="col-md-8">
                                     <button type="button" class="btn btn-default btn-file">
                                         <span>Browse</span>
-                                        <input type="file"  name="image" id="upload">
+                                        <input type="file" onclick="$('#upload-demo').show()" name="image" id="upload">
                                         <input type="hidden"  name="imagedata" id="imagedata">
                                     </button>
                                     @if ($errors->has('image'))
@@ -129,13 +133,13 @@
     $uploadCrop = $('#upload-demo').croppie({
         enableExif: true,
         viewport: {
-            width: 200,
-            height: 200,
-            type: 'square'
+            width: 125,
+            height: 125,
+            type: 'circle'
         },
         boundary: {
-            width: 300,
-            height: 300
+            width: 150,
+            height: 150
         }
     });
     $('#upload').on('change', function () { 

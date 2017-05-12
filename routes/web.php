@@ -55,6 +55,14 @@ Route::Resource('/userAchieve','UserAchievementController');
 
 Route::Resource('/orgcriProfile','OrgCricketController');
 
+Route::Resource('/tourmst','TournamentMasterController');
+
+Route::Resource('/rule','TournamentRulesController');
+
+Route::Resource('/tour/{tour}/tourdet','TournamentDetailController');
+
+Route::Resource('/team','TeamMasterController');
+
 Route::get('/pass/request','ChangePasswordController@request')->name('pass.request');
 Route::post('/pass/update','ChangePasswordController@update')->name('pass.update');
 Route::get('/pass/{id}/adminrequest','ChangePasswordController@adminrequest')->name('pass.adminrequest');
