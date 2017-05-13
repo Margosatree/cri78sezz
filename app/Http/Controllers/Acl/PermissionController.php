@@ -9,6 +9,9 @@ use PHPZen\LaravelRbac\Model\Permission;
 
 class PermissionController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,8 +41,8 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(),[
-        'name' => 'required',
-        'slug' => 'required',
+        'name' => 'required|unique:permissions',
+        'slug' => 'required|unique:permissions',
         'description' => 'required'        
         ]);
 

@@ -1,32 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	<link rel="stylesheet" href="/css/poststyle.css">
-</head>
-<body>
-	<h1>Create Permission</h1> 
+@extends('layouts.app')
 
-	<form method="POST" action="/create_permission">
-			{{csrf_field()}}
-		  <div class="form-group">
-		    <label for="name">Permission Title</label>
-		    <input type="text" class="form-control" placeholder = "Create User" id="name" name="name">
-		  </div> 
-		  <div class="form-group">
-		    <label for="slug">Slug</label>
-		    <input type="text" class="form-control" id="slug" placeholder = "controller.method e.g. user.create" name="slug">
-		  </div> 
-		  <div class="form-group">
-		    <label for="description">Description</label>
-		    <input type="text" class="form-control" id="description" name="description">
-		  </div> 		
-		  <div class="form-group">
-		  	<button type="submit" class="btn btn-primary">Create Permission</button>
-		  </div>
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Create Permission</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" method="POST" action="/create_permission">
+                        {{ csrf_field() }}
 
-		
-	</form>
-</body>
-</html>
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Permission Title</label>
+
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus placeholder = "Create User">
+
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('slug') ? ' has-error' : '' }}">
+                            <label for="slug" class="col-md-4 control-label">Slug</label>
+
+                            <div class="col-md-6">
+                                <input id="slug" type="text" class="form-control" name="slug" value="{{ old('slug') }}" required autofocus placeholder = "controller.method e.g. user.create">
+
+                                @if ($errors->has('slug'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('slug') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
+                            <label for="description" class="col-md-4 control-label">Description</label>
+
+                            <div class="col-md-6">
+                                <input id="description" type="text" class="form-control" name="description" value="{{ old('description') }}" required autofocus>
+
+                                @if ($errors->has('description'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('description') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Create Permission
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

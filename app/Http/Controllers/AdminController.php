@@ -23,7 +23,7 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view('admin');
+        return view('adminhome');
     }
     
     public function test()

@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use PHPZen\LaravelRbac\Model\Role;
 class RoleController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +40,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(),[
-        'name' => 'required',
+        'name' => 'required|unique:Roles',
         'description' => 'required'        
         ]);
 

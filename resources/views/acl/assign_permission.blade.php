@@ -1,43 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-	<link rel="stylesheet" href="/css/poststyle.css">
-</head>
-<body>
-	<h1>Assign Perimssion to Role</h1> 
+@extends('layouts.app')
 
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+        <div class="container">
+            <div class="col-md-4">
+            @include('layouts.message')
+            </div>
+        </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Assign Perimssion to Role</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" method="POST" action="/assign_permission">
+                        {{ csrf_field() }}
 
+                <!--This For Role -->
+                        <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
+                            <label for="role_id" class="col-md-4 control-label">Select Role</label>
+                                <div class="col-md-6">
+                                      <select name="role_id" class="form-control">
+                                      @foreach($permissionData as $data)
+                                        <option  value={{$data->id}}>{{ucfirst($data->name)}}</option>
+                                         @endforeach
+                                      </select>
+                                    @if ($errors->has('role_id'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('role_id') }}</strong>
+                                        </span>
+                                    @endif
 
+                            </div>
+                        </div>
+                    <!-- This for Team -->
+                    <div class="form-group{{ $errors->has('permission_id') ? ' has-error' : '' }}">
+                            <label for="permission_id" class="col-md-4 control-label">Select Permission</label>
+                                <div class="col-md-6">
+                                      <select name="permission_id[]" multiple class="form-control">
+                                      @foreach($roleData as $team)
+                                        <option  value={{$team->id}}>{{ucfirst($team->name)}}</option>
+                                         @endforeach
+                                      </select>
+                                    @if ($errors->has('permission_id'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('permission_id') }}</strong>
+                                        </span>
+                                    @endif
 
-	<form method="POST" action="/assign_permission">
-			{{csrf_field()}}
-		  <div class="form-group">
-		    <label for="role_id">Select Role</label>
-		    <select id = 'role_id' class="form-control" name = 'role_id'>
-		    @foreach($roleData as $role)
-		    	<option value = {{ $role->id }}>{{$role->name}}</option>				
-			@endforeach		   
-		    </select>
-		  </div>  
-
-		  <div class="form-group">
-		    <label for="permission_id">Select Permission</label>
-		    <select id = 'permission_id' class="form-control" name = 'permission_id[]' multiple>
-		    
-
-		    @foreach($permissionData as $permission)
-		    	<option value = {{ $permission->id }}>{{$permission->name}}</option>				
-			@endforeach
-		    </select>
-		  </div>  
-		  		
-		  <div class="form-group">
-		  	<button type="submit" class="btn btn-primary">Assign Permission To Role</button>
-		  </div>
-
-		
-	</form>
-</body>
-</html>
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Assign Permission
+                                </button>
+                            </div>
+                    </div>
+                    </form>             
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
