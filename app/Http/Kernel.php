@@ -50,7 +50,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth.admins' => \App\Http\Middleware\CheckIfAdminAuthenticated::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -58,6 +57,5 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'rbac' => \PHPZen\LaravelRbac\Middleware\Rbac::class,
-        'guest.admins' => \App\Http\Middleware\RedirectIfAdminAuthenticated::class,
     ];
 }
