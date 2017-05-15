@@ -114,7 +114,7 @@ class RegisterController extends Controller
             'role' => config('constants.role.User'),
         ]);
 
-        $user_role = Role::where('slug','user')->first();
+        $user_role = Role::where('slug','player')->first();
         $normal_user = $user_role->id;
 
         $user_role = new role_user;

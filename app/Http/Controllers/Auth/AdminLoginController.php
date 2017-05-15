@@ -41,8 +41,10 @@ class AdminLoginController extends Controller
             // dd($arr_perms);
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 1){
-                    $arr_perms = array_unique($perms);
-                    Session::put('perms',$arr_perms);
+                    if(isset($perms)){
+                        $arr_perms = array_unique($perms);
+                        Session::put('perms',$arr_perms);
+                    }
                    return '/admin/home'; 
                 }else{
                     return '/admin/login';

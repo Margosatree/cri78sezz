@@ -200,6 +200,10 @@ return [
         //ACL Provider
         PHPZen\LaravelRbac\RbacServiceProvider::class,
 
+        //Auto migration
+        Way\Generators\GeneratorsServiceProvider::class,
+        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+
     ],
 
     /*

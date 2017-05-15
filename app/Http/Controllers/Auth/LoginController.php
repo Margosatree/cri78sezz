@@ -51,6 +51,8 @@ class LoginController extends Controller
                     }
                    return '/home'; 
                 }else{
+                    Auth::logout();
+                    Session::flush();
                     return '/login';
                 }
             } 
