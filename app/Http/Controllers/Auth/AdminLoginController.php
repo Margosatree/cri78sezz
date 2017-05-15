@@ -37,6 +37,8 @@ class AdminLoginController extends Controller
                     }
                 }
             }
+            // $arr_perms = array_unique($perms); 
+            // dd($arr_perms);
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 1){
                     $arr_perms = array_unique($perms);

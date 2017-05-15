@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\User_Organisation;
 use PHPZen\LaravelRbac\Model\Role;
+use DB;
 // use App\RoleUser;
 
 class RoleUserController extends Controller
@@ -33,6 +34,19 @@ class RoleUserController extends Controller
      */
     public function create()
     {   
+
+        $users = User_Organisation::get();
+        // foreach($users as $user){
+        // $results = DB::select( DB::raw("select id,name from roles where id not in 
+        //                                 (select role_id from role_user 
+        //                                     WHERE user_id = :userid)"), 
+        //                                     array('userid' => $user->id));
+        // $user_info = array('id'=>$user->id,'email'=>$user->email);
+        // $results[] = $user_info;
+        // $total[] = $results;
+        // }
+        // dd($total);
+        // return view('acl\assign_role', compact($total));
         $users = User_Organisation::all();
         $roles = Role::get();
       //  dd($users);
@@ -56,7 +70,7 @@ class RoleUserController extends Controller
         $roleId = $request->role_id;
 
         $user->roles()->attach($roleId);
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 
     /**
@@ -124,6 +138,6 @@ class RoleUserController extends Controller
     {
        $user = User_Organisation::find($userId);
        $user->roles()->detach($id);
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 }

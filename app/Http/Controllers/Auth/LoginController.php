@@ -45,8 +45,10 @@ class LoginController extends Controller
             }
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 0){
-                    $arr_perms = array_unique($perms);
-                    Session::put('perms',$arr_perms);
+                    if(isset($perms)){
+                        $arr_perms = array_unique($perms);
+                        Session::put('perms',$arr_perms);
+                    }
                    return '/home'; 
                 }else{
                     return '/login';
@@ -61,4 +63,5 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
+ 
 }

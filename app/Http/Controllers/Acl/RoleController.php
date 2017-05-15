@@ -50,7 +50,7 @@ class RoleController extends Controller
         $adminRole->description = $request->description;
         $adminRole->save();
 
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 
     /**

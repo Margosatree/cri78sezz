@@ -52,7 +52,7 @@ class PermissionController extends Controller
         $createUser->description = $request->description;
         $createUser->save();
         
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 
     /**

@@ -53,7 +53,7 @@ class PermissionRoleController extends Controller
         $adminRole = Role::find($request->role_id);
         $roleId = $request->permission_id;
         $adminRole->permissions()->attach($roleId);
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 
     /**
@@ -119,6 +119,6 @@ class PermissionRoleController extends Controller
     {
         $role = Role::find($roleId);
         $role->permissions()->detach($id);
-        return redirect('/adminhome');
+        return redirect('/admin/home');
     }
 }
