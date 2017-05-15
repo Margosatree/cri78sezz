@@ -1,19 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Organisation_Master;
-use App\User_Cricket_Profile;
-use App\User_Master;
-use App\User_Achievement;
-use Auth;
-use Illuminate\Http\Request;
 
-class UserProfileController extends Controller
+use Illuminate\Http\Request;
+use App\User_Master;
+use App\Tournament_Details;
+use App\Tournament_Master;
+use App\Tournament_Rules;
+use App\Organisation_Master;
+class TournamentRulesController extends Controller
 {
-    public function __construct(){
-//        $this->middleware('auth:admin');
-       $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +17,8 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        //
+        $Rules = Tournament_Rules::all();
+        return view('user.rule.index',compact('Rules'));
     }
 
     /**
@@ -31,7 +28,8 @@ class UserProfileController extends Controller
      */
     public function create()
     {
-        //
+        
+        return view('user.rule.add');
     }
 
     /**
@@ -42,7 +40,22 @@ class UserProfileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required|max:190',
+            'specification' => 'required|max:190',
+            'value' => 'max:190',
+            'range_from' => 'required|date|before:end_date',
+            'range_to' => 'required|date|after:start_date',
+        ]);
+        
+        $Rule = new Tournament_Master;
+        $Rule->name = request('name');
+        $Rule->specification = request('specification');
+        $Rule->value = request('value');
+        $Rule->range_from = request('range_from');
+        $Rule->range_to = request('range_to');
+        $Rule->save();
+        return redirect()->route('rule.index');
     }
 
     /**
@@ -53,12 +66,7 @@ class UserProfileController extends Controller
      */
     public function show($id)
     {
-        $Sr = 0;
-        $Bio = User_Master::find($id);
-        $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $User_Achieves = User_Achievement::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get();
-        $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
-        return view('user.profile.show', compact('Bio','Cri_Profile','Org','User_Achieves','Sr'));
+        //
     }
 
     /**

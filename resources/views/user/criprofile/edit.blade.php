@@ -67,20 +67,29 @@
                             </div>
                             <div class="form-group">
                                 <label for="team_image" class="col-md-4 control-label">Team Image</label>
-
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <td class="text-center">
-                                        <img src ="{{asset('images/'.$Cri_Profile->display_img)}}" class="img-thumbnail" width=70 heigth=20/>
+                                        <img src ="{{asset('images/'.$Cri_Profile->display_img)}}" class="img-thumbnail" />
+                                    </td>
+                                </div>
+                                <div class="col-md-3">
+                                    <td class="text-center">
+                                        <div id="upload-demo" style="padding: 4px;display: none;"></div>
                                     </td>
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="image-upload" class="col-md-4 control-label">Image Upload</label>
                                 <div class="col-md-8">
                                     <button type="button" class="btn btn-default btn-file">
                                         <span>Browse</span>
-                                        <input type="file" name="image">
+                                        <input type="file" onclick="$('#upload-demo').show()" name="image" id="upload">
+                                        <input type="hidden"  name="imagedata" id="imagedata">
                                     </button>
                                     @if ($errors->has('image'))
                                         <span class="help-block">
@@ -91,7 +100,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-3 col-md-offset-4">
-                                    <button type="button" style="width: 100%" onclick="Validateform();" class="btn btn-primary">
+                                    <button id="Save" type="button" style="width: 100%" onclick="" class="btn btn-primary">
                                         Submit
                                     </button>
                                 </div>
@@ -118,6 +127,56 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
+<script src="http://demo.itsolutionstuff.com/plugin/croppie.js"></script>
+<script>
+    $uploadCrop = $('#upload-demo').croppie({
+        enableExif: true,
+        viewport: {
+            width: 125,
+            height: 125,
+            type: 'circle'
+        },
+        boundary: {
+            width: 150,
+            height: 150
+        }
+    });
+    $('#upload').on('change', function () { 
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function(){
+                console.log('jQuery bind complete');
+            });
+
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+
+    $('#Save').on('click', function (ev) {
+        alert('dasdas');
+        $uploadCrop.croppie('result', {
+            type: 'canvas',
+            size: 'viewport'
+        }).then(function (resp) {
+            
+            $('#imagedata').val(resp);
+            console.log($('#imagedata').val());
+            Validateform();
+//            $.ajax({
+//                url: "ajaxpro.php",
+//                type: "POST",
+//                data: {"image":resp},
+//                success: function (data) {
+//                    html = '<img src="' + resp + '" />';
+//                    $("#upload-demo-i").html(html);
+//                }
+//            });
+        });
+    });
+</script>
 <script>
     function Validateform(){
         if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){

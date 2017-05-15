@@ -22,7 +22,6 @@ class UserAchievementController extends Controller
      */
     public function index()
     {
-        
         $User_Achieve = User_Achievement::all();
         return view('user.achieve.index',compact('User_Achieve'));
     }
@@ -77,7 +76,7 @@ class UserAchievementController extends Controller
 //            $OrganisationId = request('name');
 //        }
         $User_Achieve = new User_Achievement;
-//        $User_Achieve->user_master_id = Auth::user()->user_master_id;
+        $User_Achieve->user_master_id = Auth::user()->user_master_id;
         $User_Achieve->title = request('title');
         $User_Achieve->organization_master_id = request('name');
         $User_Achieve->location = request('location');
@@ -172,8 +171,9 @@ class UserAchievementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($id){
+        $User_Achieve = User_Achievement::find($id);
+        $User_Achieve->delete();
+        return redirect()->back();
     }
 }

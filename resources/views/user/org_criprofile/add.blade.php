@@ -28,7 +28,7 @@
                         <div class="form-group{{ $errors->has('batsman_style') ? ' has-error' : '' }}">
                             <label for="batsman_style" class="col-md-4 control-label">Batsman Style</label>
                             <div class="col-md-offset-4">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" @if( old('batsman_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -36,7 +36,7 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" @if( old('batsman_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -61,7 +61,7 @@
                         <div class="form-group{{ $errors->has('bowler_style') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">Bowler Style</label>
                             <div class="col-md-offset-4">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" @if( old('bowler_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -69,7 +69,7 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" @if( old('bowler_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -101,13 +101,18 @@
                                 @endif
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div class="col-md-offset-3 col-md-6">
+                                <div id="upload-demo" style="width:350px"></div>
+                            </div>
+                        </div>
                         <div class="form-group">
                         <label for="image-upload" class="col-md-4 control-label">Profile Upload</label>
                         <div class="col-md-6">
                                 <button type="button" class="btn btn-default btn-file">
                                 <span>Browse</span>
-                                <input type="file" name="image" required="">
+                                    <input type="file"  name="image" id="upload" required="">
+                                    <input type="hidden"  name="imagedata" id="imagedata" required>
                                 </button>
 
                                 @if ($errors->has('image'))
@@ -273,10 +278,59 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
+<script src="http://demo.itsolutionstuff.com/plugin/croppie.js"></script>
 <script>
     $(document).ready(function() {
         $("#pin").inputmask();
       });
+</script>
+<script>
+    $uploadCrop = $('#upload-demo').croppie({
+        enableExif: true,
+        viewport: {
+            width: 150,
+            height: 150,
+            type: 'square'
+        },
+        boundary: {
+            width: 200,
+            height: 200
+        }
+    });
+    $('#upload').on('change', function () { 
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function(){
+                console.log('jQuery bind complete');
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+
+    $('#Save').on('click', function (ev) {
+        alert('dasdas');
+        $uploadCrop.croppie('result', {
+            type: 'canvas',
+            size: 'viewport'
+        }).then(function (resp) {
+//            console.log(resp);
+            $('#imagedata').val(resp);
+//            console.log($('#imagedata').val());
+            Validatecri();
+//            $.ajax({
+//                url: "ajaxpro.php",
+//                type: "POST",
+//                data: {"image":resp},
+//                success: function (data) {
+//                    html = '<img src="' + resp + '" />';
+//                    $("#upload-demo-i").html(html);
+//                }
+//            });
+        });
+    });
 </script>
 <script>
     function Validatecri(){
