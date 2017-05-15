@@ -28,7 +28,7 @@
                         <div class="form-group{{ $errors->has('batsman_style') ? ' has-error' : '' }}">
                             <label for="batsman_style" class="col-md-4 control-label">Batsman Style</label>
                             <div class="col-md-offset-4">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Lefthand" type="radio" class="" name="batsman_style" value="Lefthand" @if( old('batsman_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -36,7 +36,7 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Righthand" type="radio" class="" name="batsman_style" value="Righthand" @if( old('batsman_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('batsman_style'))
                                         <span class="help-block">
@@ -61,7 +61,7 @@
                         <div class="form-group{{ $errors->has('bowler_style') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">Bowler Style</label>
                             <div class="col-md-offset-4">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Lefthand" type="radio" class="" name="bowler_style" value="Lefthand" @if( old('bowler_style') == 'Lefthand') checked @endif> Lefthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -69,7 +69,7 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <input id="Righthand" type="radio" class="" name="bowler_style" value="Righthand" @if( old('bowler_style') == 'Righthand') checked @endif> Righthand
                                     @if ($errors->has('bowler_style'))
                                         <span class="help-block">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-offset-3 col-md-6">
                                 <div id="upload-demo" style="width:350px"></div>
                             </div>
                         </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 use App\Team_Master;
 class TeamMasterController extends Controller
 {
@@ -13,7 +14,8 @@ class TeamMasterController extends Controller
      */
     public function index()
     {
-        $Teams = Team_Master::all();
+//        $Teams = Team_Master::where('team_owner_id',Auth::user()->organization_master_id);
+        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
         return view('user.teammst.index',compact('Teams'));
     }
 
@@ -65,7 +67,7 @@ class TeamMasterController extends Controller
             
             $Team->team_logo = $filename;
 //            dd($Team->team_logo);
-            $request->session()->put('user_img', $Team->team_logo);
+//            $request->session()->put('user_img', $Team->team_logo);
         }
         $Team->save();
         return redirect()->route('team.index');
@@ -133,7 +135,7 @@ class TeamMasterController extends Controller
             
             $Team->team_logo = $filename;
 //            dd($Team->team_logo);
-            $request->session()->put('user_img', $Team->team_logo);
+//            $request->session()->put('user_img', $Team->team_logo);
         }
         $Team->save();
         return redirect()->route('team.index');

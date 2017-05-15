@@ -18,7 +18,8 @@ class TournamentMasterController extends Controller
      */
     public function index()
     {
-        $Tournaments = Tournament_Master::all();
+//        $Tournaments = Tournament_Master::where('organization_master_id',Auth::user()->organization_master_id);
+        $Tournaments = Tournament_Master::selectRaw('*')->where('organization_master_id',Auth::user()->user_master_id)->get();
         return view('user.tourmst.index',compact('Tournaments'));
     }
 
@@ -72,7 +73,7 @@ class TournamentMasterController extends Controller
             file_put_contents(public_path('images/'. $filename), $data);
             
             $Tournament->tournament_logo = $filename;
-            $request->session()->put('user_img', $Tournament->tournament_logo);
+//            $request->session()->put('user_img', $Tournament->tournament_logo);
         }
         $Tournament->save();
         return redirect()->route('tourmst.index');
@@ -138,7 +139,7 @@ class TournamentMasterController extends Controller
             file_put_contents(public_path('images/'. $filename), $data);
             
             $Tournament->tournament_logo = $filename;
-            $request->session()->put('user_img', $Tournament->tournament_logo);
+//            $request->session()->put('user_img', $Tournament->tournament_logo);
         }
         $Tournament->save();
         return redirect()->route('tourmst.index');
