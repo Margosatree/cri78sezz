@@ -144,7 +144,6 @@
                                 <!-- </div>
                                 <div class="col-md-3"> -->
                                     <input id="Righthand" type="radio" class="flat" name="batsman_style" value="Righthand" >&nbsp; Righthand
-
                                     @if ($errors->has('batsman_style'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('batsman_style') }}</strong>
@@ -164,14 +163,12 @@
                                 @endif
                             <!-- </div> -->
                         </div>
-                        
                         <div class="item form-group{{ $errors->has('bowler_style') ? ' has-error' : '' }}">
                             <label for="bowler_style" class="">Bowler Style : &nbsp; &nbsp;&nbsp;</label>
 
                             <!-- <div class="col-md-offset-4">
                                 <div class="col-md-3"> -->
                                     <input id="Lefthand" type="radio" class="flat" name="bowler_style" value="Lefthand" >&nbsp;&nbsp; Lefthand&nbsp;&nbsp;&nbsp;
-
                                     @if ($errors->has('bowler_style'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('bowler_style') }}</strong>
@@ -180,7 +177,6 @@
                                <!--  </div>
                                 <div class="col-md-3"> -->
                                     <input id="Righthand" type="radio" class="flat" name="bowler_style" value="Righthand" > &nbsp;Righthand
-
                                     @if ($errors->has('bowler_style'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('bowler_style') }}</strong>
@@ -235,7 +231,7 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button id="Save" type="button" style="width: 100%" class="btn btn-primary">
+                                <button type="Submit" style="width: 100%" onclick="Validatecri();" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -336,7 +332,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="button" style="width: 100%"  onclick="Validateform();" class="btn btn-primary">
-                                    Submit
+                                    Add
                                 </button>
                             </div>
                         </div>
@@ -468,6 +464,53 @@
     // alert(localStorage.getItem('callfrom'));
 </script>
 
+<script>
+    $uploadCrop = $('#upload-demo').croppie({
+        enableExif: true,
+        viewport: {
+            width: 150,
+            height: 150,
+            type: 'square'
+        },
+        boundary: {
+            width: 200,
+            height: 200
+        }
+    });
+    $('#upload').on('change', function () { 
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function(){
+                console.log('jQuery bind complete');
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+
+    $('#Save').on('click', function (ev) {
+        alert('dasdas');
+        $uploadCrop.croppie('result', {
+            type: 'canvas',
+            size: 'viewport'
+        }).then(function (resp) {
+//            console.log(resp);
+            $('#imagedata').val(resp);
+//            console.log($('#imagedata').val());
+            Validatecri();
+//            $.ajax({
+//                url: "ajaxpro.php",
+//                type: "POST",
+//                data: {"image":resp},
+//                success: function (data) {
+//                    html = '<img src="' + resp + '" />';
+//                    $("#upload-demo-i").html(html);
+//                }
+//            });
+        });
+    });
+</script>
 <script>
     $uploadCrop = $('#upload-demo').croppie({
         enableExif: true,

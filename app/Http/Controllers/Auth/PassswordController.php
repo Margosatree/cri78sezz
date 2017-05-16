@@ -127,10 +127,10 @@ class PassswordController extends Controller
 
     function sendSms($mobile_no){
 
-    	$check_mobile = Password_reset::where('mobile',$mobile_no)
+    	$check_mobile = Password_reset::where('phone',$mobile_no)
     								   ->get();
     	if(count($check_mobile)){
-    		Password_reset::where('mobile',$mobile_no)->delete();
+    		Password_reset::where('phone',$mobile_no)->delete();
     	}
     	$random_num = mt_rand(1000,9999);
     	while(true){
@@ -155,9 +155,9 @@ class PassswordController extends Controller
     			//Sms logic insert here
     			if(count($check_email)){
     				Password_reset::where('email', $email)
-          					->update(['mobile' => $mobile_no,'otp'=>$random_num]);
+          					->update(['phone' => $mobile_no,'otp'=>$random_num]);
     			}else{
-    				Password_reset::create(['mobile'=>$mobile_no,'otp'=>$random_num]);
+    				Password_reset::create(['phone'=>$mobile_no,'otp'=>$random_num]);
     			}
     			return 1;
     		}else{
@@ -168,7 +168,7 @@ class PassswordController extends Controller
 
     function resetSms(Request $request){
     	$data = [$request->mobile,$request->otp,$request->password];
-    	$check_mobilewithOtp = Password_reset::where('mobile',$request->mobile)
+    	$check_mobilewithOtp = Password_reset::where('phone',$request->mobile)
     										->where('otp',$request->otp)
     								  ->get();
     	// dd(count($check_mobilewithOtp));
@@ -180,7 +180,7 @@ class PassswordController extends Controller
             }
             User_Organisation::where('email',$email_user)
     			->update(['password'=>bcrypt($request->password)]);
-    		Password_reset::where('mobile',$request->mobile)
+    		Password_reset::where('phone',$request->mobile)
     					   ->delete();
     		Session::flash('status','Successfuly Reset Password');
     		return redirect('/passwords/reset');

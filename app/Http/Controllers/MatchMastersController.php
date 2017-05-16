@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\Match_Masters;
+
+use App\Match_Master;
+use \App\Team_Master;
 
 class MatchMastersController extends Controller
 {
@@ -13,10 +15,11 @@ class MatchMastersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($Tournament)
     {
-        $match_masters = Match_Masters::get();
-        return view('matchmaster.index',compact('match_masters'));
+//        dd('index');
+        $Matches = Match_Master::all();
+        return view('user.matchmst.index',compact('Matches','Tournament'));
     }
 
     /**
@@ -24,9 +27,11 @@ class MatchMastersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($Tournament)
     {
-        return view('matchmaster.create');
+//        dd('create');
+        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();;
+        return view('user.matchmst.add',compact('Tournament','Teams'));
     }
 
     /**
@@ -35,46 +40,34 @@ class MatchMastersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$Tournament)
     {
-        
+//        dd(request()->all());
         $this->validate(request(), [
-            'tournament_id' => 'required|numeric',
-            'match_name' => 'required',
-            'match_type' => 'required',
+//            'tournament_id' => 'required|numeric',
+            'team1' => 'required|numeric',
+            'team2' => 'required|numeric',
+            'match_name' => 'required|max:190',
+            'ground_name' => 'required|max:190',
+            'match_type' => 'required|max:190',
+            'match_date' => 'required|date|after:'.date('Y-m-d'),
             'overs' => 'required|numeric',
-            'team1_id' => 'required|numeric',
-            'team2_id' => 'required|numeric',
-            'match_date' => 'required|date|before:'.date('Y-m-d'),
-            'win_toss_id' => 'required|numeric',
-            'selected_to_by_toss_winner' => 'required|in:bat,ball'
-
+            'innings' => 'required|numeric',
         ]);
 
-        $data = [
-                'tournament_id' => $request->tournament_id,
-                'match_name' => $request->match_name,
-                'ground_name' => 'BMC Ground',
-                'match_type' => $request->match_type,
-                'overs' => $request->overs,
-                'innings' => '2',
-                'status' => 'running',
-                'toss' => 'Head',
-                'team1_id' => $request->team1_id,
-                'team2_id' => $request->team2_id,
-                'location' => 'mohali',
-                'match_date' => $request->match_date,
-                'ttl_overs' => 40,
-                'ttl_player_each_cnt' => 22,
-                'win_toss_id' => $request->win_toss_id,
-                'selected_to_by_toss_winner' => $request->selected_to_by_toss_winner,
-                'inning_1' => 150,
-                'inning_2' => 124,
-                'created_by' => 25,
-                'created_date' => date('Y-m-d H:i:m')
-                ];
-                Match_Masters::create($data);
-                return redirect()->to('/matchmaster');
+        $Match = new Match_Master();
+        $Match->tournament_id = $Tournament;
+        $Match->team1_id = request('team1');
+        $Match->team2_id = request('team2');
+        $Match->match_name = request('match_name');
+        $Match->ground_name = request('ground_name');
+        $Match->match_type = request('match_type');
+        $Match->match_date = request('match_date');
+        $Match->overs = request('overs');
+        $Match->innings = request('innings');
+        $Match->save();
+        
+        return redirect()->route('match.index',$Tournament);
     }
 
     /**
@@ -83,9 +76,10 @@ class MatchMastersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($Tournament,$id)
     {
-        $match = Match_Masters::find($id);
+        dd('show');
+        $match = Match_Master::find($id);
         return view('matchmaster.show',compact('match'));
     }
 
@@ -95,10 +89,12 @@ class MatchMastersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($Tournament,$id)
     {
-        $match = Match_Masters::find($id);
-        return view('matchmaster.edit',compact('match'));
+//        dd('edit');
+        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
+        $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get()->first();
+        return view('user.matchmst.edit',compact('Tournament','Teams','Match'));
     }
 
     /**
@@ -108,46 +104,35 @@ class MatchMastersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $Tournament,$id)
     {
+//        dd(request()->all() );
         $this->validate(request(), [
-            'tournament_id' => 'required|numeric',
-            'match_name' => 'required',
-            'match_type' => 'required',
+            'team1' => 'required|numeric',
+            'team2' => 'required|numeric',
+            'match_name' => 'required|max:190',
+            'ground_name' => 'required|max:190',
+            'match_type' => 'required|max:190',
+            'match_date' => 'required|date|after:'.date('Y-m-d'),
             'overs' => 'required|numeric',
-            'team1_id' => 'required|numeric',
-            'team2_id' => 'required|numeric',
-            'match_date' => 'required|date|before:'.date('Y-m-d'),
-            'win_toss_id' => 'required|numeric',
-            'selected_to_by_toss_winner' => 'required|in:bat,ball'
-
+            'innings' => 'required|numeric',
         ]);
-
-        $data = [
-                'tournament_id' => $request->tournament_id,
-                'match_name' => $request->match_name,
-                'ground_name' => 'BMC Ground',
-                'match_type' => $request->match_type,
-                'overs' => $request->overs,
-                'innings' => '2',
-                'status' => 'running',
-                'toss' => 'Head',
-                'team1_id' => $request->team1_id,
-                'team2_id' => $request->team2_id,
-                'location' => 'mohali',
-                'match_date' => $request->match_date,
-                'ttl_overs' => 40,
-                'ttl_player_each_cnt' => 22,
-                'win_toss_id' => $request->win_toss_id,
-                'selected_to_by_toss_winner' => $request->selected_to_by_toss_winner,
-                'inning_1' => 150,
-                'inning_2' => 124,
-                'modified_by'=>115,
-                'modified_date'=>date('Y-m-d H:i:m'),
-                ];
-
-        $match = Match_Masters::find($match_id)->update($data);
-        return redirect()->to('/matchmaster');
+        
+        $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get();
+            if($Match){
+                $Match = Match_Master::where('tournament_id', $Tournament)->where('match_id', $id);
+                $Match->update([
+                    'team1_id' => request('team1'),
+                    'team2_id' => request('team2'),
+                    'match_name' => request('match_name'),
+                    'ground_name' => request('ground_name'),
+                    'match_type' => request('match_type'),
+                    'match_date' => request('match_date'),
+                    'overs' => request('overs'),
+                    'innings' => request('innings'),
+                ]);
+            }
+        return redirect()->route('match.index',$Tournament);
 }
 
     /**
@@ -156,8 +141,15 @@ class MatchMastersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+    public function destroy($Tournament,$id)
     {
-        //
+        $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get();
+        if($Match){
+            Match_Master::where(['tournament_id'=>$Tournament,'match_id'=>$id])->delete();
+        }else{
+            dd('Not Exist');
+        }
+        return redirect()->route('match.index',$Tournament);
     }
 }

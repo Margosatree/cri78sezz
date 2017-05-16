@@ -327,6 +327,7 @@
         reader.readAsDataURL(this.files[0]);
     });
 
+
     $('#Save').on('click', function (ev) {
         alert('dasdas');
         $uploadCrop.croppie('result', {

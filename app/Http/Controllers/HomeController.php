@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
+use DB;
 
 class HomeController extends Controller
 {
@@ -25,9 +26,36 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function display(){
+        return view('adminhome');
+    }
     
     public function test()
     {
-        dd(Auth::user()->user_master_id);
+        // $id = Auth::user()->id;
+        // // dd($id);
+        // $check_roles = DB::table('role_user')
+        //     ->select('*')
+        //     ->leftJoin('roles','roles.id','=','role_user.role_id')
+        //     ->where('role_user.user_id', '=', $id)
+        //     ->get();
+        // // dd($check_roles);
+
+        // foreach($check_roles as $check_role){
+        //     if($check_role->is_admin == 1){
+                
+        //     $permissions = DB::table('permission_role')
+        //             ->select('*')
+        //             ->leftJoin('permissions','permissions.id','=','permission_role.permission_id')
+        //             ->where('permission_role.role_id', '=', $check_role->role_id)
+        //             ->get();
+        //         foreach($permissions as $permission){
+        //             $perm = $permission->slug;
+        //             $perms[]=$perm;
+        //         }
+        //     }
+        // }
+        // dd(array_unique($perms));
     }
 }

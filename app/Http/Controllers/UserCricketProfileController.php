@@ -166,8 +166,8 @@ class UserCricketProfileController extends Controller
         
         if($request->hasFile('image')){
             $image = $request->file('image');
-            $data = $request->file('imagedata');
-//            $data = $_POST['imagedata'];
+//            $data = $request->file('imagedata');
+            $data = $_POST['imagedata'];
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
             $filename = time().base64_encode($Cri_Profile->id).'.'.$image->getClientOriginalExtension();

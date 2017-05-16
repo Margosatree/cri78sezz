@@ -12,6 +12,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\VerifyUser;
 use Illuminate\Support\Facades\Mail;
 use App\verify_user;
+use App\role_user;
+use PHPZen\LaravelRbac\Model\Role;
 
 class RegisterController extends Controller
 {
@@ -90,21 +92,21 @@ class RegisterController extends Controller
      */
     protected function create(array $data){
 
+
+        //This is Verify Logic
+
         $User_master = new User_Master;
         $User_master->username = $data['username'];
         $User_master->phone = $data['phone'];
         $User_master->email = $data['email'];
         $User_master->save();
 
-        //This is Verify Logic
-        
         $status_email = $this->sendEmail($data['email']);
-
         $status_sms = $this->sendSms($data['phone']);
 
         $this->redirectTo = '/verify/'.$status_email;
         
-        return User_Organisation::create([
+        $user_orgId = User_Organisation::create([
             'user_master_id' => $User_master->id,
             'organization_master_id' => 0,
             'email' => $User_master->email,
@@ -112,11 +114,19 @@ class RegisterController extends Controller
             'role' => config('constants.role.User'),
         ]);
 
+        $user_role = Role::where('slug','player')->first();
+        $normal_user = $user_role->id;
+
+        $user_role = new role_user;
+        $user_role->user_id = $user_orgId->id;
+        $user_role->role_id = $normal_user;
+        $user_role->save();
+        return $user_orgId;
+
     }
 
 
     function sendEmail($user_email){
-
         $random_num = mt_rand(100000,999999);
         while(true){
             $check_otp = verify_user::where('email_otp',$random_num)
@@ -135,7 +145,7 @@ class RegisterController extends Controller
             if(count($check_email)){
                 // dd($check_email);
                 Mail::to($user_email)
-                    ->send(new VerifyUser($random_num,$token_data));
+                  ->send(new VerifyUser($random_num,$token_data));
 
                 $store_data = ['email'=>$user_email,
                                 'token'=>$token_data,
