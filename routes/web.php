@@ -20,6 +20,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::Resource('/matchmaster','MatchMastersController');
+
 Route::post('/password/check', 'Auth\ForgetMiddleController@checkData')
 		->name('password.check');
 		
