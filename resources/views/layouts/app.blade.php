@@ -63,20 +63,28 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                            @if(Auth::user()->role == "admin")
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                         Users  <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
+                                        @if(session()->has('perms'))
+                                            @foreach(Session::get("perms") as $per)
+                                            @if($per=="UsersBioController.index")
                                             <a href="{{ route('userBio.index') }}">Bio</a>
+                                            @elseif($per=="UserCricketProfileController.index")
                                             <a href="{{ route('criProfile.index') }}">Cricket Profile</a>
+                                            @elseif($per=="OrganizationMasterController.index")
                                             <a href="{{ route('org.index') }}">Org Bio</a>
+                                            @endif
+                                            @endforeach
+                                        @endif
+                                            <a href="/home">home</a>
                                         </li>
                                     </ul>
                                 </li>
-                            @elseif(Auth::user()->role == "organizer")
+                            @if(Auth::user()->role == "organizer")
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                         Master's  <span class="caret"></span>
