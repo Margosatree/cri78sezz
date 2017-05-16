@@ -14,7 +14,7 @@
                         <div class="form-group">
                             <label for="team1" class="col-md-4 control-label">Select Team 1</label>
                             <div class="col-md-6">
-                                <select name="team1" class="form-control">
+                                <select id="team1" name="team1" class="form-control">
                                     <option  value="0" selected="" disabled="">Select Team</option>
                                     @foreach($Teams as $Team)
                                         <option @if($Team->id == $Match->team1_id) selected @endif value="{{$Team->id}}">{{$Team->team_name}}</option>
@@ -30,7 +30,7 @@
                         <div class="form-group">
                             <label for="team2" class="col-md-4 control-label">Select Team 2</label>
                             <div class="col-md-6">
-                                <select name="team2" class="form-control">
+                                <select id="team2" name="team2" class="form-control">
                                     <option  value="0" selected="" disabled="">Select Team</option>
                                     @foreach($Teams as $Team)
                                         <option @if($Team->id == $Match->team2_id) selected @endif value="{{$Team->id}}">{{$Team->team_name}}</option>
@@ -93,47 +93,99 @@
 </div>
 <script>
     function Validateform(){
-//        if($('#title').val() == "" || $('#title').val() == "undefined" || $('#title').val() == "NaN"){
-//            alert('Please Enter Title');
-//            return;
-//        }else{
-//            if($("#title").val().length > 50){
-//                alert('Title Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#name').val() == "" || $('#name').val() == "undefined" || $('#name').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }else{
-//            
-//        }
-//        if($('#start_date').val() == "" || $('#start_date').val() == "undefined" || $('#start_date').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }
-//        if($('#end_date').val() == "" || $('#end_date').val() == "undefined" || $('#end_date').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }
-//        var StartDate = new Date(Date.parse($("#start_date").val()));
-//        var EndDate = new Date(Date.parse($("#end_date").val()));
-//        console.log(EndDate+' '+StartDate);
-//        console.log(EndDate >= StartDate);
-//        if (!(EndDate >= StartDate)) {
-//            alert('Start Date Lesser Then Or Equal To End Date');
-//            return;
-//        }
-//        if($('#location').val() == "" || $('#location').val() == "undefined" || $('#location').val() == "NaN"){
-//            alert('Please Enter Location');
-//            return;
-//        }else{
-//            if($("#location").val().length > 50){
-//                alert('Location Is Too Long');
-//                return;
-//            }
-//        }
+        if($('#team1 option:selected').val() == "" || $('#team1 option:selected').val() == "undefined" || $('#team1 option:selected').val() == "NaN"){
+            alert('Please Select Team 1');
+            return;
+        }else{
+            if($('#team1 option:selected').val() == $('#team2 option:selected').val()){
+                alert('Please Select Another Team');
+            }
+        }
+        if($('#team2 option:selected').val() == "" || $('#team2 option:selected').val() == "undefined" || $('#team2 option:selected').val() == "NaN"){
+            alert('Please Select Team 2');
+            return;
+        }else{
+        }
+        if($('#match_name').val() == "" || $('#match_name').val() == "undefined" || $('#match_name').val() == "NaN"){
+            alert('Please Enter Match Name');
+            return;
+        }else{
+            var Reg = new RegExp(/^[a-zA-Z0-9]+$/i);
+            if (!Reg.test($('#match_name').val())) {
+                alert('Please Enter Valid Match Name');
+                return;
+            }
+        }
+        if($('#ground_name').val() == "" || $('#ground_name').val() == "undefined" || $('#ground_name').val() == "NaN"){
+            alert('Please Enter Match Name');
+            return;
+        }else{
+            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            if (!Reg.test($('#ground_name').val())) {
+                alert('Please Enter Valid Ground Name');
+                return;
+            }
+        }
+        if($('#match_date').val() == "" || $('#match_date').val() == "undefined" || $('#match_date').val() == "NaN"){
+            alert('Please Select Role');
+            return;
+        }
+        if($('#overs').val() == "" || $('#overs').val() == "undefined" || $('#overs').val() == "NaN"){
+            alert('Please Enter Overs');
+            return;
+        }else{
+            if(!$.isNumeric($("#overs").val())){
+                alert('Please Enter Valid Overs');
+                return;
+            }
+        }
+        if($('#overs').val() == "" || $('#overs').val() == "undefined" || $('#overs').val() == "NaN"){
+            alert('Please Enter Overs');
+            return;
+        }else{
+            if(!$.isNumeric($("#overs").val())){
+                alert('Please Enter Valid Overs');
+                return;
+            }
+        }
+        if($('#innings').val() == "" || $('#innings').val() == "undefined" || $('#innings').val() == "NaN"){
+            alert('Please Enter Innings');
+            return;
+        }else{
+            if(!$.isNumeric($("#innings").val()) || $("#innings").val().length !== 6){
+                alert('Invalid Valid Innings');
+                return;
+            }
+        }
         document.getElementById('frm').submit();
     }
+    $('#team1 > option').each(function () {
+        $(this).show();
+        if($("#team2 option:selected").val() === $(this).val()){
+            $(this).hide();
+        }
+    });
+    $('#team2 > option').each(function () {
+        $(this).show();
+        if($("#team1 option:selected").val() === $(this).val()){
+            $(this).hide();
+        }
+    });
+    $( "#team1" ).change(function() {
+        $('#team2 > option').each(function () {
+            $(this).show();
+            if($("#team1 option:selected").val() === $(this).val()){
+                $(this).hide();
+            }
+        });
+    });
+    $( "#team2" ).change(function() {
+        $('#team1 > option').each(function () {
+            $(this).show();
+            if($("#team2 option:selected").val() === $(this).val()){
+                $(this).hide();
+            }
+        });
+    });
 </script>
 @endsection

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use App\Team_Master;
+use App\User_Master;
+use App\User_Organisation;
 class TeamMasterController extends Controller
 {
     /**
@@ -26,7 +28,12 @@ class TeamMasterController extends Controller
      */
     public function create()
     {
-        return view('user.teammst.add');
+        $Users = User_Organisation::selectRaw('user_master_id')
+                    ->where('organization_master_id',Auth::user()->organization_master_id)->get();
+        $Owners = User_Master::selectRaw('id,CONCAT(first_name," ",last_name) AS Owner_Name')
+                    ->whereIn('id',$Users)->get();
+//        dd($Owners);
+        return view('user.teammst.add', compact('Owners'));
     }
 
     /**
@@ -92,8 +99,12 @@ class TeamMasterController extends Controller
      */
     public function edit($id)
     {
+        $Users = User_Organisation::selectRaw('user_master_id')
+                    ->where('organization_master_id',Auth::user()->organization_master_id)->get();
+        $Owners = User_Master::selectRaw('id,CONCAT(first_name," ",last_name) AS Owner_Name')
+                    ->whereIn('id',$Users)->get();
         $Team = Team_Master::find($id);
-        return view('user.teammst.edit',compact('Team'));
+        return view('user.teammst.edit',compact('Team','Owners'));
     }
 
     /**

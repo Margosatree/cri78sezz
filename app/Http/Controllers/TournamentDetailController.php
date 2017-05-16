@@ -17,7 +17,9 @@ class TournamentDetailController extends Controller
      */
     public function index($Tournament)
     {
-        $Tour_Dets = Tournament_Details::all();
+        
+        $Tour_Dets = Tournament_Details::selectRaw('*')
+                    ->where('tournament_id',$Tournament)->get();
         return view('user.tourdet.index',compact('Tour_Dets','Tournament'));
     }
 
@@ -28,7 +30,10 @@ class TournamentDetailController extends Controller
      */
     public function create($Tournament)
     {
-        $Rules = Tournament_Rules::all();
+        $Rule_id = Tournament_Details::selectRaw('rule_id')
+                    ->where('tournament_id',$Tournament)->get();
+        $Rules = Tournament_Rules::selectRaw('*')->whereNotIn('id',$Rule_id)->get();
+//        $Rules = Tournament_Rules::all();
         return view('user.tourdet.add',compact('Rules','Tournament'));
     }
 

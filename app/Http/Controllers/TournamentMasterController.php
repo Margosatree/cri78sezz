@@ -19,7 +19,7 @@ class TournamentMasterController extends Controller
     public function index()
     {
 //        $Tournaments = Tournament_Master::where('organization_master_id',Auth::user()->organization_master_id);
-        $Tournaments = Tournament_Master::selectRaw('*')->where('organization_master_id',Auth::user()->user_master_id)->get();
+        $Tournaments = Tournament_Master::selectRaw('*')->where('organization_master_id',Auth::user()->organization_master_id)->get();
         return view('user.tourmst.index',compact('Tournaments'));
     }
 
@@ -51,6 +51,14 @@ class TournamentMasterController extends Controller
             'reg_start_date' => 'required|date|before:end_date',
             'reg_end_date' => 'required|date|after:start_date',
         ]);
+        
+        $Tournament_Exist = Tournament_Master::selectRaw('count(tournament_name) as count')
+                ->where('organization_master_id',Auth::user()->organization_master_id)
+                ->where('tournament_name',request('tournament_name'))->value('count');
+        
+        if($Tournament_Exist){
+            dd('Tournament Name Already Exist');
+        }
         
         $Tournament = new Tournament_Master;
         $Tournament->tournament_name = request('tournament_name');
@@ -120,6 +128,16 @@ class TournamentMasterController extends Controller
             'reg_start_date' => 'required|date|before:end_date',
             'reg_end_date' => 'required|date|after:start_date',
         ]);
+        
+        
+        $Tournament_Exist = Tournament_Master::selectRaw('count(tournament_name) as count')
+                ->where('organization_master_id',Auth::user()->organization_master_id)
+                ->where('id','!=',$id)
+                ->where('tournament_name',request('tournament_name'))->value('count');
+        if($Tournament_Exist){
+            dd('Tournament Name Already Exist');
+        }
+        
         $Tournament = Tournament_Master::find($id);
         $Tournament->tournament_name = request('tournament_name');
         $Tournament->tournament_location = request('tournament_location');
