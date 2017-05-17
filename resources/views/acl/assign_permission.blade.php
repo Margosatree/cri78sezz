@@ -20,7 +20,7 @@
                             <label for="role_id" class="col-md-4 control-label">Select Role</label>
                                 <div class="col-md-6">
                                       <select name="role_id" class="form-control">
-                                      @foreach($permissionData as $data)
+                                      @foreach($roleData as $data)
                                         <option  value={{$data->id}}>{{ucfirst($data->name)}}</option>
                                          @endforeach
                                       </select>
@@ -37,7 +37,7 @@
                             <label for="permission_id" class="col-md-4 control-label">Select Permission</label>
                                 <div class="col-md-6">
                                       <select name="permission_id[]" multiple class="form-control">
-                                      @foreach($roleData as $team)
+                                      @foreach($permissionData as $team)
                                         <option  value={{$team->id}}>{{ucfirst($team->name)}}</option>
                                          @endforeach
                                       </select>

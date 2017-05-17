@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use PHPZen\LaravelRbac\Model\Role;
+use App\Role;
 class RoleController extends Controller
 {
     public function __construct(){

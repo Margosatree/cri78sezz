@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\User_Organisation;
-use PHPZen\LaravelRbac\Model\Role;
+use App\Role;
 use DB;
 // use App\RoleUser;
 
