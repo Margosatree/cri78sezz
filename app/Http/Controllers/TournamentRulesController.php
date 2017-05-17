@@ -17,6 +17,7 @@ class TournamentRulesController extends Controller
      */
     public function index()
     {
+        
         $Rules = Tournament_Rules::all();
         return view('user.rule.index',compact('Rules'));
     }

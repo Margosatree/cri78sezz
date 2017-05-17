@@ -39,7 +39,7 @@
                                                <span ><i class="fa fa-times"></i></span>
                                             </a>
                                             <a href="/tour/{{$Tournament->id}}/tourdet" class="btn btn-info">
-                                               <span ><i class="fa fa-list"></i></span>
+                                               <span >Rules</span>
                                             </a>
                                             <a href="/tour/{{$Tournament->id}}/match" class="btn btn-info">
                                                <!--<span ><i class="fa fa-list"></i></span>-->

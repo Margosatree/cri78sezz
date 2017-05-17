@@ -16,7 +16,13 @@
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Team Owner</label>
-                                <input id="team_owner_id" type="number" class="form-control" name="team_owner_id" value="" autofocus required="" > 
+                                <!--<input id="team_owner_id" type="number" class="form-control" name="team_owner_id" value="" autofocus required="" >-->
+                                <select id="team_owner_id" name="team_owner_id" class="form-control">
+                                    <option  value="0" selected="" disabled="">Select Owner</option>
+                                    @foreach($Owners as $Owner)
+                                        <option  value="{{$Owner->id}}">{{$Owner->Owner_Name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Team Type</label>
@@ -107,10 +113,11 @@
 <script>
     $uploadCrop = $('#upload-demo').croppie({
         enableExif: true,
+        enforceBoundary : false,
         viewport: {
             width: 200,
             height: 200,
-            type: 'square'
+            type: 'circle'
         },
         boundary: {
             width: 250,
@@ -130,76 +137,76 @@
     });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-            
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();
-//            $.ajax({
-//                url: "ajaxpro.php",
-//                type: "POST",
-//                data: {"image":resp},
-//                success: function (data) {
-//                    html = '<img src="' + resp + '" />';
-//                    $("#upload-demo-i").html(html);
-//                }
-//            });
         });
     });
 </script>
 <script>
     function Validateform(){
-//        if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }else{
-//            
-//        }
-//        if($('input[name=batsman_style]:checked').length <= 0){
-//            alert("Please Select Batsman Style");
-//            return;
-//        }
-//        if($('#batsman_order').val() == "" || $('#batsman_order').val() == "undefined" || $('#batsman_order').val() == "NaN"){
-//            alert('Please Enter Batsman Order');
-//            return;
-//        }else{
-//            var phoneReg = new RegExp(/^\d+$/);
-//            if (!phoneReg.test($('#batsman_order').val())) {
-//                alert('Invalid Batsman Order');
-//                return;
-//            }
-//        }
-//        if($('input[name=bowler_style]:checked').length <= 0){
-//            alert("Please Select Bowler Style");
-//            return;
-//        }
-//        if($('#player_type').val() == "" || $('#player_type').val() == "undefined" || $('#player_type').val() == "NaN"){
-//            alert('Please Enter Player Type');
-//            return;
-//        }else{
-//            if($("#player_type").val().length > 50){
-//                alert('Player Type Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#player_type').val())) {
-//                alert('Player Type Country');
-//                return;
-//            }
-//        }
-//        if($('#description').val() == "" || $('#description').val() == "undefined" || $('#description').val() == "NaN"){
-//            alert('Please Enter Description');
-//            return;
-//        }else{
-//            if($("#description").val().length > 50){
-//                alert('Description Is Too Long');
-//                return;
-//            }
-//        }
+        if($('#team_name').val() == "" || $('#team_name').val() == "undefined" || $('#team_name').val() == "NaN"){
+            alert('Please Enter Team Name');
+            return;
+        }else{
+            if($("#team_name").val().length > 70){
+                alert('Team Name Is Too Long');
+                return;
+            }
+        }
+        if($('#team_owner_id option:selected').val() == "" || $('#team_owner_id option:selected').val() == "undefined" || $('#team_owner_id option:selected').val() == "NaN"){
+            alert('Please Enter Team Owner');
+            return;
+        }else{
+            if($("#team_owner_id option:selected").val() < 0){
+                alert('Please Enter valid Team Owner');
+                return;
+            }
+
+            if(!$.isNumeric($("#team_owner_id option:selected").val())){
+                alert('Please Enter Numeric values only');
+                return;
+            }
+        }
+        if($('#team_type').val() == "" || $('#team_type').val() == "undefined" || $('#team_type').val() == "NaN"){
+            alert('Please Enter Team Type');
+            return;
+        }else{
+            if($("#team_type").val().length > 70){
+                alert('Team Type Is Too Long');
+                return;
+            }
+        }
+        if($('#order_id').val() == "" || $('#order_id').val() == "undefined" || $('#order_id').val() == "NaN"){
+            alert('Please Enter Order');
+            return;
+        }else{
+            if($("#order_id").val() < 0){
+                alert('Please Enter valid Order');
+                return;
+            }
+            if(!$.isNumeric($("#order_id").val())){
+                alert('Please Enter Numeric values only');
+                return;
+            }
+        }
+        if($('#owner_id').val() == "" || $('#owner_id').val() == "undefined" || $('#owner_id').val() == "NaN"){
+            alert('Please Enter Owner');
+            return;
+        }else{
+            if($("#owner_id").val() < 10){
+                alert('Please Enter valid Owner');
+                return;
+            }
+            if(!$.isNumeric($("#owner_id").val())){
+                alert('Please Enter Numeric values only');
+                return;
+            }
+        }
         document.getElementById('frm').submit();
     }
 </script>

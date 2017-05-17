@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit Organization Info</div>
                 <div class="panel-body">
                     @if($Tournament->id > 0 )
-                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/tournament/{{$Tournament->id}}">
+                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/tourmst/{{$Tournament->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         <div class=" col-md-6 col-sm-6 col-xs-12">
@@ -139,108 +139,60 @@
 </script>
 <script>
     function Validateform(){
-//        if($('#name').val() == "" || $('#name').val() == "undefined" || $('#name').val() == "NaN"){
-//            alert('Please Enter Organisation Name');
-//            return;
-//        }else{
-//            if($("#name").val().length > 70){
-//                alert('Organisation Name Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#business_type').val() == "" || $('#business_type').val() == "undefined" || $('#business_type').val() == "NaN"){
-//            alert('Please Enter Business Type');
-//            return;
-//        }else{
-//            if($("#business_type").val().length > 70){
-//                alert('Business Type Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#business_operation').val() == "" || $('#business_operation').val() == "undefined" || $('#business_operation').val() == "NaN"){
-//            alert('Please Enter Business Operation');
-//            return;
-//        }else{
-//            if($("#business_operation").val().length > 70){
-//                alert('Business Operation Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#address').val() == "" || $('#address').val() == "undefined" || $('#address').val() == "NaN"){
-//            alert('Please Enter Address');
-//            return;
-//        }else{
-//            if($("#address").val().length > 70){
-//                alert('Address Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#landmark').val() == "" || $('#landmark').val() == "undefined" || $('#landmark').val() == "NaN"){
-//            alert('Please Enter Landmark');
-//            return;
-//        }else{
-//            if($("#landmark").val().length > 25){
-//                alert('Landmark Is Too Long');
-//                return;
-//            }
-//        }
-//        if($('#pin').val() == "" || $('#pin').val() == "undefined" || $('#pin').val() == "NaN"){
-//            alert('Please Enter Pincode');
-//            return;
-//        }else{
-//            if($('#pin').inputmask('unmaskedvalue').length !== 6){
-//                alert('Please Entre Valid Pincode');
-//                return;
-//            }
-//        }
-//        if($('#city').val() == "" || $('#city').val() == "undefined" || $('#city').val() == "NaN"){
-//            alert('Please Enter City');
-//            return;
-//        }else{
-//            if($("#city").val().length > 20){
-//                alert('City Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#city').val())) {
-//                alert('Invalid City');
-//                return;
-//            }
-//        }
-//        if($('#state').val() == "" || $('#state').val() == "undefined" || $('#state').val() == "NaN"){
-//            alert('Please Enter State');
-//            return;
-//        }else{
-//            if($("#state").val().length > 20){
-//                alert('State Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#state').val())) {
-//                alert('Invalid State');
-//                return;
-//            }
-//        }
-//        if($('#country').val() == "" || $('#country').val() == "undefined" || $('#country').val() == "NaN"){
-//            alert('Please Enter Country');
-//            return;
-//        }else{
-//            if($("#country").val().length > 20){
-//                alert('Country Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#country').val())) {
-//                alert('Invalid Country');
-//                return;
-//            }
-//        }
-//        if($('#spoc').val() == "" || $('#spoc').val() == "undefined" || $('#spoc').val() == "NaN"){
-//            alert('Please Enter SPOC');
-//            return;
-//        }else{
-//            
-//        }
+        if($('#tournament_name').val() == "" || $('#tournament_name').val() == "undefined" || $('#tournament_name').val() == "NaN"){
+            alert('Please Enter Tournament Name');
+            return;
+        }else{
+            if($("#tournament_name").val().length > 70){
+                alert('Tournament Name Is Too Long');
+                return;
+            }
+        }
+
+        if($('#tournament_location').val() == "" || $('#tournament_location').val() == "undefined" || $('#tournament_location').val() == "NaN"){
+            alert('Please Enter Tournament Location');
+            return;
+        }else{
+            if($("#tournament_location").val().length > 70){
+                alert('Tournament Location Is Too Long');
+                return;
+            }
+        }
+
+        if($('#start_date').val() == "" || $('#start_date').val() == "undefined" || $('#start_date').val() == "NaN"){
+            alert('Please Select Start Date');
+            return;
+        }
+
+        if($('#end_date').val() == "" || $('#end_date').val() == "undefined" || $('#end_date').val() == "NaN"){
+            alert('Please Select End Date');
+            return;
+        }
+        var StartDate = new Date(Date.parse($("#start_date").val()));
+        var EndDate = new Date(Date.parse($("#end_date").val()));
+        console.log(EndDate+' '+StartDate);
+        console.log(EndDate >= StartDate);
+        if (!(EndDate >= StartDate)) {
+            alert('Start Date SHOULD BE Lesser Then Or Equal To End Date');
+            return;
+        }
+
+        if($('#reg_start_date').val() == "" || $('#reg_start_date').val() == "undefined" || $('#reg_start_date').val() == "NaN"){
+            alert('Please Select Reg. Start Date');
+            return;
+        }
+        if($('#reg_end_date').val() == "" || $('#reg_end_date').val() == "undefined" || $('#reg_end_date').val() == "NaN"){
+            alert('Please Select Reg. End Date');
+            return;
+        }
+        var RegStartDate = new Date(Date.parse($("#reg_start_date").val()));
+        var RegEndDate = new Date(Date.parse($("#reg_end_date").val()));
+        console.log(RegEndDate+' '+RegStartDate);
+        console.log(RegEndDate >= RegStartDate);
+        if (!(RegEndDate >= RegStartDate)) {
+            alert('Reg.Start Date SHOULD BE Lesser Then Or Equal To Reg.End Date');
+            return;
+        }
         document.getElementById('frm').submit();
     }
 </script>

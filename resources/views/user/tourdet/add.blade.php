@@ -76,53 +76,28 @@
 
 <script>
     function Validateform(){
-//        if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }else{
-//            
-//        }
-//        if($('input[name=batsman_style]:checked').length <= 0){
-//            alert("Please Select Batsman Style");
-//            return;
-//        }
-//        if($('#batsman_order').val() == "" || $('#batsman_order').val() == "undefined" || $('#batsman_order').val() == "NaN"){
-//            alert('Please Enter Batsman Order');
-//            return;
-//        }else{
-//            var phoneReg = new RegExp(/^\d+$/);
-//            if (!phoneReg.test($('#batsman_order').val())) {
-//                alert('Invalid Batsman Order');
-//                return;
-//            }
-//        }
-//        if($('input[name=bowler_style]:checked').length <= 0){
-//            alert("Please Select Bowler Style");
-//            return;
-//        }
-//        if($('#player_type').val() == "" || $('#player_type').val() == "undefined" || $('#player_type').val() == "NaN"){
-//            alert('Please Enter Player Type');
-//            return;
-//        }else{
-//            if($("#player_type").val().length > 50){
-//                alert('Player Type Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#player_type').val())) {
-//                alert('Player Type Country');
-//                return;
-//            }
-//        }
-//        if($('#description').val() == "" || $('#description').val() == "undefined" || $('#description').val() == "NaN"){
-//            alert('Please Enter Description');
-//            return;
-//        }else{
-//            if($("#description").val().length > 50){
-//                alert('Description Is Too Long');
-//                return;
-//            }
-//        }
+        if($('#rule option:selected').val() == "" || $('#rule option:selected').val() == "undefined" || $('#rule option:selected').val() == "NaN"){
+            alert('Please Enter Team Owner');
+            return;
+        }else{
+            if($("#rule option:selected").val() < 0){
+                alert('Please Enter valid Rule');
+                return;
+            }
+            if(!$.isNumeric($("#rule option:selected").val())){
+                alert('Invalid Rule');
+                return;
+            }
+        }
+        if($('#value').val() == "" || $('#value').val() == "undefined" || $('#value').val() == "NaN"){
+            alert('Please Enter Value');
+            return;
+        }else{
+            if($("#value").val().length > 70){
+                alert('Organisation Name Is Too Long');
+                return;
+            }
+        }
         document.getElementById('frm').submit();
     }
 </script>
