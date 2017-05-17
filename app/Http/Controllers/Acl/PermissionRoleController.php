@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Permission;
-use App\Role;
+use PHPZen\LaravelRbac\Model\Permission;
+use PHPZen\LaravelRbac\Model\Role;
 // use App\PermissionRole;
 class PermissionRoleController extends Controller
 {

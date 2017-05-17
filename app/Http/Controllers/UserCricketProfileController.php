@@ -110,11 +110,16 @@ class UserCricketProfileController extends Controller
     public function show($id)
     {
 //        dd($id);
-        $User_Exists = User_Cricket_Profile::selectRaw('count(id) as count')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+        if(!Auth::guard('admin')->check()){
+            $id = Auth::user()->user_master_id;
+        }else{
+            $id = Auth::guard('admin')->user()->user_master_id;
+        }
+        $User_Exists = User_Cricket_Profile::selectRaw('count(id) as count')->where('user_master_id',$id)->get()->first();
 //        dd($User_Exists->count);
         if($User_Exists->count){
-            $Bio = User_Master::find(Auth::user()->user_master_id);
-            $Cri_Profile = User_Cricket_Profile::select('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+            $Bio = User_Master::find($id);
+            $Cri_Profile = User_Cricket_Profile::select('*')->where('user_master_id',$id)->get()->first();
             return view('user.criprofile.show',compact('Cri_Profile','Bio'));
         }else{
             return view('user.criprofile.add');

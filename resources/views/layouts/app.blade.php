@@ -63,6 +63,7 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
+                            @if(Auth::guard('admin')->check())
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                         Users  <span class="caret"></span>
@@ -80,11 +81,11 @@
                                             @endif
                                             @endforeach
                                         @endif
-                                            <a href="/home">home</a>
+                                            <a href="/">home</a>
                                         </li>
                                     </ul>
                                 </li>
-                            @if(Auth::user()->role == "organizer")
+                            @elseif(Auth::user()->role == "organizer")
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                         Master's  <span class="caret"></span>
@@ -113,7 +114,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="/Profile/{{Auth::user()->user_master_id}}"><b>Profile</b></a>
+                                        <a href="/Profile/{{Auth::check() ? Auth::user()->user_master_id :Auth::guard('admin')->user()->user_master_id}}"><b>Profile</b></a>
                                         <div role="separator" class="divider"></div>
                                         <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"
@@ -121,7 +122,7 @@
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        <form id="logout-form" action="{{route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
