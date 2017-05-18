@@ -213,7 +213,7 @@
                         </div>
                         
                         <div class="item form-group">
-                            <<!-- div class="col-md-6"> -->
+                            <!-- <div class="col-md-6"> -->
                                 <div id="upload-demo" style="width:350px"></div>
                             <!-- </div> -->
                         </div>
@@ -256,7 +256,7 @@
             <!-- End SmartWizard Content -->
                 <!-- <hr> -->
                 <div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="form-group">
                         
                             <div class="col-md-1 col-md-offset-5">
@@ -271,7 +271,7 @@
                                 </button>
                             </div>
                         </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
           </div>
@@ -329,7 +329,7 @@
 
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
+        // alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'

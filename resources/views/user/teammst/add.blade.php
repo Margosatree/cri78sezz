@@ -198,7 +198,7 @@
             alert('Please Enter Owner');
             return;
         }else{
-            if($("#owner_id").val() < 10){
+            if($("#owner_id").val() <= 0){
                 alert('Please Enter valid Owner');
                 return;
             }

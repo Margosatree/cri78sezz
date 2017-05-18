@@ -161,8 +161,8 @@
             alert('Please Enter Innings');
             return;
         }else{
-            if(!$.isNumeric($("#innings").val()) || $("#innings").val().length !== 6){
-                alert('Invalid Valid Innings');
+            if(!$.isNumeric($("#innings").val())){
+                alert('Invalid Innings');
                 return;
             }
         }

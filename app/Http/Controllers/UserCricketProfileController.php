@@ -46,7 +46,7 @@ class UserCricketProfileController extends Controller
      */
     
     public function store(Request $request){
-//        dd($request->all());
+       // dd($request->all());
         $this->validate($request,[
             'your_role' => 'required|numeric',
             'batsman_style' => 'required|in:Lefthand,Righthand',
@@ -69,6 +69,7 @@ class UserCricketProfileController extends Controller
         $User_Cri_Profile->description = request('description');
         
         if($request->hasFile('image')){
+            // dd(request()->all());
             $image = $request->file('image');
 //            $data = $request->file('imagedata');
             $data = $_POST['imagedata'];

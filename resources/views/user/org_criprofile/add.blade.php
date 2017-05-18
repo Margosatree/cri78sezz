@@ -231,7 +231,7 @@
                         
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="Submit" style="width: 100%" onclick="Validatecri();" class="btn btn-primary">
+                                <button id="Save" type="button" style="width: 100%" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -489,62 +489,16 @@
         reader.readAsDataURL(this.files[0]);
     });
 
-    $('#Save').on('click', function (ev) {
-        alert('dasdas');
-        $uploadCrop.croppie('result', {
-            type: 'canvas',
-            size: 'viewport'
-        }).then(function (resp) {
-//            console.log(resp);
-            $('#imagedata').val(resp);
-//            console.log($('#imagedata').val());
-            Validatecri();
-//            $.ajax({
-//                url: "ajaxpro.php",
-//                type: "POST",
-//                data: {"image":resp},
-//                success: function (data) {
-//                    html = '<img src="' + resp + '" />';
-//                    $("#upload-demo-i").html(html);
-//                }
-//            });
-        });
-    });
-</script>
-<script>
-    $uploadCrop = $('#upload-demo').croppie({
-        enableExif: true,
-        viewport: {
-            width: 150,
-            height: 150,
-            type: 'square'
-        },
-        boundary: {
-            width: 200,
-            height: 200
-        }
-    });
-    $('#upload').on('change', function () { 
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $uploadCrop.croppie('bind', {
-                url: e.target.result
-            }).then(function(){
-                console.log('jQuery bind complete');
-            });
-        }
-        reader.readAsDataURL(this.files[0]);
-    });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
+        // alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-//            console.log(resp);
+            // console.log(resp);return;
             $('#imagedata').val(resp);
-//            console.log($('#imagedata').val());
+            console.log($('#imagedata').val());
             Validatecri();
 //            $.ajax({
 //                url: "ajaxpro.php",
@@ -558,6 +512,7 @@
         });
     });
 </script>
+
 <script>
     function Validatecri(){
         if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){

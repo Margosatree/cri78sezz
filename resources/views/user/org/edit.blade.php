@@ -8,7 +8,7 @@
                 <div class="panel-heading">Edit Organization Info</div>
                 <div class="panel-body">
                     @if($Org->id > 0 )
-                        <form class="form-horizontal" role="form" method="POST" action="/org/{{$Org->id}}">
+                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/org/{{$Org->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         <div class="form-group">
@@ -91,7 +91,7 @@
                         @endif
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
-                                <button type="button" style="width: 100%" onclick="Validateform();" class="btn btn-primary">
+                                <button id="" type="button" style="width: 100%" onclick="Validateform();" class="btn btn-primary">
                                     Update
                                 </button>
                             </div>

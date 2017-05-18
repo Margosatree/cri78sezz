@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateMatchMastersTable extends Migration {
+class CreateMatchMasterTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,20 +12,20 @@ class CreateMatchMastersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('match_masters', function(Blueprint $table)
+		Schema::create('match_master', function(Blueprint $table)
 		{
-			$table->increments('match_id')->primary();
+			$table->increments('match_id');
 			$table->integer('tournament_id')->nullable();
-			$table->string('match_name')->nullable();
-			$table->string('ground_name')->nullable();
-			$table->string('match_type')->nullable();
-			$table->integer('overs')->nullable();
-			$table->integer('innings')->nullable();
-			$table->string('status')->nullable();
-			$table->string('toss')->nullable();
 			$table->integer('team1_id')->nullable();
 			$table->integer('team2_id')->nullable();
-			$table->string('location')->nullable();
+			$table->string('match_name', 191)->nullable();
+			$table->string('ground_name', 191)->nullable();
+			$table->string('match_type', 191)->nullable();
+			$table->integer('overs')->nullable();
+			$table->integer('innings')->nullable();
+			$table->string('status', 191)->nullable();
+			$table->string('toss', 191)->nullable();
+			$table->string('location', 191)->nullable();
 			$table->dateTime('match_date')->nullable();
 			$table->integer('ttl_overs')->nullable();
 			$table->integer('ttl_player_each_cnt')->nullable();
@@ -33,10 +33,6 @@ class CreateMatchMastersTable extends Migration {
 			$table->enum('selected_to_by_toss_winner', array('bat','ball'))->nullable();
 			$table->integer('inning_1')->nullable();
 			$table->integer('inning_2')->nullable();
-			$table->integer('created_by')->nullable();
-			$table->dateTime('created_date')->nullable();
-			$table->integer('modified_by')->nullable();
-			$table->dateTime('modified_date')->nullable();
 		});
 	}
 
@@ -48,7 +44,7 @@ class CreateMatchMastersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('match_masters');
+		Schema::drop('match_master');
 	}
 
 }

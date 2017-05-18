@@ -21,11 +21,11 @@ class MatchMastersController extends Controller
     public function index($Tournament)
     {
 //        dd('index');
-        $Tour_id = Tournament_Master::selectRaw('organization_master_id')
+        $Tour_id = Tournament_Master::selectRaw('id')
                     ->where('organization_master_id',Auth::user()->organization_master_id)
                     ->where('id',$Tournament)->get();
         $Matches = Match_Master::selectRaw('*')->whereIn('tournament_id',$Tour_id)->get();
-//        dd($Matches);
+       // dd($Matches);
 //        $Matches = Match_Master::all();
         return view('user.matchmst.index',compact('Matches','Tournament'));
     }
