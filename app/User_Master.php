@@ -15,4 +15,7 @@ class User_Master extends Model
     public function user_master(){
         return $this->belongsTo(User::class);
     }
+    public function team_masters(){
+        return $this->hasMany(User_Master::class);
+    }
 }

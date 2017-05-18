@@ -20,7 +20,7 @@ class MatchMastersController extends Controller
     public function index($Tournament)
     {
 //        dd('index');
-        $Tour_id = Tournament_Master::selectRaw('organization_master_id')
+        $Tour_id = Tournament_Master::selectRaw('id')
                     ->where('organization_master_id',Auth::user()->organization_master_id)
                     ->where('id',$Tournament)->get();
         $Matches = Match_Master::selectRaw('*')->whereIn('tournament_id',$Tour_id)->get();
@@ -37,8 +37,10 @@ class MatchMastersController extends Controller
     public function create($Tournament)
     {
 //        dd('create');
-        
-        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
+        $Owner_Id = User_Organisation::selectRaw('user_master_id')
+                ->where('organization_master_id',Auth::user()->organization_master_id)->get();
+        $Teams = Team_Master::selectRaw('*')->whereIn('team_owner_id',$Owner_Id)->get();
+//        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
         return view('user.matchmst.add',compact('Tournament','Teams','Owners'));
     }
 

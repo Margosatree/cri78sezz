@@ -16,8 +16,9 @@ class TeamMasterController extends Controller
      */
     public function index()
     {
-//        $Teams = Team_Master::where('team_owner_id',Auth::user()->organization_master_id);
-        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
+        $Owner_Id = User_Organisation::selectRaw('user_master_id')
+                ->where('organization_master_id',Auth::user()->organization_master_id)->get();
+        $Teams = Team_Master::selectRaw('*')->whereIn('team_owner_id',$Owner_Id)->get();
         return view('user.teammst.index',compact('Teams'));
     }
 
@@ -46,7 +47,7 @@ class TeamMasterController extends Controller
     {
 //        dd(request()->all());
         $this->validate($request,[
-            'team_name' => 'required|max:190',
+            'team_name' => 'required|max:190|unique:team_master',
             'team_owner_id' => 'required|numeric',
             'team_logo' => 'max:190',
             'team_type' => 'required|max:190',

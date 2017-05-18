@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\User_Master;
 class Team_Master extends Model
 {
     protected $table = 'team_master';
@@ -13,6 +13,6 @@ class Team_Master extends Model
     ];
     
     public function owner(){
-        return $this->belongsTo(Tournament_Rules::class,'rule_id','id');
+        return $this->belongsTo(User_Master::class,'team_owner_id','id');
     }
 }

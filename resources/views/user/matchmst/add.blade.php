@@ -129,7 +129,7 @@
             alert('Please Enter Match Name');
             return;
         }else{
-            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
+            var Reg = new RegExp(/^[A-Za-z0-9 _.-]+$/);
             if (!Reg.test($('#ground_name').val())) {
                 alert('Please Enter Valid Ground Name');
                 return;
@@ -161,7 +161,7 @@
             alert('Please Enter Innings');
             return;
         }else{
-            if(!$.isNumeric($("#innings").val()) || $("#innings").val().length !== 6){
+            if(!$.isNumeric($("#innings").val())){
                 alert('Invalid Valid Innings');
                 return;
             }

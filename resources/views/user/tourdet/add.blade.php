@@ -12,7 +12,7 @@
                         <div class="form-group">
                             <label for="shiftid" class="col-md-4 control-label">Select Rule</label>
                             <div class="col-md-6">
-                                <select name="rule" class="form-control">
+                                <select id="rule" name="rule" class="form-control">
                                     <option  value="0" selected disabled>Select Rule</option>
                                     @foreach($Rules as $Rule)
                                         <option  value="{{$Rule->id}}">{{$Rule->name}}</option>

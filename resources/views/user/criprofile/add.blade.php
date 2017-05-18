@@ -180,7 +180,6 @@
     });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
@@ -189,15 +188,6 @@
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();
-//            $.ajax({
-//                url: "ajaxpro.php",
-//                type: "POST",
-//                data: {"image":resp},
-//                success: function (data) {
-//                    html = '<img src="' + resp + '" />';
-//                    $("#upload-demo-i").html(html);
-//                }
-//            });
         });
     });
 </script>

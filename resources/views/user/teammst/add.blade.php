@@ -51,10 +51,10 @@
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <button type="button" class="btn btn-default btn-file" style="margin-top: 20px">
-                                        <span>Add Logo</span>
-                                        <input type="file"  name="image" id="upload" required="">
-                                        <input type="hidden"  name="imagedata" id="imagedata" required="">
-                                    </button>
+                                    <span>Add Logo</span>
+                                    <input type="file"  name="image" id="upload" required="">
+                                    <input type="hidden"  name="imagedata" id="imagedata" required="">
+                                </button>
                             </div>
                             
                         </div>
@@ -185,7 +185,7 @@
             alert('Please Enter Order');
             return;
         }else{
-            if($("#order_id").val() < 0){
+            if($("#order_id").val() <= 0){
                 alert('Please Enter valid Order');
                 return;
             }
@@ -198,7 +198,7 @@
             alert('Please Enter Owner');
             return;
         }else{
-            if($("#owner_id").val() < 10){
+            if($("#owner_id").val() <= 0){
                 alert('Please Enter valid Owner');
                 return;
             }

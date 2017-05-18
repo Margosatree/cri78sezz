@@ -27,7 +27,7 @@
                                             <img src ="{{asset('images/'.$Team->team_logo)}}" style="width: 30%;height: 30%" class="img-rounded"/>
                                             <b>{{ $Team->team_name }}</b>
                                         </td>
-                                        <td>{{ $Team->team_owner_id }}</td>
+                                        <td>{{ $Team->owner->first_name." ".$Team->owner->last_name }}</td>
                                         <td>{{ $Team->team_type }}</td>
                                         <td>
                                             <a href="/team/{{$Team->id}}/edit" class="btn btn-info">
