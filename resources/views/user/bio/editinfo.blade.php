@@ -8,32 +8,32 @@
                 <div class="panel-heading">Edit User Bio</div>
                 <div class="panel-body">
                     @if($Bio->id > 0 )
-                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
+                        <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
-                        
+
                         <div class="form-group">
                             <label for="first_name" class="col-md-4 control-label">First Name</label>
                             <div class="col-md-6">
-                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
+                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ $Bio->first_name }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="middle_name" class="col-md-4 control-label">Middle Name</label>
                             <div class="col-md-6">
-                                <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{ old('middle_name') }}" required autofocus>
+                                <input id="middle_name" type="text" class="form-control" name="middle_name" value="{{  $Bio->middle_name }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_name" class="col-md-4 control-label">Last Name</label>
                             <div class="col-md-6">
-                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
+                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ $Bio->last_name }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="date_of_birth" class="col-md-4 control-label">Date Of Birth</label>
                             <div class="col-md-6">
-                                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required autofocus>
+                                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ $Bio->date_of_birth }}" required autofocus>
                             </div>
                         </div>
                         <div class="form-group">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">physically challenged</label>
-                            
+
                             <div class="col-md-offset-4">
                                 <div class="col-md-3">
                                     <input id="yes" type="radio" class="" name="physically_challenged" value="yes" @if( old('physically_challenged') == 'yes') checked @endif > Yes
@@ -67,18 +67,18 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="button" onclick="event.preventDefault();
-                                    document.getElementById('frmskip').submit();" 
+                                    document.getElementById('frmskip').submit();"
                                     style="width: 100%" class="btn btn-primary">
                                     Cancel
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get" 
+                    <form id="frmskip" method="get"
                         @if(Auth::user()->role == "admin")
                             action="{{route('userBio.index')}}"
                         @else
-                            action="{{route('Profile.show',Auth::user()->user_master_id)}}"
+                            action="{{route('profile.show',Auth::user()->user_master_id)}}"
                         @endif
                         >
                     </form>
@@ -185,7 +185,7 @@
             $('#city').val(add[0].trim());
             $('#state').val(add[1].substring(0,add[1].trim().indexOf(" ")+1).trim());
             $('#country').val(add[2].trim());
-            
+
         }
         if($('#city').val() == ""){
             $('#city').attr('readonly',false);

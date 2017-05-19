@@ -53,7 +53,7 @@
                                 <input id="city" type="text" class="form-control" name="city" value="{{ $Org->city }}" required autofocus>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="state" class="col-md-4 control-label">State</label>
                             <div class="col-md-6">
@@ -67,8 +67,8 @@
                                 <input id="country" type="text" class="form-control " name="country" value="{{ $Org->country }}" required>
                             </div>
                         </div>
-                        
-                        
+
+
                         <div class="form-group">
                             <label for="spoc" class="col-md-4 control-label">Spoc</label>
                             <div class="col-md-6">
@@ -97,18 +97,18 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="button" onclick="event.preventDefault();
-                                    document.getElementById('frmskip').submit();" 
+                                    document.getElementById('frmskip').submit();"
                                     style="width: 100%" class="btn btn-primary">
                                     Cancel
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get" 
+                    <form id="frmskip" method="get"
                         @if(Auth::user()->role == "admin")
                             action="{{route('org.index')}}"
                         @else
-                            action="{{route('Profile.show',Auth::user()->user_master_id)}}"
+                            action="{{route('profile.show',Auth::user()->user_master_id)}}"
                         @endif
                         >
                     </form>
@@ -227,7 +227,7 @@
             alert('Please Enter SPOC');
             return;
         }else{
-            
+
         }
         document.getElementById('frm').submit();
     }
@@ -279,7 +279,7 @@
             $('#city').val(add[0].trim());
             $('#state').val(add[1].substring(0,add[1].trim().indexOf(" ")+1).trim());
             $('#country').val(add[2].trim());
-            
+
         }
         if($('#city').val() == ""){
             $('#city').attr('readonly',false);
@@ -302,6 +302,6 @@
         function validPin(){
             getAddressfromZip();
         }
-        
+
 </script>
 @endsection
