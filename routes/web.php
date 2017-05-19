@@ -21,7 +21,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::Resource('/matchmaster','MatchMastersController');
-		
+
 Route::Resource('/verify','UserVerifyController');
 
 Route::get('/verifes/{token}/{otp}','UserVerifyController@showVerify');
@@ -48,7 +48,9 @@ Route::Resource('/org','OrganizationMasterController');
 
 Route::Resource('/criProfile','UserCricketProfileController');
 
-Route::Resource('/Profile','UserProfileController');
+Route::get('/Profile/{id}','UserProfileController@show')->name('profile.show');
+
+Route::get('/ProfileUser/{id}','UserProfileController@showUSer')->name('profile.showUser');
 
 Route::Resource('/userAchieve','UserAchievementController');
 
@@ -72,7 +74,7 @@ Route::post('/pass/{id}/adminupdate','ChangePasswordController@adminupdate')->na
 Route::prefix('admin')->group(function(){
     Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
-    
+
     Route::get('home','AdminController@dashboard')->name('admin.dashboard');
     //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
 });
@@ -100,7 +102,7 @@ Route::post('password/resetSms','Auth\PassswordController@resetSms')
 
 //ACL
 
-Route::get('/adminhome', 'HomeController@display')->name('adminhome');	  
+Route::get('/adminhome', 'HomeController@display')->name('adminhome');
 Route::get('/create_role', 'Acl\RoleController@create')->name('create_role');
 Route::post('/create_role', 'Acl\RoleController@store');
 

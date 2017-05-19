@@ -44,7 +44,7 @@ class TeamMasterController extends Controller
      */
     public function store(Request $request)
     {
-//        dd(request()->all());
+      // var_dump(request()->all());
         $this->validate($request,[
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
@@ -53,7 +53,7 @@ class TeamMasterController extends Controller
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
         ]);
-        
+
         $Team = new Team_Master;
         $Team->team_name = request('team_name');
         $Team->team_owner_id = request('team_owner_id');
@@ -62,18 +62,19 @@ class TeamMasterController extends Controller
         $Team->owner_id = request('owner_id');
 //        dd($Team->id);
         if($request->hasFile('image')){
-//            dd('Image');
+          //  dd($_POST['imagedata']);
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-            
+
+
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
             $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            
+
             $Team->team_logo = $filename;
-//            dd($Team->team_logo);
+           dd($Team->team_logo);
 //            $request->session()->put('user_img', $Team->team_logo);
         }
         $Team->save();
@@ -116,7 +117,7 @@ class TeamMasterController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        dd(request()->all());
+        // dd($request->hasFile('image'));
         $this->validate($request,[
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
@@ -125,7 +126,7 @@ class TeamMasterController extends Controller
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
         ]);
-        
+
         $Team = Team_Master::find($id);
         $Team->team_name = request('team_name');
         $Team->team_owner_id = request('team_owner_id');
@@ -134,16 +135,16 @@ class TeamMasterController extends Controller
         $Team->owner_id = request('owner_id');
 //        dd(request('image'));
         if($request->hasFile('image')){
-            dd('Image');
+            // dd('Image');
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-            
+
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
             $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            
+
             $Team->team_logo = $filename;
 //            dd($Team->team_logo);
 //            $request->session()->put('user_img', $Team->team_logo);

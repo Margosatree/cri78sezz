@@ -1,16 +1,16 @@
 
 html , body{
-	
+
  height:100%;
- 
+
 }
- 
+
 .full-width {
-	
+
  width:100%;
- 
+
  }
- 
+
 .full-height{
  height:100%;
  }
@@ -3832,7 +3832,7 @@ fieldset {
     max-width: 350px;
     padding: 0;
     border: 0 solid #CCC;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
 }
 .wizard_horizontal ul.wizard_steps {
     display: table;
@@ -3911,7 +3911,7 @@ fieldset {
     text-align: center;
     margin-top: 10px;
     clear: both;
-    
+
 }
 .actionBar .buttonDisabled {
     cursor: not-allowed;
@@ -4238,7 +4238,7 @@ ul.notifications {
 table thead .checkbox { margin-top:-7px;margin-top:-21px; }
 table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 */
-			
+
 .daterangepicker.xdisplay { width:228px; }
 
 .dataTables_wrapper > .row{

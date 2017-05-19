@@ -20,30 +20,30 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="specification" class="col-md-4 control-label">Specification</label>
                             <div class="col-md-6">
-                                <input id="specification" type="text" class="form-control" name="specification" value="" autofocus required="" > 
+                                <input id="specification" type="text" class="form-control" name="specification" value="" autofocus required="" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="value" class="col-md-4 control-label">Value</label>
                             <div class="col-md-6">
-                                <input id="value" type="text" class="form-control" name="value" value="" autofocus required="" > 
+                                <input id="value" type="text" class="form-control" name="value" value="" autofocus required="" >
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="range_from" class="col-md-4 control-label">Range From</label>
                             <div class="col-md-6">
-                                <input id="range_from" type="number" class="form-control" name="range_from" value="" autofocus required="" > 
+                                <input id="range_from" type="number" class="form-control" name="range_from" value="" autofocus required="" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="range_to" class="col-md-4 control-label">Range To</label>
                             <div class="col-md-6">
-                                <input id="range_to" type="number" class="form-control" name="range_to" value="" autofocus required="" > 
+                                <input id="range_to" type="number" class="form-control" name="range_to" value="" autofocus required="" >
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,7 +118,7 @@
             height: 250
         }
     });
-    $('#upload').on('change', function () { 
+    $('#upload').on('change', function () {
         var reader = new FileReader();
         reader.onload = function (e) {
             $uploadCrop.croppie('bind', {
@@ -131,12 +131,12 @@
     });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
+        // alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-            
+
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();
@@ -158,7 +158,7 @@
 //            alert('Please Select Role');
 //            return;
 //        }else{
-//            
+//
 //        }
 //        if($('input[name=batsman_style]:checked').length <= 0){
 //            alert("Please Select Batsman Style");

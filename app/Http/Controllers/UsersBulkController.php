@@ -9,18 +9,20 @@ use App\User_Organisation;
 use Auth;
 use Excel;
 use Validator;
+use Hash;
 use Session;
 class UsersBulkController extends Controller
 {
-    
+
     public function __construct(){
 //        $this->middleware('auth:admin',['only'=>['index']]);
         $this->middleware('auth');
 //        $this->middleware('auth',['except'=>['index']]);
     }
-    
+
     public function bulkUploadView(){
-        return view('user.org.bulk');
+        $Errors = 0;
+        return view('user.org.bulk', compact('Errors'));
     }
     public function bulkUpload(Request $request){
 //        dd('dasdas');
@@ -29,7 +31,7 @@ class UsersBulkController extends Controller
             $path = Input::file('import_file')->getRealPath();
             $data = Excel::load($path, function($reader) {
             })->get();
-                    
+
             if(!empty($data) && $data->count()){
                 $Errors = array();
                 $count = 0;
@@ -37,12 +39,12 @@ class UsersBulkController extends Controller
                     if(isset($value['username']) || !isEmpty($value['username'])){
                         if(strlen(''.$value['username']) > 50){
                             $username['lengh'] = 'Username Filed Is Too Long';
-                        }    
-                        if(ctype_alnum(''.$value['username'])){
+                        }
+                        if(!ctype_alnum(''.$value['username'])){
                             $username['alpha_num'] = 'Must Be Alphanumeric';
-                        }    
-                        $Username_Exists = User_Master::selectRaw('count(id) as count')->where('username',$value['username'])->get()->first();  
-                        if($Username_Exists){
+                        }
+                        $Username_Exists = User_Master::selectRaw('count(id) as count')->where('username',$value['username'])->get()->first();
+                        if($Username_Exists->count){
                             $username['unique'] = 'Username Already Exists';
                         }
                     }else{
@@ -58,8 +60,8 @@ class UsersBulkController extends Controller
                         if(!preg_match('/(7|8|9)\d{9}/', $value['phone'])){
                             $phone['phonenumber'] = 'Phone Number Should Start With 9|8|7';
                         }
-                        $Phone_Exists = User_Master::selectRaw('count(id) as count')->where('phone',$value['phone'])->get()->first();  
-                        if($Phone_Exists){
+                        $Phone_Exists = User_Master::selectRaw('count(id) as count')->where('phone',$value['phone'])->get()->first();
+                        if($Phone_Exists->count){
                             $phone['unique'] = 'Phone Already Exists';
                         }
                     }else{
@@ -72,19 +74,29 @@ class UsersBulkController extends Controller
                         if(!preg_match('/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/', $value['email'])){
                             $email['email'] = 'Invalid Email';
                         }
-                        $email_Exists = User_Master::selectRaw('count(id) as count')->where('email',$value['email'])->get()->first();  
-                        if($email_Exists){
+                        $email_Exists = User_Master::selectRaw('count(id) as count')->where('email',$value['email'])->get()->first();
+                        if($email_Exists->count){
                             $email['unique'] = 'Email Already Exists';
                         }
                     }else{
                         $email['data'] = 'Data Not Found';
                     }
-                    $data['username'] = $username;   
-                    $data['phone'] = $phone;   
-                    $data['email'] = $email;
-                    
-                    $Errors[$value['id']] = $data;
-                    
+                    if(isset($username) && count($username) > 0){
+                        $User_Data['username'] = $username;
+                    }
+                    if(isset($phone) && count($phone) > 0){
+                        $User_Data['phone'] = $phone;
+                    }
+                    if(isset($email) && count($email) > 0){
+                        $User_Data['email'] = $email;
+                    }
+                    if(isset($User_Data) && count($User_Data) > 0){
+                        $User_Data['u_id'] = $value['id'];
+                        $User_Data['u_username'] = $value['username'];
+                        $User_Data['u_phone'] = $value['phone'];
+                        $User_Data['u_email'] = $value['email'];
+                        $Errors[$value['id']] = $User_Data;
+                    }
                     if(!isset($username) && !isset($phone) && !isset($email)){
                         $User_master = new User_Master;
                         $User_master->username = $value['username'];
@@ -94,24 +106,26 @@ class UsersBulkController extends Controller
 
                         $User_Org = new User_Organisation();
                         $User_Org->user_master_id = $User_master->id;
-                        $User_Org->organization_master_id = 0;
+                        $User_Org->organization_master_id = Auth::user()->organization_master_id;
                         $User_Org->email = $value['email'];
-                        $User_Org->password = $value['username'].'@123';
+                        $User_Org->password = Hash::make($value['username'].'@123');
                         $User_Org->role = 'user';
                         $User_Org->save();
                     }else{
                         $count++;
                     }
                 }
+//                dd($Errors);
                 Session::put('msg','Your '.$count.' Entry Is Not Saved');
-                return Redirect()->back();
+                return view('user.org.bulk', compact('Errors'));
             }
         }
-        return back();
+        Session::put('msg','Please Select File');
+        return redirect()->back();
     }
-    
-    
-    
+
+
+
     public function storeInfo(Request $request){
         $this->validate(request(), [
             'first_name' => 'required|max:50|alpha',
@@ -167,7 +181,7 @@ class UsersBulkController extends Controller
     {
         $Bio = User_Master::find($id);
         return view('user.bio.show',compact('Bio'));
-        
+
     }
 
     /**
@@ -180,7 +194,7 @@ class UsersBulkController extends Controller
         $Bio = User_Master::find($id);
         return view('user.bio.editInfo', compact('Bio'));
     }
-    
+
     public function edit($id){
         $Bio = User_Master::find($id);
         return view('user.bio.edit', compact('Bio'));
@@ -193,7 +207,7 @@ class UsersBulkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+
     public function update(Request $request, $id){
 //        dd(request()->all());
         $callfrom = "";
@@ -242,8 +256,8 @@ class UsersBulkController extends Controller
         }else{
             return view('user.bio.show',compact('Bio'));
         }
-        
-        
+
+
     }
 
     /**

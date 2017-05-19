@@ -8,13 +8,13 @@
                 <div class="panel-heading">Edit Organization Info</div>
                 <div class="panel-body">
                     @if($Team->id > 0 )
-                        <form id="frm" class="form-horizontal" role="form" method="POST" action="/team/{{$Team->id}}">
+                        <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/team/{{$Team->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Team Name</label>
-                                <input id="team_name" type="text" class="form-control" name="team_name" value="{{$Team->team_name}}" autofocus required="" > 
+                                <input id="team_name" type="text" class="form-control" name="team_name" value="{{$Team->team_name}}" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Team Owner</label>
@@ -28,25 +28,25 @@
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Team Type</label>
-                                <input id="team_type" type="text" class="form-control" name="team_type" value="{{$Team->team_type}}" autofocus required="" > 
+                                <input id="team_type" type="text" class="form-control" name="team_type" value="{{$Team->team_type}}" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Order</label>
-                                <input id="order_id" type="number" class="form-control" name="order_id" value="{{$Team->order_id}}" autofocus required="" > 
+                                <input id="order_id" type="number" class="form-control" name="order_id" value="{{$Team->order_id}}" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Owner</label>
-                                <input id="owner_id" type="number" class="form-control" name="owner_id" value="{{$Team->owner_id}}" autofocus required="" > 
+                                <input id="owner_id" type="number" class="form-control" name="owner_id" value="{{$Team->owner_id}}" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <button id="Save" type="button" style="width: 100%"  class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
-                            
-                            
+
+
                         </div>
-                        
+
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <div id="upload-demo" style="width:350px;padding: 10px 10px 0px 10px;float: left"></div>
@@ -59,7 +59,7 @@
                                         <input type="hidden"  name="imagedata" id="imagedata" required="">
                                     </button>
                             </div>
-                            
+
                         </div>
                         <div class=" col-md-12 col-sm-12 col-xs-12">
                             @if(count($errors) > 0)
@@ -109,7 +109,7 @@
         url: $("#defaultimg").html(),
         points: [77, 469, 280, 739]
     });
-    $('#upload').on('change', function () { 
+    $('#upload').on('change', function () {
         var reader = new FileReader();
         reader.onload = function (e) {
             $uploadCrop.croppie('bind', {
@@ -126,7 +126,7 @@
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-            
+
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();

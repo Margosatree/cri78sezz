@@ -8,12 +8,12 @@ use Auth;
 
 class UsersBioController extends Controller
 {
-    
+
     public function __construct(){
         $this->middleware('auth:admin',['only'=>['index']]);
         $this->middleware('auth',['except'=>['index']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -101,7 +101,7 @@ class UsersBioController extends Controller
     {
         $Bio = User_Master::find($id);
         return view('user.bio.show',compact('Bio'));
-        
+
     }
 
     /**
@@ -114,7 +114,7 @@ class UsersBioController extends Controller
         $Bio = User_Master::find($id);
         return view('user.bio.editInfo', compact('Bio'));
     }
-    
+
     public function edit($id){
         $Bio = User_Master::find($id);
         return view('user.bio.edit', compact('Bio'));
@@ -127,7 +127,7 @@ class UsersBioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+
     public function update(Request $request, $id){
 //        dd(request()->all());
         $callfrom = "";
@@ -176,8 +176,8 @@ class UsersBioController extends Controller
         }else{
             return view('user.bio.show',compact('Bio'));
         }
-        
-        
+
+
     }
 
     /**

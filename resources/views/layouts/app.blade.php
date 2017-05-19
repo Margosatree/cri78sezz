@@ -12,14 +12,14 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    
+
     <!-- Scripts -->
-    
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
     <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
@@ -28,7 +28,7 @@
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
-    
+
 </head>
 <body>
     <div id="app">
@@ -100,10 +100,10 @@
                                 </li>
                             @endif
                             <li >
-                                
+
                             </li>
                             <li class="dropdown">
-                                
+
                                 <a href="#" class="dropdown-toggle" style="padding-right: 50px" data-toggle="dropdown" role="button" aria-expanded="false">
                                     @if (Session::has('user_img'))
                                         <img src ="{{asset('images/'.Session::get('user_img'))}}" width="32px" class="img-rounded"/>
@@ -114,7 +114,11 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="/Profile/{{Auth::check() ? Auth::user()->user_master_id :Auth::guard('admin')->user()->user_master_id}}"><b>Profile</b></a>
+                                      @if(Auth::check())
+                                        <a href="{{ route('profile.show',Auth::user()->user_master_id) }}"><b>Profile</b></a>
+                                      @else
+                                        <a href="{{ route('profile.showUser',Auth::guard('admin')->user()->user_master_id) }}"><b>Profile</b></a>
+                                      @endif
                                         <div role="separator" class="divider"></div>
                                         <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"

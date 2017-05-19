@@ -12,15 +12,15 @@
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Name</label>
-                                <input id="tournament_name" type="text" class="form-control" name="tournament_name" value="" autofocus required="" > 
+                                <input id="tournament_name" type="text" class="form-control" name="tournament_name" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Location</label>
-                                <input id="tournament_location" type="text" class="form-control" name="tournament_location" value="" autofocus required="" > 
+                                <input id="tournament_location" type="text" class="form-control" name="tournament_location" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Start Date</label>
-                                <input id="start_date" type="date" class="form-control" name="start_date" value="" autofocus required="" > 
+                                <input id="start_date" type="date" class="form-control" name="start_date" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament End Date</label>
@@ -28,14 +28,14 @@
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <label>Reg. Start Date</label>
-                                <input id="reg_start_date" type="date" class="form-control" name="reg_start_date" value="" autofocus required="" > 
+                                <input id="reg_start_date" type="date" class="form-control" name="reg_start_date" value="" autofocus required="" >
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <label>Reg. End Date</label>
                                 <input id="reg_end_date" type="date" class="form-control" name="reg_end_date" value="" autofocus required="" >
                             </div>
                         </div>
-                        
+
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <div id="upload-demo" style="width:350px;padding: 10px 10px 0px 10px;float: left"></div>
@@ -118,7 +118,7 @@
             height: 250
         }
     });
-    $('#upload').on('change', function () { 
+    $('#upload').on('change', function () {
         var reader = new FileReader();
         reader.onload = function (e) {
             $uploadCrop.croppie('bind', {
@@ -131,12 +131,12 @@
     });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
+        // alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-            
+
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();
