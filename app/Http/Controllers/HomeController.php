@@ -57,5 +57,9 @@ class HomeController extends Controller
         //     }
         // }
         // dd(array_unique($perms));
+        // $data = UserMaster_model::getAll(); 
+        // return response()->json($data);
+
     }
+
 }

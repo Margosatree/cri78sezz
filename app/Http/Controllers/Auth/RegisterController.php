@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\User_Organisation;
-use App\User_Master;
+//use App\User_Master;
+use App\Model\UserMaster_model;
 use Illuminate\Support\Facades\Auth;
-use App\UserOrganisation;
+//use App\UserOrganisation;
+use App\Model\UserOrganisation_model;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\VerifyUser;
 use Illuminate\Support\Facades\Mail;
-use App\verify_user;
-use App\role_user;
-use PHPZen\LaravelRbac\Model\Role;
+// use App\verify_user;
+//use App\role_user;
+// use App\Role;
+use App\Model\VerifyUser_model;
+use App\Model\Role_model;
+use App\Model\RoleUser_model;
 
 class RegisterController extends Controller
 {
@@ -92,35 +97,21 @@ class RegisterController extends Controller
      */
     protected function create(array $data){
 
-
-        //This is Verify Logic
-
-        $User_master = new User_Master;
-        $User_master->username = $data['username'];
-        $User_master->phone = $data['phone'];
-        $User_master->email = $data['email'];
-        $User_master->save();
+        $User_Master = UserMaster_model::insert($data);
 
         $status_email = $this->sendEmail($data['email']);
         $status_sms = $this->sendSms($data['phone']);
 
         $this->redirectTo = '/verify/'.$status_email;
         
-        $user_orgId = User_Organisation::create([
-            'user_master_id' => $User_master->id,
-            'organization_master_id' => 0,
-            'email' => $User_master->email,
-            'password' => bcrypt($data['password']),
-            'role' => config('constants.role.User'),
-        ]);
+        $OrgData = ['um_id'=>$User_master->id,'email'=>$User_master->email,
+                    'password'=>$data['password']];
+        $user_orgId = UserOrganisation_model::insert($OrgData);
 
-        $user_role = Role::where('slug','player')->first();
+        $user_role = Role_model::getPlayerId();
         $normal_user = $user_role->id;
 
-        $user_role = new role_user;
-        $user_role->user_id = $user_orgId->id;
-        $user_role->role_id = $normal_user;
-        $user_role->save();
+        $user_role = RoleUser_model::insert($user_orgId->id,$normal_user);
         return $user_orgId;
 
     }
@@ -129,21 +120,16 @@ class RegisterController extends Controller
     function sendEmail($user_email){
         $random_num = mt_rand(100000,999999);
         while(true){
-            $check_otp = verify_user::where('email_otp',$random_num)
-                                       ->get();                            
+            $check_otp = VerifyUser_model::getEmailOtp($random_num);    
             if(!count($check_otp)){
                 break;
             }
             $random_num = mt_rand(100000,999999);
         }
-        // dd($user_email);
         $token_data = str_random(32);
-        // dd($token_data);
         if(!empty($user_email)){
-            // dd($user_email);
-            $check_email = User_Master::where('email',$user_email)->get();
+            $check_email = UserMaster_model::getValueByEmail($user_email);
             if(count($check_email)){
-                // dd($check_email);
                 Mail::to($user_email)
                   ->send(new VerifyUser($random_num,$token_data));
 
@@ -161,51 +147,47 @@ class RegisterController extends Controller
 
     function storeEmail($data){
 
-        $check_dup_email = verify_user::where('email',$data['email'])
-                                            ->get();
+        $check_dup_email = VerifyUser_model::getValueByEmail($data['email']);
         if(count($check_dup_email)){
-            verify_user::where('email', $data['email'])
-                        ->update(['token' => $data['token'],
-                            'email_otp'=>$data['email_otp']]); 
+            $updateData =['email'=>$data['email'],'token'=> $data['token']
+                        ,'email_otp'=>$data['email_otp']];
+            VerifyUser_model::updateByEmail($updateData);
         }else{
-            verify_user::create($data);
+            VerifyUser_model::createData($data);
         }
     }
 
 
     function sendSms($mobile_no){
 
-        $check_mobile = verify_user::where('mobile',$mobile_no)
-                                       ->get();
+        $check_mobile = VerifyUser_model::getValueByEmail($mobile_no);
         if(count($check_mobile)){
-            verify_user::where('mobile',$mobile_no)->delete();
+            VerifyUser_model::deleteByMobile($mobile_no);
         }
         $random_num = mt_rand(100000,999999);
         while(true){
-            $check_otp = verify_user::where('mobile_otp',$random_num)
-                                       ->get();                            
+            $check_otp = VerifyUser_model::checkMobileOtp($random_num);
             if(!count($check_otp)){
                 break;
             }
             $random_num = mt_rand(100000,999999);
         }
-        // dd($random_num);
-        // dd($mobile_no);
 
         if(!empty($mobile_no)){
-            $check_umobile = User_Master::where('phone',$mobile_no)->get();
+            $check_umobile = UserMaster_model::getValueByEmail($mobile_no);
             if(count($check_umobile)){
                 foreach($check_umobile as $check_um){
                     $email = $check_um->email;
                 }
-                $check_email = verify_user::where('email',$email)
-                                       ->get();
+                $check_email = VerifyUser_model::getValueByEmail($email);
                 //Sms logic insert here
+                $data_send = ['email'=>$email,'mobile' => $mobile_no
+                            ,'mobile_otp'=>$random_num];
                 if(count($check_email)){
-                    verify_user::where('email', $email)
-                        ->update(['mobile' => $mobile_no,'mobile_otp'=>$random_num]);
+                    VerifyUser_model::updateByMobile($data_send);
                 }else{
-                verify_user::create(['mobile'=>$mobile_no,'mobile_otp'=>$random_num]);
+                    unset($data_send['email']);
+                VerifyUser_model::createData($data_send);
                 }
                 return 1;
             }else{
