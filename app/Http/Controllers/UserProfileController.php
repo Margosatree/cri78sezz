@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 class UserProfileController extends Controller
 {
     public function __construct(){
-//        $this->middleware('auth:admin');
-       $this->middleware('auth');
+       $this->middleware('auth',['except'=>['showUser']]);
+       $this->middleware('auth:admin',['only'=>['showUser']]);
     }
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        //
+        return "hii";
     }
 
     /**
@@ -53,13 +53,39 @@ class UserProfileController extends Controller
      */
     public function show($id)
     {
-        $Sr = 0;
-        $Bio = User_Master::find($id);
-        $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-        $User_Achieves = User_Achievement::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get();
-        $Org = Organisation_Master::selectRaw('*')->where('id',Auth::user()->organization_master_id)->get()->first();
-        return view('user.profile.show', compact('Bio','Cri_Profile','Org','User_Achieves','Sr'));
+      // dd($id);
+        $data=$this->_show($id);
+        return view('user.profile.show', $data);
+
+
     }
+
+    public function showUser($id){
+      // dd($id);
+          $data=$this->_show($id);
+          return view('user.profile.show', $data);
+
+    }
+
+
+    private function _show($id){
+
+      if(!Auth::guard('admin')->check()){
+          $user_id = Auth::user();
+      }else{
+          $user_id= Auth::guard('admin')->user();
+      }
+
+      $Sr = 0;
+      $Bio = User_Master::find($id);
+      $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id', $user_id->user_master_id)->get()->first();
+      $User_Achieves = User_Achievement::selectRaw('*')->where('user_master_id', $user_id->user_master_id)->get();
+      $Org = Organisation_Master::selectRaw('*')->where('id', $user_id->organization_master_id)->get()->first();
+      $data=['Bio'=> $Bio,'Cri_Profile'=> $Cri_Profile,'User_Achieves'=> $User_Achieves,'Org'=> $Org];
+      return $data;
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.

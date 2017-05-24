@@ -12,15 +12,15 @@
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Name</label>
-                                <input id="tournament_name" type="text" class="form-control" name="tournament_name" value="" autofocus required="" > 
+                                <input id="tournament_name" type="text" class="form-control" name="tournament_name" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Location</label>
-                                <input id="tournament_location" type="text" class="form-control" name="tournament_location" value="" autofocus required="" > 
+                                <input id="tournament_location" type="text" class="form-control" name="tournament_location" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament Start Date</label>
-                                <input id="start_date" type="date" class="form-control" name="start_date" value="" autofocus required="" > 
+                                <input id="start_date" type="date" class="form-control" name="start_date" value="" autofocus required="" >
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Tournament End Date</label>
@@ -28,14 +28,14 @@
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <label>Reg. Start Date</label>
-                                <input id="reg_start_date" type="date" class="form-control" name="reg_start_date" value="" autofocus required="" > 
+                                <input id="reg_start_date" type="date" class="form-control" name="reg_start_date" value="" autofocus required="" >
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <label>Reg. End Date</label>
                                 <input id="reg_end_date" type="date" class="form-control" name="reg_end_date" value="" autofocus required="" >
                             </div>
                         </div>
-                        
+
                         <div class=" col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <div id="upload-demo" style="width:350px;padding: 10px 10px 0px 10px;float: left"></div>
@@ -118,7 +118,7 @@
             height: 250
         }
     });
-    $('#upload').on('change', function () { 
+    $('#upload').on('change', function () {
         var reader = new FileReader();
         reader.onload = function (e) {
             $uploadCrop.croppie('bind', {
@@ -131,12 +131,12 @@
     });
 
     $('#Save').on('click', function (ev) {
-        alert('dasdas');
+        // alert('dasdas');
         $uploadCrop.croppie('result', {
             type: 'canvas',
             size: 'viewport'
         }).then(function (resp) {
-            
+
             $('#imagedata').val(resp);
             console.log($('#imagedata').val());
             Validateform();
@@ -154,53 +154,60 @@
 </script>
 <script>
     function Validateform(){
-//        if($('#your_role').val() == "" || $('#your_role').val() == "undefined" || $('#your_role').val() == "NaN"){
-//            alert('Please Select Role');
-//            return;
-//        }else{
-//            
-//        }
-//        if($('input[name=batsman_style]:checked').length <= 0){
-//            alert("Please Select Batsman Style");
-//            return;
-//        }
-//        if($('#batsman_order').val() == "" || $('#batsman_order').val() == "undefined" || $('#batsman_order').val() == "NaN"){
-//            alert('Please Enter Batsman Order');
-//            return;
-//        }else{
-//            var phoneReg = new RegExp(/^\d+$/);
-//            if (!phoneReg.test($('#batsman_order').val())) {
-//                alert('Invalid Batsman Order');
-//                return;
-//            }
-//        }
-//        if($('input[name=bowler_style]:checked').length <= 0){
-//            alert("Please Select Bowler Style");
-//            return;
-//        }
-//        if($('#player_type').val() == "" || $('#player_type').val() == "undefined" || $('#player_type').val() == "NaN"){
-//            alert('Please Enter Player Type');
-//            return;
-//        }else{
-//            if($("#player_type").val().length > 50){
-//                alert('Player Type Is Too Long');
-//                return;
-//            }
-//            var Reg = new RegExp(/^[A-Za-z _.-]+$/);
-//            if (!Reg.test($('#player_type').val())) {
-//                alert('Player Type Country');
-//                return;
-//            }
-//        }
-//        if($('#description').val() == "" || $('#description').val() == "undefined" || $('#description').val() == "NaN"){
-//            alert('Please Enter Description');
-//            return;
-//        }else{
-//            if($("#description").val().length > 50){
-//                alert('Description Is Too Long');
-//                return;
-//            }
-//        }
+        if($('#tournament_name').val() == "" || $('#tournament_name').val() == "undefined" || $('#tournament_name').val() == "NaN"){
+            alert('Please Enter Tournament Name');
+            return;
+        }else{
+            if($("#tournament_name").val().length > 70){
+                alert('Tournament Name Is Too Long');
+                return;
+            }
+        }
+
+        if($('#tournament_location').val() == "" || $('#tournament_location').val() == "undefined" || $('#tournament_location').val() == "NaN"){
+            alert('Please Enter Tournament Location');
+            return;
+        }else{
+            if($("#tournament_location").val().length > 70){
+                alert('Tournament Location Is Too Long');
+                return;
+            }
+        }
+
+        if($('#start_date').val() == "" || $('#start_date').val() == "undefined" || $('#start_date').val() == "NaN"){
+            alert('Please Select Start Date');
+            return;
+        }
+
+        if($('#end_date').val() == "" || $('#end_date').val() == "undefined" || $('#end_date').val() == "NaN"){
+            alert('Please Select End Date');
+            return;
+        }
+        var StartDate = new Date(Date.parse($("#start_date").val()));
+        var EndDate = new Date(Date.parse($("#end_date").val()));
+        console.log(EndDate+' '+StartDate);
+        console.log(EndDate >= StartDate);
+        if (!(EndDate >= StartDate)) {
+            alert('Start Date SHOULD BE Lesser Then Or Equal To End Date');
+            return;
+        }
+
+        if($('#reg_start_date').val() == "" || $('#reg_start_date').val() == "undefined" || $('#reg_start_date').val() == "NaN"){
+            alert('Please Select Reg. Start Date');
+            return;
+        }
+        if($('#reg_end_date').val() == "" || $('#reg_end_date').val() == "undefined" || $('#reg_end_date').val() == "NaN"){
+            alert('Please Select Reg. End Date');
+            return;
+        }
+        var RegStartDate = new Date(Date.parse($("#reg_start_date").val()));
+        var RegEndDate = new Date(Date.parse($("#reg_end_date").val()));
+        console.log(RegEndDate+' '+RegStartDate);
+        console.log(RegEndDate >= RegStartDate);
+        if (!(RegEndDate >= RegStartDate)) {
+            alert('Reg.Start Date SHOULD BE Lesser Then Or Equal To Reg.End Date');
+            return;
+        }
         document.getElementById('frm').submit();
     }
 </script>

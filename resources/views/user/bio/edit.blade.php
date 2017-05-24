@@ -11,21 +11,21 @@
                         <form id="frm" class="form-horizontal" role="form" method="POST" action="/userBio/{{$Bio->id}}">
                         {{ csrf_field() }}
                         {{ method_field('PATCH') }}
-                        
+
                         <div class="form-group">
                             <label for="address" class="col-md-4 control-label">Address</label>
                             <div class="col-md-6">
                                 <input id="address" type="text" class="form-control" name="address" value="{{ $Bio->address }}" required autofocus>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="pin" class="col-md-4 control-label">Zip Code</label>
                             <div class="col-md-6">
                                 <input id="pin"  onblur="validPin();" class="form-control" data-inputmask="'mask' : '999999'" name="pin" value="{{ $Bio->pin }}" required>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="suburb" class="col-md-4 control-label">Suburb</label>
                             <div class="col-md-6">
@@ -38,7 +38,7 @@
                                 <input id="city" type="text" class="form-control" name="city" value="{{ $Bio->city }}" required autofocus>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="state" class="col-md-4 control-label">State</label>
                             <div class="col-md-6">
@@ -52,9 +52,9 @@
                                 <input id="country" type="text" class="form-control " name="country" value="{{ $Bio->country }}" required>
                             </div>
                         </div>
-                        
-                        
-                        
+
+
+
                         <div class="form-group">
                             <div class="col-md-3 col-md-offset-4">
                                 <button type="button" style="width: 100%" onclick="Validateform();"
@@ -64,18 +64,18 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="button" onclick="event.preventDefault();
-                                    document.getElementById('frmskip').submit();" 
+                                    document.getElementById('frmskip').submit();"
                                     style="width: 100%" class="btn btn-primary">
                                     Cancel
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <form id="frmskip" method="get" 
+                    <form id="frmskip" method="get"
                         @if(Auth::user()->role == "admin")
                             action="{{route('userBio.index')}}"
                         @else
-                            action="{{route('Profile.show',Auth::user()->user_master_id)}}"
+                            action="{{route('profile.show',Auth::user()->user_master_id)}}"
                         @endif
                         >
                     </form>
@@ -167,7 +167,7 @@
                 return;
             }
         }
-        
+
         document.getElementById('frm').submit();
     }
 </script>
@@ -209,7 +209,7 @@
             $('#city').val(add[0].trim());
             $('#state').val(add[1].substring(0,add[1].trim().indexOf(" ")+1).trim());
             $('#country').val(add[2].trim());
-            
+
         }
         if($('#city').val() == ""){
             $('#city').attr('readonly',false);

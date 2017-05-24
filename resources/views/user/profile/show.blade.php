@@ -21,7 +21,7 @@
                                     </div>
                                 @endif
                                 <div class="col-md-10">
-                                    <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
+                                    <lable><h3 style="display:inline;">{{ $Bio->first_name.' '.$Bio->middle_name.' '.$Bio->last_name  }}</h3>&nbsp;<span>{{ $Bio->username }}</span>
                                         <a href="/userBio/{{ $Bio->id }}/editInfo"><span class="badge pull-right"><i class="fa fa-pencil"></i></span></a>
                                     </lable>
                                     <br><lable><b>DOB : </b></lable>{{$Bio->date_of_birth}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable><b>Gender : </b></lable>{{$Bio->gender}}

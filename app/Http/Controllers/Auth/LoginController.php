@@ -28,10 +28,11 @@ class LoginController extends Controller
                 ->leftJoin('roles','roles.id','=','role_user.role_id')
                 ->where('role_user.user_id', '=', $id)
                 ->get();
-
+                // dd($check_roles);
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 0){
-                    
+
+
                 $permissions = DB::table('permission_role')
                         ->select('*')
                         ->leftJoin('permissions','permissions.id','=','permission_role.permission_id')
@@ -43,20 +44,21 @@ class LoginController extends Controller
                     }
                 }
             }
+
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 0){
                     if(isset($perms)){
                         $arr_perms = array_unique($perms);
                         Session::put('perms',$arr_perms);
                     }
-                   return '/home'; 
+                   return '/home';
                 }else{
                     Auth::logout();
                     Session::flush();
                     return '/login';
                 }
-            } 
-            
+            }
+
         }
         //return '/home';
     }
@@ -65,5 +67,5 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
- 
+
 }

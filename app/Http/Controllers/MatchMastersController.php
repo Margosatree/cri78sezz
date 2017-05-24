@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+
 use App\Match_Master;
-use \App\Team_Master;
+use App\User_Organisation;
+use App\User_Master;
+use App\Tournament_Master;
+use App\Team_Master;
 
 class MatchMastersController extends Controller
 {
@@ -17,7 +21,12 @@ class MatchMastersController extends Controller
     public function index($Tournament)
     {
 //        dd('index');
-        $Matches = Match_Master::all();
+        $Tour_id = Tournament_Master::selectRaw('id')
+                    ->where('organization_master_id',Auth::user()->organization_master_id)
+                    ->where('id',$Tournament)->get();
+        $Matches = Match_Master::selectRaw('*')->whereIn('tournament_id',$Tour_id)->get();
+       // dd($Matches);
+//        $Matches = Match_Master::all();
         return view('user.matchmst.index',compact('Matches','Tournament'));
     }
 
@@ -29,8 +38,9 @@ class MatchMastersController extends Controller
     public function create($Tournament)
     {
 //        dd('create');
-        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();;
-        return view('user.matchmst.add',compact('Tournament','Teams'));
+        
+        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
+        return view('user.matchmst.add',compact('Tournament','Teams','Owners'));
     }
 
     /**
@@ -42,7 +52,7 @@ class MatchMastersController extends Controller
     public function store(Request $request,$Tournament)
     {
 //        dd(request()->all());
-        $this->validate(request(), [
+        $this->validate($request, [
 //            'tournament_id' => 'required|numeric',
             'team1' => 'required|numeric',
             'team2' => 'required|numeric',
@@ -53,7 +63,10 @@ class MatchMastersController extends Controller
             'overs' => 'required|numeric',
             'innings' => 'required|numeric',
         ]);
-
+        if(request('team1') == request('team2')){
+            dd('Please Select Another Team');
+        }
+        
         $Match = new Match_Master();
         $Match->tournament_id = $Tournament;
         $Match->team1_id = request('team1');
@@ -94,7 +107,6 @@ class MatchMastersController extends Controller
         $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
         $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get()->first();
         return view('user.matchmst.edit',compact('Tournament','Teams','Match'));
-        
     }
 
     /**
@@ -117,6 +129,9 @@ class MatchMastersController extends Controller
             'overs' => 'required|numeric',
             'innings' => 'required|numeric',
         ]);
+        if(request('team1') == request('team2')){
+            dd('Please Select Another Team');
+        }
         
         $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get();
             if($Match){
@@ -141,6 +156,7 @@ class MatchMastersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($Tournament,$id)
     {
         $Match = Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get();
