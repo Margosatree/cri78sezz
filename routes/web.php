@@ -115,4 +115,8 @@ Route::post('/assign_permission', 'Acl\PermissionRoleController@store');
 
 Route::get('/revoke_permission', 'Acl\PermissionRoleController@displayPermissions')->name('revoke_permission');
 Route::get('/revoke_permission/{id}/{userId}', 'Acl\PermissionRoleController@destroy')->name('revoke.permission');
+
+Route::get('/display_scoreboard', 'ScoreboardController@create')->name('display_scoreboard');
+Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
+//Route::get('/json_display', 'Scoreb')
 //end Acl
