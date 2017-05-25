@@ -38,8 +38,8 @@ class VerifyUser_model {
 	}
 	public function updateByMobile($data){
 		return verify_user::where('email', $data['email'])
-                        ->update(['mobile' => $data['mobile_no']
-                        	      ,'mobile_otp'=>$data['random_num']
+                        ->update(['mobile' => $data['mobile']
+                        	      ,'mobile_otp'=>$data['mobile_otp']
                         	      ]);
 	}
 

@@ -3,55 +3,42 @@
 namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\User_Organisation;
-//use App\User_Master;
 use App\Model\UserMaster_model;
 use Illuminate\Support\Facades\Auth;
-//use App\UserOrganisation;
 use App\Model\UserOrganisation_model;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\VerifyUser;
 use Illuminate\Support\Facades\Mail;
-// use App\verify_user;
-//use App\role_user;
-// use App\Role;
 use App\Model\VerifyUser_model;
 use App\Model\Role_model;
 use App\Model\RoleUser_model;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = '/verify/create';
 
-    
-    
-    
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    //call model class via object 
+
+    protected $UserMaster_model;
+    protected $UserOrganisation_model;
+    protected $VerifyUser_model;
+    protected $Role_model;
+    protected $RoleUser_model;
+
     public function __construct(){
+        $this->_initModel();
         $this->middleware('guest');
+    }
+
+    protected function _initModel(){
+        $this->UserMaster_model=new UserMaster_model();
+        $this->UserOrganisation_model=new UserOrganisation_model();
+        $this->VerifyUser_model=new VerifyUser_model();
+        $this->Role_model=new Role_model();
+        $this->RoleUser_model=new RoleUser_model();
     }
 
     /**
@@ -96,22 +83,23 @@ class RegisterController extends Controller
      * @return User
      */
     protected function create(array $data){
+        // dd($this->UserMaster_model->getAll());
 
-        $User_Master = UserMaster_model::insert($data);
+        $User_Master = $this->UserMaster_model->insert($data);
 
         $status_email = $this->sendEmail($data['email']);
         $status_sms = $this->sendSms($data['phone']);
 
         $this->redirectTo = '/verify/'.$status_email;
         
-        $OrgData = ['um_id'=>$User_master->id,'email'=>$User_master->email,
+        $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
                     'password'=>$data['password']];
-        $user_orgId = UserOrganisation_model::insert($OrgData);
+        $user_orgId = $this->UserOrganisation_model->insert($OrgData);
 
-        $user_role = Role_model::getPlayerId();
+        $user_role = $this->Role_model->getPlayerId();
         $normal_user = $user_role->id;
 
-        $user_role = RoleUser_model::insert($user_orgId->id,$normal_user);
+        $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
         return $user_orgId;
 
     }
@@ -120,7 +108,7 @@ class RegisterController extends Controller
     function sendEmail($user_email){
         $random_num = mt_rand(100000,999999);
         while(true){
-            $check_otp = VerifyUser_model::getEmailOtp($random_num);    
+            $check_otp = $this->VerifyUser_model->getEmailOtp($random_num);    
             if(!count($check_otp)){
                 break;
             }
@@ -128,7 +116,7 @@ class RegisterController extends Controller
         }
         $token_data = str_random(32);
         if(!empty($user_email)){
-            $check_email = UserMaster_model::getValueByEmail($user_email);
+            $check_email = $this->UserMaster_model->getValueByEmail($user_email);
             if(count($check_email)){
                 Mail::to($user_email)
                   ->send(new VerifyUser($random_num,$token_data));
@@ -147,26 +135,26 @@ class RegisterController extends Controller
 
     function storeEmail($data){
 
-        $check_dup_email = VerifyUser_model::getValueByEmail($data['email']);
+        $check_dup_email = $this->VerifyUser_model->getValueByEmail($data['email']);
         if(count($check_dup_email)){
             $updateData =['email'=>$data['email'],'token'=> $data['token']
                         ,'email_otp'=>$data['email_otp']];
-            VerifyUser_model::updateByEmail($updateData);
+            $this->VerifyUser_model->updateByEmail($updateData);
         }else{
-            VerifyUser_model::createData($data);
+            $this->VerifyUser_model->createData($data);
         }
     }
 
 
     function sendSms($mobile_no){
 
-        $check_mobile = VerifyUser_model::getValueByEmail($mobile_no);
+        $check_mobile = $this->VerifyUser_model->getValueByEmail($mobile_no);
         if(count($check_mobile)){
-            VerifyUser_model::deleteByMobile($mobile_no);
+            $this->VerifyUser_model->deleteByMobile($mobile_no);
         }
         $random_num = mt_rand(100000,999999);
         while(true){
-            $check_otp = VerifyUser_model::checkMobileOtp($random_num);
+            $check_otp = $this->VerifyUser_model->checkMobileOtp($random_num);
             if(!count($check_otp)){
                 break;
             }
@@ -174,20 +162,20 @@ class RegisterController extends Controller
         }
 
         if(!empty($mobile_no)){
-            $check_umobile = UserMaster_model::getValueByEmail($mobile_no);
+            $check_umobile = $this->UserMaster_model->getValueByEmail($mobile_no);
             if(count($check_umobile)){
                 foreach($check_umobile as $check_um){
                     $email = $check_um->email;
                 }
-                $check_email = VerifyUser_model::getValueByEmail($email);
+                $check_email = $this->VerifyUser_model->getValueByEmail($email);
                 //Sms logic insert here
                 $data_send = ['email'=>$email,'mobile' => $mobile_no
                             ,'mobile_otp'=>$random_num];
                 if(count($check_email)){
-                    VerifyUser_model::updateByMobile($data_send);
+                    $this->VerifyUser_model->updateByMobile($data_send);
                 }else{
                     unset($data_send['email']);
-                VerifyUser_model::createData($data_send);
+                    $this->VerifyUser_model->createData($data_send);
                 }
                 return 1;
             }else{

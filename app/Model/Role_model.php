@@ -10,6 +10,6 @@ class Role_model {
 	}
 
 	public function getPlayerId(){
-		return Role::where('slug','player')->first()
+		return Role::where('slug','player')->first();
 	}
 }

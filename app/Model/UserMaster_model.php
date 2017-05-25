@@ -9,7 +9,7 @@ class UserMaster_model {
 		//parent::__construct();
 	}
 
-	public static function getAll(){
+	public function getAll(){
 		return User_Master::all();
 	}
 
@@ -27,7 +27,9 @@ class UserMaster_model {
         $User_master->username = $data['username'];
         $User_master->phone = $data['phone'];
         $User_master->email = $data['email'];
-        return $User_master->save();
+        $User_master->save();
+        return $User_master;
+
      }
 
 
