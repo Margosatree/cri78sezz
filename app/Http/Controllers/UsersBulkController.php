@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use App\User_Master;
-use App\User_Organisation;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 use Auth;
 use Excel;
 use Validator;
@@ -13,11 +13,20 @@ use Hash;
 use Session;
 class UsersBulkController extends Controller
 {
+    
+    //call model class via object 
+
+    protected $UserMaster_model;
+    protected $UserOrganisation_model;
 
     public function __construct(){
-//        $this->middleware('auth:admin',['only'=>['index']]);
+        $this->_initModel();
         $this->middleware('auth');
-//        $this->middleware('auth',['except'=>['index']]);
+    }
+
+    protected function _initModel(){
+        $this->UserMaster_model=new UserMaster_model();
+        $this->UserOrganisation_model=new UserOrganisation_model();
     }
 
     public function bulkUploadView(){
@@ -43,7 +52,7 @@ class UsersBulkController extends Controller
                         if(!ctype_alnum(''.$value['username'])){
                             $username['alpha_num'] = 'Must Be Alphanumeric';
                         }
-                        $Username_Exists = User_Master::selectRaw('count(id) as count')->where('username',$value['username'])->get()->first();
+                        $Username_Exists = $this->UserMaster_model->userExists($value['username']);
                         if($Username_Exists->count){
                             $username['unique'] = 'Username Already Exists';
                         }
@@ -60,7 +69,7 @@ class UsersBulkController extends Controller
                         if(!preg_match('/(7|8|9)\d{9}/', $value['phone'])){
                             $phone['phonenumber'] = 'Phone Number Should Start With 9|8|7';
                         }
-                        $Phone_Exists = User_Master::selectRaw('count(id) as count')->where('phone',$value['phone'])->get()->first();
+                        $Phone_Exists = $this->UserMaster_model->phoneExists($value['phone']);
                         if($Phone_Exists->count){
                             $phone['unique'] = 'Phone Already Exists';
                         }
@@ -74,7 +83,7 @@ class UsersBulkController extends Controller
                         if(!preg_match('/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/', $value['email'])){
                             $email['email'] = 'Invalid Email';
                         }
-                        $email_Exists = User_Master::selectRaw('count(id) as count')->where('email',$value['email'])->get()->first();
+                        $email_Exists = $this->UserMaster_model->emailExists($value['email']);
                         if($email_Exists->count){
                             $email['unique'] = 'Email Already Exists';
                         }
@@ -98,19 +107,20 @@ class UsersBulkController extends Controller
                         $Errors[$value['id']] = $User_Data;
                     }
                     if(!isset($username) && !isset($phone) && !isset($email)){
-                        $User_master = new User_Master;
-                        $User_master->username = $value['username'];
-                        $User_master->phone = $value['phone'];
-                        $User_master->email = $value['email'];
-                        $User_master->save();
+                        
+                        $User_master = $this->UserMaster_model->insert(
+                            ['username' => $value['username']],
+                            ['phone' => $value['phone']],
+                            ['email' => $value['email']]
+                        );
 
-                        $User_Org = new User_Organisation();
-                        $User_Org->user_master_id = $User_master->id;
-                        $User_Org->organization_master_id = Auth::user()->organization_master_id;
-                        $User_Org->email = $value['email'];
-                        $User_Org->password = Hash::make($value['username'].'@123');
-                        $User_Org->role = 'user';
-                        $User_Org->save();
+                        $User_Org = $this->UserMaster_model->insert(
+                            ['username' => $User_master->id],
+                            ['organization_master_id' => Auth::user()->organization_master_id],
+                            ['email' => $value['email']],
+                            ['password' => $value['username'].'@123'],
+                            ['role' => 'user']
+                        );
                     }else{
                         $count++;
                     }
@@ -124,8 +134,6 @@ class UsersBulkController extends Controller
         return redirect()->back();
     }
 
-
-
     public function storeInfo(Request $request){
         $this->validate(request(), [
             'first_name' => 'required|max:50|alpha',
@@ -135,16 +143,17 @@ class UsersBulkController extends Controller
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
         ]);
-//        dd($request->all());
-        $id = Auth::user()->user_master_id;
-        $User_master = User_Master::find($id);
-        $User_master->first_name = $request->first_name;
-        $User_master->middle_name = $request->middle_name;
-        $User_master->last_name = $request->last_name;
-        $User_master->date_of_birth = $request->date_of_birth;
-        $User_master->gender = $request->gender;
-        $User_master->physically_challenged = $request->physically_challenged;
-        $User_master->save();
+        
+        $params = array();
+        $params['id'] = Auth::user()->user_master_id;
+        $params['first_name'] = $request->first_name;
+        $params['middle_name'] = $request->middle_name;
+        $params['last_name'] = $request->last_name;
+        $params['date_of_birth'] = $request->date_of_birth;
+        $params['gender'] = $request->gender;
+        $params['physically_challenged'] = $request->physically_challenged;
+        $User_Bio = $this->UserMaster_model->SaveUserBio($params);
+        
         return redirect()->route('userBio.create');
     }
 
@@ -159,15 +168,15 @@ class UsersBulkController extends Controller
             'pin' => 'required|digits:6|numeric',
         ]);
 //        dd($request->all());
-        $id = Auth::user()->user_master_id;
-        $bio = User_Master::find($id);
-        $bio->address = request('address');
-        $bio->suburb = request('suburb');
-        $bio->city = request('city');
-        $bio->state = request('state');
-        $bio->country = request('country');
-        $bio->pin = request('pin');
-        $bio->save();
+        $params = array();
+        $params['id'] = Auth::user()->user_master_id;
+        $params['address'] = $request->address;
+        $params['suburb'] = $request->suburb;
+        $params['city'] = $request->city;
+        $params['state'] = $request->state;
+        $params['country'] = $request->country;
+        $params['pin'] = $request->pin;
+        $User_Address = $this->UserMaster_model->SaveUserAddress($params);
         return redirect()->route('orgcriProfile.create');
     }
 
@@ -211,9 +220,8 @@ class UsersBulkController extends Controller
     public function update(Request $request, $id){
 //        dd(request()->all());
         $callfrom = "";
-        if(request('first_name') || request('middle_name') || request('last_name') ||
-           request('date_of_birth') || request('gender') || request('physically_challenged')
-                ){
+        if($request->first_name || $request->middle_name || $request->last_name ||
+           $request->date_of_birth || $request->gender || $request->physically_challenged){
             $this->validate(request(), [
                 'first_name' => 'required|max:255',
                 'middle_name' => 'required|max:255',
@@ -233,24 +241,29 @@ class UsersBulkController extends Controller
                 'pin' => 'required|digits:6|numeric',
             ]);
         }
-//        dd('dasdas');
+        
         $Bio = User_Master::find($id);
         if($callfrom == 'info'){
-            $Bio->first_name = request('first_name');
-            $Bio->middle_name = request('middle_name');
-            $Bio->last_name = request('last_name');
-            $Bio->date_of_birth = request('date_of_birth');
-            $Bio->gender = request('gender');
-            $Bio->physically_challenged = request('physically_challenged');
+            $params = array();
+            $params['id'] = Auth::user()->user_master_id;
+            $params['first_name'] = $request->first_name;
+            $params['middle_name'] = $request->middle_name;
+            $params['last_name'] = $request->last_name;
+            $params['date_of_birth'] = $request->date_of_birth;
+            $params['gender'] = $request->gender;
+            $params['physically_challenged'] = $request->physically_challenged;
+            $User_Bio = $this->UserMaster_model->SaveUserBio($params);
         }else{
-            $Bio->address = request('address');
-            $Bio->suburb = request('suburb');
-            $Bio->city = request('city');
-            $Bio->state = request('state');
-            $Bio->country = request('country');
-            $Bio->pin = request('pin');
+            $params = array();
+            $params['id'] = Auth::user()->user_master_id;
+            $params['address'] = $request->address;
+            $params['suburb'] = $request->suburb;
+            $params['city'] = $request->city;
+            $params['state'] = $request->state;
+            $params['country'] = $request->country;
+            $params['pin'] = $request->pin;
+            $User_Address = $this->UserMaster_model->SaveUserAddress($params);
         }
-        $Bio->save();
         if(Auth::user()->role == "admin"){
             return redirect()->route('userBio.index');
         }else{

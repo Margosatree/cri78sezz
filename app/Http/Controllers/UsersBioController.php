@@ -3,17 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User_Master;
+use App\Model\UserMaster_model;
 use Auth;
 
 class UsersBioController extends Controller
 {
 
+    protected $UserMaster_model;
+    
     public function __construct(){
         $this->middleware('auth:admin',['only'=>['index']]);
         $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
     }
 
+    protected function _initModel(){
+        $this->UserMaster_model=new UserMaster_model();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -55,16 +61,16 @@ class UsersBioController extends Controller
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
         ]);
-//        dd($request->all());
-        $id = Auth::user()->user_master_id;
-        $User_master = User_Master::find($id);
-        $User_master->first_name = $request->first_name;
-        $User_master->middle_name = $request->middle_name;
-        $User_master->last_name = $request->last_name;
-        $User_master->date_of_birth = $request->date_of_birth;
-        $User_master->gender = $request->gender;
-        $User_master->physically_challenged = $request->physically_challenged;
-        $User_master->save();
+        
+        $params = array();
+        $params['id'] = Auth::user()->user_master_id;
+        $params['first_name'] = $request->first_name;
+        $params['middle_name'] = $request->middle_name;
+        $params['last_name'] = $request->last_name;
+        $params['date_of_birth'] = $request->date_of_birth;
+        $params['gender'] = $request->gender;
+        $params['physically_challenged'] = $request->physically_challenged;
+        $User_Bio = $this->UserMaster_model->SaveUserBio($params);
         return redirect()->route('userBio.create');
     }
 
@@ -78,16 +84,15 @@ class UsersBioController extends Controller
             'country' => 'required|max:255',
             'pin' => 'required|digits:6|numeric',
         ]);
-//        dd($request->all());
-        $id = Auth::user()->user_master_id;
-        $bio = User_Master::find($id);
-        $bio->address = request('address');
-        $bio->suburb = request('suburb');
-        $bio->city = request('city');
-        $bio->state = request('state');
-        $bio->country = request('country');
-        $bio->pin = request('pin');
-        $bio->save();
+        $params = array();
+        $params['id'] = Auth::user()->user_master_id;
+        $params['address'] = $request->address;
+        $params['suburb'] = $request->suburb;
+        $params['city'] = $request->city;
+        $params['state'] = $request->state;
+        $params['country'] = $request->country;
+        $params['pin'] = $request->pin;
+        $User_Address = $this->UserMaster_model->SaveUserAddress($params);
         return redirect()->route('orgcriProfile.create');
     }
 
@@ -131,9 +136,8 @@ class UsersBioController extends Controller
     public function update(Request $request, $id){
 //        dd(request()->all());
         $callfrom = "";
-        if(request('first_name') || request('middle_name') || request('last_name') ||
-           request('date_of_birth') || request('gender') || request('physically_challenged')
-                ){
+        if($request->first_name || $request->middle_name || $request->last_name ||
+           $request->date_of_birth || $request->gender || $request->physically_challenged){
             $this->validate(request(), [
                 'first_name' => 'required|max:255',
                 'middle_name' => 'required|max:255',
@@ -153,24 +157,29 @@ class UsersBioController extends Controller
                 'pin' => 'required|digits:6|numeric',
             ]);
         }
-//        dd('dasdas');
+        
         $Bio = User_Master::find($id);
         if($callfrom == 'info'){
-            $Bio->first_name = request('first_name');
-            $Bio->middle_name = request('middle_name');
-            $Bio->last_name = request('last_name');
-            $Bio->date_of_birth = request('date_of_birth');
-            $Bio->gender = request('gender');
-            $Bio->physically_challenged = request('physically_challenged');
+            $params = array();
+            $params['id'] = Auth::user()->user_master_id;
+            $params['first_name'] = $request->first_name;
+            $params['middle_name'] = $request->middle_name;
+            $params['last_name'] = $request->last_name;
+            $params['date_of_birth'] = $request->date_of_birth;
+            $params['gender'] = $request->gender;
+            $params['physically_challenged'] = $request->physically_challenged;
+            $User_Bio = $this->UserMaster_model->SaveUserBio($params);
         }else{
-            $Bio->address = request('address');
-            $Bio->suburb = request('suburb');
-            $Bio->city = request('city');
-            $Bio->state = request('state');
-            $Bio->country = request('country');
-            $Bio->pin = request('pin');
+            $params = array();
+            $params['id'] = Auth::user()->user_master_id;
+            $params['address'] = $request->address;
+            $params['suburb'] = $request->suburb;
+            $params['city'] = $request->city;
+            $params['state'] = $request->state;
+            $params['country'] = $request->country;
+            $params['pin'] = $request->pin;
+            $User_Address = $this->UserMaster_model->SaveUserAddress($params);
         }
-        $Bio->save();
         if(Auth::user()->role == "admin"){
             return redirect()->route('userBio.index');
         }else{

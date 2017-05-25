@@ -1,19 +1,33 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Organisation_Master;
-use App\User_Cricket_Profile;
-use App\User_Master;
-use App\User_Achievement;
+use App\Model\OrganisationMaster_model;
+use App\Model\UserCricketProfile_model;
+use App\Model\UserMaster_model;
+use App\Model\UserAchievement_model;
 use Auth;
 use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
 {
+    protected $UserMaster_model;
+    protected $OrganisationMaster_model;
+    protected $UserCricketProfile_model;
+    protected $UserAchievement_model;
+    
     public function __construct(){
        $this->middleware('auth',['except'=>['showUser']]);
        $this->middleware('auth:admin',['only'=>['showUser']]);
+       $this->_initModel();
     }
+    
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+        $this->UserCricketProfile_model = new UserCricketProfile_model();
+        $this->UserAchievement_model = new UserAchievement_model();
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -70,19 +84,19 @@ class UserProfileController extends Controller
 
     private function _show($id){
 
-      if(!Auth::guard('admin')->check()){
-          $user_id = Auth::user();
-      }else{
-          $user_id= Auth::guard('admin')->user();
-      }
+        if(!Auth::guard('admin')->check()){
+            $user_id = Auth::user();
+        }else{
+            $user_id= Auth::guard('admin')->user();
+        }
 
-      $Sr = 0;
-      $Bio = User_Master::find($id);
-      $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id', $user_id->user_master_id)->get()->first();
-      $User_Achieves = User_Achievement::selectRaw('*')->where('user_master_id', $user_id->user_master_id)->get();
-      $Org = Organisation_Master::selectRaw('*')->where('id', $user_id->organization_master_id)->get()->first();
-      $data=['Bio'=> $Bio,'Cri_Profile'=> $Cri_Profile,'User_Achieves'=> $User_Achieves,'Org'=> $Org];
-      return $data;
+        $Sr = 0;
+        $Bio = $this->UserMaster_model->getBioById($id);
+        $Cri_Profile = $this->UserCricketProfile_model->getCriProfileByUserMasterId($user_id->user_master_id);
+        $User_Achieves = $this->UserAchievement_model->getAchievementByUserMasterId($user_id->user_master_id);
+        $Org = $this->OrganisationMaster_model->getOrgByOrgMasterId($user_id->organization_master_id);
+        $data=['Bio'=> $Bio,'Cri_Profile'=> $Cri_Profile,'User_Achieves'=> $User_Achieves,'Org'=> $Org];
+        return $data;
     }
 
 

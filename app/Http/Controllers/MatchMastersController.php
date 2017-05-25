@@ -41,7 +41,7 @@ class MatchMastersController extends Controller
 
     public function index($Tournament)
     {
-        $org_id = Auth::user()->organization_master_id
+        $org_id = Auth::user()->organization_master_id;
         $Tour_id = $this->TournamentMaster_model->getId($org_id,$Tournament);
         $Matches = $this->MatchMaster_model->checkTourId($Tour_id);
         return view('user.matchmst.index',compact('Matches','Tournament'));

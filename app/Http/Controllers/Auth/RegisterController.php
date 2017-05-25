@@ -93,7 +93,7 @@ class RegisterController extends Controller
         $this->redirectTo = '/verify/'.$status_email;
         
         $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
-                    'password'=>$data['password']];
+                    'organization_master_id' => 0,'password'=>$data['password']];
         $user_orgId = $this->UserOrganisation_model->insert($OrgData);
 
         $user_role = $this->Role_model->getPlayerId();
