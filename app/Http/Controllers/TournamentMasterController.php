@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\User_Master;
-use App\Tournament_Details;
-use App\Tournament_Master;
-use App\Tournament_Rules;
-use App\Organisation_Master;
+use App\Model\UserMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TournamentMaster_model;
+use App\Model\TournamentRules_model;
+use App\Model\OrganisationMaster_model;
 class TournamentMasterController extends Controller
 {
     /**
@@ -16,10 +16,29 @@ class TournamentMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    protected $UserMaster_model;
+    protected $OrganisationMaster_model;
+    protected $TournamentDetails_model;
+    protected $TournamentMaster_model;
+    protected $TournamentRules_model;
+    
+    public function __construct(){
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
+    }
+    
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+        $this->TournamentDetails_model = new TournamentDetails_model();
+        $this->TournamentMaster_model = new TournamentMaster_model();
+        $this->TournamentRules_model = new TournamentRules_model();
+    }
+    
     public function index()
     {
-//        $Tournaments = Tournament_Master::where('organization_master_id',Auth::user()->organization_master_id);
-        $Tournaments = Tournament_Master::selectRaw('*')->where('organization_master_id',Auth::user()->organization_master_id)->get();
+        $Tournaments = $this->TournamentMaster_model->getTourByOrgId(Auth::user()->organization_master_id);
         return view('user.tourmst.index',compact('Tournaments'));
     }
 
@@ -52,38 +71,32 @@ class TournamentMasterController extends Controller
             'reg_end_date' => 'required|date|after:start_date',
         ]);
         
-        $Tournament_Exist = Tournament_Master::selectRaw('count(tournament_name) as count')
-                ->where('organization_master_id',Auth::user()->organization_master_id)
-                ->where('tournament_name',request('tournament_name'))->value('count');
-        
+        $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+                Auth::user()->organization_master_id,
+                $request->tournament_name);
         if($Tournament_Exist){
             dd('Tournament Name Already Exist');
         }
-        
-        $Tournament = new Tournament_Master;
-        $Tournament->tournament_name = request('tournament_name');
-        $Tournament->tournament_location = request('tournament_location');
-        $Tournament->tournament_logo = request('name');
-        $Tournament->organization_master_id = Auth::user()->organization_master_id;
-        $Tournament->start_date = request('start_date');
-        $Tournament->end_date = request('end_date');
-        $Tournament->reg_start_date = request('reg_start_date');
-        $Tournament->reg_end_date = request('reg_end_date');
+        $params = array();
+        $params['tournament_name'] = $request->tournament_name;
+        $params['tournament_location'] = $request->tournament_location;
+        $params['organization_master_id'] = Auth::user()->organization_master_id;
+        $params['start_date'] = $request->start_date;
+        $params['end_date'] = $request->end_date;
+        $params['reg_start_date'] = $request->reg_start_date;
+        $params['reg_end_date'] = $request->reg_end_date;
         if($request->hasFile('image')){
-//            dd('Image');
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-            
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($Tournament->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            
-            $Tournament->tournament_logo = $filename;
-//            $request->session()->put('user_img', $Tournament->tournament_logo);
+            $params['tournament_logo'] = $filename;
         }
-        $Tournament->save();
+        $Tournament = $this->TournamentMaster_model->SaveUserBio($params);
+        
         return redirect()->route('tourmst.index');
     }
 
@@ -106,7 +119,7 @@ class TournamentMasterController extends Controller
      */
     public function edit($id)
     {
-        $Tournament = Tournament_Master::find($id);
+        $Tournament = $this->TournamentMaster_model->getById($id);
         return view('user.tourmst.edit',compact('Tournament'));
     }
 
@@ -130,36 +143,33 @@ class TournamentMasterController extends Controller
         ]);
         
         
-        $Tournament_Exist = Tournament_Master::selectRaw('count(tournament_name) as count')
-                ->where('organization_master_id',Auth::user()->organization_master_id)
-                ->where('id','!=',$id)
-                ->where('tournament_name',request('tournament_name'))->value('count');
+        $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+                Auth::user()->organization_master_id,
+                $request->tournament_name);
         if($Tournament_Exist){
             dd('Tournament Name Already Exist');
         }
         
-        $Tournament = Tournament_Master::find($id);
-        $Tournament->tournament_name = request('tournament_name');
-        $Tournament->tournament_location = request('tournament_location');
-        $Tournament->start_date = request('start_date');
-        $Tournament->end_date = request('end_date');
-        $Tournament->reg_start_date = request('reg_start_date');
-        $Tournament->reg_end_date = request('reg_end_date');
-//        dd(request()->all());
+        $params = array();
+        $params['id'] = $id;
+        $params['tournament_name'] = $request->tournament_name;
+        $params['tournament_location'] = $request->tournament_location;
+        $params['organization_master_id'] = Auth::user()->organization_master_id;
+        $params['start_date'] = $request->start_date;
+        $params['end_date'] = $request->end_date;
+        $params['reg_start_date'] = $request->reg_start_date;
+        $params['reg_end_date'] = $request->reg_end_date;
         if($request->hasFile('image')){
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-            
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($Tournament->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            
-            $Tournament->tournament_logo = $filename;
-//            $request->session()->put('user_img', $Tournament->tournament_logo);
+            $params['tournament_logo'] = $filename;
         }
-        $Tournament->save();
+       $Tournament = $this->TournamentMaster_model->SaveUserBio($params);
         return redirect()->route('tourmst.index');
     }
 
@@ -171,10 +181,10 @@ class TournamentMasterController extends Controller
      */
     public function destroy($id)
     {
-        $Tour_Dets = Tournament_Master::find($id);
-        if($Tour_Dets){
-            $Tour_Dets->delete();
-            Tournament_Details::where(['tournament_id'=>$id])->delete();
+        $Tour_Mast = $this->TournamentMaster_model->getById($id);
+        if($Tour_Mast){
+            $Tour_Mast->delete();
+            $this->TournamentDetails_model->deleteById($id);
         }else{
             dd('Not Exist');
         }

@@ -13,12 +13,13 @@ class UserCricketProfile_model {
             return User_Master::all();
         }
         
-        public function getBioByUserMasterId($id) {
-            return User_Cricket_Profile::selectRaw('*')->where('user_master_id', $id)->get()->first();
-        }
+        
         
         public function getCriProfileCountByUserMasterId($id) {
             return User_Cricket_Profile::selectRaw('count(id) as count')->where('user_master_id',$id)->get()->first();
+        }
+        public function getCriProfileByUserMasterId($id) {
+            return User_Cricket_Profile::selectRaw('*')->where('user_master_id',$id)->get()->first();
         }
         
         public function SaveCriProfile($data) {

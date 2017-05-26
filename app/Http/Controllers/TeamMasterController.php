@@ -30,7 +30,7 @@ class TeamMasterController extends Controller
     }
     public function index()
     {
-        $master_id = Auth::user()->user_master_id
+        $master_id = Auth::user()->user_master_id;
         $Teams = $this->TeamMaster_model->getTeamDetail($master_id);
         return view('user.teammst.index',compact('Teams'));
     }
