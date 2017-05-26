@@ -17,6 +17,11 @@ class UserMaster_model {
     public function getBioById($user_id) {
         return User_Master::find($user_id);
     }
+
+    public function checkUserId($Users){
+        return User_Master::selectRaw('id,CONCAT(first_name," ",last_name) AS Owner_Name')
+                    ->whereIn('id',$Users)->get();
+    }
     
     public function userExists($username) {
         return User_Master::selectRaw('count(id) as count')->where('username', $username)->get()->first();
