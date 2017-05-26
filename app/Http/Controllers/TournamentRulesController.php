@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User_Master;
-use App\Tournament_Details;
-use App\Tournament_Master;
-use App\Tournament_Rules;
-use App\Organisation_Master;
+use App\Model\UserMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TournamentMaster_model;
+use App\Model\TournamentRules_model;
+use App\Model\OrganisationMaster_model;
 class TournamentRulesController extends Controller
 {
     /**
@@ -15,10 +15,30 @@ class TournamentRulesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct(){
+        $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
+    }
+    
+    protected $UserMaster_model;
+    protected $OrganisationMaster_model;
+    protected $TournamentDetails_model;
+    protected $TournamentMaster_model;
+    protected $TournamentRules_model;
+    
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+        $this->TournamentDetails_model = new TournamentDetails_model();
+        $this->TournamentMaster_model = new TournamentMaster_model();
+        $this->TournamentRules_model = new TournamentRules_model();
+    }
+    
     public function index()
     {
         
-        $Rules = Tournament_Rules::all();
+        $Rules = $this->TournamentRules_model->getAll();
         return view('user.rule.index',compact('Rules'));
     }
 

@@ -87,7 +87,7 @@ class UserProfileController extends Controller
         if(!Auth::guard('admin')->check()){
             $user_id = Auth::user();
         }else{
-            $user_id= Auth::guard('admin')->user();
+            $user_id = Auth::guard('admin')->user();
         }
 
         $Sr = 0;

@@ -1,20 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Organisation_Master;
-use App\User_Master;
+use App\Model\OrganisationMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
 use \App\User_Organisation;
 class OrganizationMasterController extends Controller
 {
+    protected $UserMaster_model;
+    protected $OrganisationMaster_model;
+    protected $UserOrganisation_model;
     
     public function __construct(){
-//        $this->middleware('auth:admin');
-       $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth:admin',['only'=>['index']]);
         $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
     }
-
+    
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +42,7 @@ class OrganizationMasterController extends Controller
      */
     public function create(){
 //        dd('in create');
-        $Orgs = Organisation_Master::selectRaw('id,name')->get();
+        $Orgs = $this->OrganisationMaster_model->getRaw('id,name');
         return view('user.org.add',compact('Orgs'));
     }
 
@@ -62,29 +71,27 @@ class OrganizationMasterController extends Controller
             'spoc' => 'required',
 //            'is_verified' => 'required',
         ]);
+
+        $params = array();
+        $params['name'] = $request->name;
+        $params['address'] = $request->address;
+        $params['city'] = $request->city;
+        $params['state'] = $request->state;
+        $params['country'] = $request->country;
+        $params['pincode'] = $request->pincode;
+        $params['business_type'] = $request->business_type;
+        $params['business_operation'] = $request->business_operation;
+        $params['spoc'] = $request->spoc;
+        $params['is_verified'] = 0;
+        $Org = $this->OrganisationMaster_model->SaveOrg($params);
         
-//        $OrganisationId = 0;
-//        if(request('name') == -1 ){
-            $Org = new Organisation_Master;
-            $Org->name = request('name');
-            $Org->address = request('address');
-            $Org->city = request('city');
-            $Org->state = request('state');
-            $Org->country = request('country');
-            $Org->pincode = request('pincode');
-            $Org->business_type = request('business_type');
-            $Org->business_operation = request('business_operation');
-            $Org->spoc = request('spoc');
-            $Org->is_verified = 0;
-            $Org->save();
-//            $OrganisationId = $Org->id;
-//        }else{
-//            $OrganisationId = request('name');
-//        }
-        $User_Org = User_Organisation::find(Auth::user()->id);
-        $User_Org->organization_master_id = $Org->id;
-        $User_Org->role = 'organizer';
-        $User_Org->save();
+        unset($params);
+        $params = array();
+        $params['id'] = Auth::user()->id;
+        $params['organization_master_id'] = $request->organization_master_id;
+        $params['role'] = 'organizer';
+        $User_Org = $this->UserOrganisation_model->SaveUserOrg($params);
+        
         return redirect()->route('home');
         
     }
@@ -97,11 +104,8 @@ class OrganizationMasterController extends Controller
      */
     public function show($id)
     {
-//        if(Auth::user()->role == "admin"){
-//            return redirect()->route('org.index');
-//        }
-        $Bio = User_Master::find(Auth::user()->user_master_id);
-        $Org = Organisation_Master::find($id);
+        $Bio = $this->UserMaster_model->getById(Auth::user()->user_master_id);
+        $Org = $this->OrganisationMaster_model->getById($id);
         return view('user.org.show',compact('Org','Bio'));
     }
 
@@ -113,7 +117,7 @@ class OrganizationMasterController extends Controller
      */
     public function edit($id)
     {
-        $Org = Organisation_Master::find($id);
+        $Org = $this->OrganisationMaster_model->getById($id);
         return view('user.org.edit', compact('Org'));
     }
 
@@ -139,28 +143,24 @@ class OrganizationMasterController extends Controller
             'business_operation' => 'required|max:191',
             'spoc' => 'required|max:191',
         ]);
-//        dd(request()->all());
-        $Org = Organisation_Master::find($id);
-        $Org->name = request('name');
-        $Org->address = request('address');
-        $Org->landmark = request('landmark');
-        $Org->city = request('city');
-        $Org->state = request('state');
-        $Org->country = request('country');
-        $Org->pincode = request('pincode');
-        $Org->business_type = request('business_type');
-        $Org->business_operation = request('business_operation');
-//        if(request('is_verified')){
-        $Org->is_verified = request('is_verified');
-//        }else{
-//            $Org->is_verified = 0;
-//        }
-        $Org->spoc = request('spoc');
-        $Org->save();
+        
+        $params = array();
+        $params['id'] = $id;
+        $params['name'] = $request->name;
+        $params['address'] = $request->address;
+        $params['city'] = $request->city;
+        $params['state'] = $request->state;
+        $params['country'] = $request->country;
+        $params['pincode'] = $request->pincode;
+        $params['business_type'] = $request->business_type;
+        $params['business_operation'] = $request->business_operation;
+        $params['spoc'] = $request->spoc;
+        $Org = $this->OrganisationMaster_model->SaveOrg($params);
+        
         if(Auth::user()->role == "admin"){
             return redirect()->route('org.index');
         }else{
-            $Bio = User_Master::find(Auth::user()->user_master_id);
+            $Bio = $this->UserMaster_model->getById(Auth::user()->user_master_id);
             return view('user.org.show',compact('Org','Bio'));
         }
     }

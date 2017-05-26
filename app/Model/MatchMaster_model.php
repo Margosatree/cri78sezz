@@ -10,7 +10,7 @@ class MatchMaster_model {
 	}
 	
 	public function checkTourId($Tour_id){
-		return Match_Master::selectRaw('*')->whereIn('tournament_id',$Tour_id)->get()
+		return Match_Master::selectRaw('*')->whereIn('tournament_id',$Tour_id)->get();
 	}
 
 	// public function getDetailByTourMatch(){
@@ -25,18 +25,18 @@ class MatchMaster_model {
 	}
 
 	public function insert($request){
-		$Match = new Match_Master();
-        $Match->tournament_id = $Tournament;
-        $Match->team1_id = $request->team1;
-        $Match->team2_id = $request->team2;
-        $Match->match_name = $request->match_name;
-        $Match->ground_name = $request->ground_name;
-        $Match->match_type = $request->match_type;
-        $Match->match_date = $request->match_date;
-        $Match->overs = $request->overs;
-        $Match->innings = $request->innings;
-        $Match->save();
-        return $Match
+            $Match = new Match_Master();
+            $Match->tournament_id = $Tournament;
+            $Match->team1_id = $request->team1;
+            $Match->team2_id = $request->team2;
+            $Match->match_name = $request->match_name;
+            $Match->ground_name = $request->ground_name;
+            $Match->match_type = $request->match_type;
+            $Match->match_date = $request->match_date;
+            $Match->overs = $request->overs;
+            $Match->innings = $request->innings;
+            $Match->save();
+            return $Match;
 	}
 	public function updateByTourId($Tournament,$id,$request){
 	$Match = Match_Master::where('tournament_id', $Tournament)->where('match_id', $id);

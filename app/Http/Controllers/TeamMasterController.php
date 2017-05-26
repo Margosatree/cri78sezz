@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\Team_Master;
-use App\User_Master;
-use App\User_Organisation;
+use App\TeamMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 class TeamMasterController extends Controller
 {
     /**
@@ -14,25 +14,32 @@ class TeamMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $TeamMaster_model;
+    protected $UserMaster_model;
+    protected $UserOrganisation_model;
+
+    public function __constructor(){
+        $this->_initModel();
+    }
+
+    protected function _initModel(){
+        $this->TeamMaster_model = new TeamMaster_model();
+        $this->UserMaster_model = new UserMaster_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
+    }
     public function index()
     {
-//        $Teams = Team_Master::where('team_owner_id',Auth::user()->organization_master_id);
-        $Teams = Team_Master::selectRaw('*')->where('team_owner_id',Auth::user()->user_master_id)->get();
+        $master_id = Auth::user()->user_master_id;
+        $Teams = $this->TeamMaster_model->getTeamDetail($master_id);
         return view('user.teammst.index',compact('Teams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $Users = User_Organisation::selectRaw('user_master_id')
-                    ->where('organization_master_id',Auth::user()->organization_master_id)->get();
-        $Owners = User_Master::selectRaw('id,CONCAT(first_name," ",last_name) AS Owner_Name')
-                    ->whereIn('id',$Users)->get();
-//        dd($Owners);
+        $id = Auth::user()->organization_master_id;
+        $Users = $this->UserOrganisation_model->getOrgById($id);
+        $Owners = $this->UserMaster_model->checkUserId($Users);
         return view('user.teammst.add', compact('Owners'));
     }
 
@@ -44,7 +51,6 @@ class TeamMasterController extends Controller
      */
     public function store(Request $request)
     {
-      // var_dump(request()->all());
         $this->validate($request,[
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
@@ -54,18 +60,9 @@ class TeamMasterController extends Controller
             'owner_id' => 'required|numeric',
         ]);
 
-        $Team = new Team_Master;
-        $Team->team_name = request('team_name');
-        $Team->team_owner_id = request('team_owner_id');
-        $Team->team_type = request('team_type');
-        $Team->order_id = request('order_id');
-        $Team->owner_id = request('owner_id');
-//        dd($Team->id);
         if($request->hasFile('image')){
-          //  dd($_POST['imagedata']);
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-
 
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
@@ -73,11 +70,9 @@ class TeamMasterController extends Controller
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
 
-            $Team->team_logo = $filename;
-           dd($Team->team_logo);
-//            $request->session()->put('user_img', $Team->team_logo);
+            $this->TeamMaster_model->insert($request,$filename);
         }
-        $Team->save();
+        
         return redirect()->route('team.index');
     }
 
@@ -100,11 +95,10 @@ class TeamMasterController extends Controller
      */
     public function edit($id)
     {
-        $Users = User_Organisation::selectRaw('user_master_id')
-                    ->where('organization_master_id',Auth::user()->organization_master_id)->get();
-        $Owners = User_Master::selectRaw('id,CONCAT(first_name," ",last_name) AS Owner_Name')
-                    ->whereIn('id',$Users)->get();
-        $Team = Team_Master::find($id);
+        $id = Auth::user()->organization_master_id;
+        $Users = $this->UserOrganisation_model->getOrgById($id);
+        $Owners = $this->UserMaster_model->checkUserId($Users);
+        $Team = $this->TeamMaster_model->getAll($id);;
         return view('user.teammst.edit',compact('Team','Owners'));
     }
 
@@ -127,15 +121,7 @@ class TeamMasterController extends Controller
             'owner_id' => 'required|numeric',
         ]);
 
-        $Team = Team_Master::find($id);
-        $Team->team_name = request('team_name');
-        $Team->team_owner_id = request('team_owner_id');
-        $Team->team_type = request('team_type');
-        $Team->order_id = request('order_id');
-        $Team->owner_id = request('owner_id');
-//        dd(request('image'));
         if($request->hasFile('image')){
-            // dd('Image');
             $image = $request->file('image');
             $data = $_POST['imagedata'];
 
@@ -144,12 +130,8 @@ class TeamMasterController extends Controller
             $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-
-            $Team->team_logo = $filename;
-//            dd($Team->team_logo);
-//            $request->session()->put('user_img', $Team->team_logo);
+            $this->TeamMaster_model->insert($request,$filename,$id);
         }
-        $Team->save();
         return redirect()->route('team.index');
     }
 
@@ -161,12 +143,7 @@ class TeamMasterController extends Controller
      */
     public function destroy($id)
     {
-        $Team = Team_Master::find($id);
-        if($Team){
-            $Team->delete();
-        }else{
-            dd('Not Exist');
-        }
+        $this->TeamMaster_model->deleteById($id);
         return redirect()->route('team.index');
     }
 }

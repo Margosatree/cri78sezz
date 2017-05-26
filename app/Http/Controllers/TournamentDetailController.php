@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User_Master;
-use App\Tournament_Details;
-use App\Tournament_Master;
-use App\Tournament_Rules;
-use App\Organisation_Master;
+use App\Model\UserMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TournamentMaster_model;
+use App\Model\TournamentRules_model;
+use App\Model\OrganisationMaster_model;
 class TournamentDetailController extends Controller
 {
     /**
@@ -15,6 +15,26 @@ class TournamentDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    protected $UserMaster_model;
+    protected $OrganisationMaster_model;
+    protected $TournamentDetails_model;
+    protected $TournamentMaster_model;
+    protected $TournamentRules_model;
+    
+    public function __construct(){
+        $this->middleware('auth:admin',['only'=>['index']]);
+        $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
+    }
+    
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+        $this->TournamentDetails_model = new TournamentDetails_model();
+        $this->TournamentMaster_model = new TournamentMaster_model();
+        $this->TournamentRules_model = new TournamentRules_model();
+    }
+    
     public function index($Tournament)
     {
         
@@ -53,14 +73,16 @@ class TournamentDetailController extends Controller
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        $Tour_Det = new Tournament_Details();
-        $Tour_Det->tournament_id = $Tournament;
-        $Tour_Det->rule_id = request('rule');
-        $Tour_Det->specification = null;
-        $Tour_Det->value = request('value');
-        $Tour_Det->range_from = null;
-        $Tour_Det->range_to = null;
-        $Tour_Det->save();
+        
+        $params = array();
+        $params['tournament_id'] = $Tournament;
+        $params['rule_id'] = $request->rule_id;
+        $params['specification'] = null;
+        $params['value'] = $request->value;
+        $params['range_from'] = null;
+        $params['range_to'] = null;
+        $Tour_Det = $this->TournamentDetails_model->SaveUserBio($params);
+        
         return redirect()->route('tourdet.index',$Tournament);
     }
 
@@ -72,8 +94,7 @@ class TournamentDetailController extends Controller
      */
     public function show($Tournament,$id)
     {
-        $Tour_Dets = Tournament_Details::selectRaw('*')->where('tournament_id',$id)->get();
-//        dd($Tour_Dets);
+        $Tour_Dets = $this->TournamentDetails_model->getTourDetById($id);
         return view('user.tourdet.index',compact('Tour_Dets'));
     }
 
@@ -86,8 +107,8 @@ class TournamentDetailController extends Controller
     public function edit($Tournament,$id)
     {
 //        dd($Tournament.' '.$id);
-        $Rules = Tournament_Rules::all();
-        $Tour_Det = Tournament_Details::selectRaw('*')->where('tournament_id',$Tournament)->where('rule_id',$id)->get()->first();
+        $Rules = $this->TournamentRules_model->getAll();
+        $Tour_Det = getTourDetByIdRuleId($Tournament,$id);
         return view('user.tourdet.edit',compact('Tour_Det','Rules','Tournament'));
     }
 

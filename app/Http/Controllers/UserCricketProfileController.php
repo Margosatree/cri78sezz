@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\UserCricketProfile_model;
+use App\Model\UserCricketProfile_model;
 use App\Model\UserMaster_model;
 use Illuminate\Http\Request;
 use Auth;
@@ -79,11 +79,12 @@ class UserCricketProfileController extends Controller
             
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($User_Cri_Profile->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
+//            $filename = time().base64_encode($User_Cri_Profile->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
             $params['display_img'] = $filename;
-            $request->session()->put('user_img', $User_Cri_Profile->display_img);
+            $request->session()->put('user_img', $params['display_img']);
         }
         $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($params);
         
@@ -162,11 +163,12 @@ class UserCricketProfileController extends Controller
             $data = $_POST['imagedata'];
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($Cri_Profile->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
+//            $filename = time().base64_encode($Cri_Profile->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
             $params['display_img'] = $filename;
-            $request->session()->put('user_img', $Cri_Profile->display_img);
+            $request->session()->put('user_img', $params['display_img']);
         }
         if(Auth::user()->role == "admin"){
             return redirect()->route('criProfile.index');

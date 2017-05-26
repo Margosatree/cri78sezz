@@ -4,17 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\User_Master;
-use App\User_Achievement;
-use App\Organisation_Master;
+use App\Model\UserMaster_model;
+use App\Model\UserAchievement_model;
+use App\Model\OrganisationMaster_model;
 class UserAchievementController extends Controller
 {
+    protected $UserMaster_model;
+    protected $UserAchievement_model;
+    protected $OrganisationMaster_model;
     
     public function __construct(){
         $this->middleware('auth:admin',['only'=>['index']]);
         $this->middleware('auth',['except'=>['index']]);
+        $this->_initModel();
     }
     
+    protected function _initModel(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->UserAchievement_model = new UserAchievement_model();
+        $this->OrganisationMaster_model = new OrganisationMaster_model();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +31,7 @@ class UserAchievementController extends Controller
      */
     public function index()
     {
-        $User_Achieve = User_Achievement::all();
+        $User_Achieve = $this->UserMaster_model->getAll();
         return view('user.achieve.index',compact('User_Achieve'));
     }
 
@@ -33,7 +42,7 @@ class UserAchievementController extends Controller
      */
     public function create()
     {
-        $Orgs = Organisation_Master::selectRaw('id,name')->get();
+        $Orgs = $this->OrganisationMaster_model->getAllColumnWise('id,name');
         return view('user.achieve.add',compact('Orgs'));
     }
 
@@ -54,35 +63,14 @@ class UserAchievementController extends Controller
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
         ]);
-        
-//        dd(request()->all());
-//        $OrganisationId = 0;
-//        
-//        if(request('name') == -1 ){
-//            $Org = new Organisation_Master;
-//            $Org->name = request('orgname');
-//            $Org->address = null;
-//            $Org->city = null;
-//            $Org->state = null;
-//            $Org->country = null;
-//            $Org->pincode = null;
-//            $Org->business_type = null;
-//            $Org->business_operation = null;
-//            $Org->spoc = null;
-//            $Org->is_verified = 0;
-//            $Org->save();
-//            $OrganisationId = $Org->id;
-//        }else{
-//            $OrganisationId = request('name');
-//        }
-        $User_Achieve = new User_Achievement;
-        $User_Achieve->user_master_id = Auth::user()->user_master_id;
-        $User_Achieve->title = request('title');
-        $User_Achieve->organization_master_id = request('name');
-        $User_Achieve->location = request('location');
-        $User_Achieve->start_date = request('start_date');
-        $User_Achieve->end_date = request('end_date');
-        $User_Achieve->save();
+        $params = array();
+        $params['user_master_id'] = Auth::user()->user_master_id;
+        $params['title'] = $request->title;
+        $params['organization_master_id'] = $request->name;
+        $params['location'] = $request->location;
+        $params['start_date'] = $request->start_date;
+        $params['end_date'] = $request->end_date;
+        $User_Achieve = $this->UserAchievement_model->SaveUserBio($params);
         
         return redirect()->route('home');
     }
@@ -94,13 +82,11 @@ class UserAchievementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        
-        $User_Exists = User_Achievement::selectRaw('count(id) as count')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
-//        dd($User_Exists->count);
+    {   
+        $User_Exists = $this->UserAchievement_model->getCriProfileCountByUserMasterId(Auth::user()->user_master_id);
         if($User_Exists->count){
-            $Bio = User_Master::find(Auth::user()->user_master_id);
-            $User_Achieve = User_Achievement::select('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+            $Bio = $this->UserMaster_model->getBioById(Auth::user()->user_master_id);
+            $User_Achieve = $this->UserAchievement_model->getCriProfileByUserMasterId(Auth::user()->user_master_id);
             return view('user.achieve.show',compact('User_Achieve','Bio'));
         }else{
             return view('user.achieve.add');
@@ -115,8 +101,8 @@ class UserAchievementController extends Controller
      */
     public function edit($id)
     {
-        $Orgs = Organisation_Master::all();
-        $User_Achieve = User_Achievement::find($id);
+        $Orgs = $this->OrganisationMaster_model->getAll();
+        $User_Achieve = $this->UserAchievement_model->getById($id);
         return view('user.achieve.edit',compact('User_Achieve','Orgs'));
     }
 
@@ -137,25 +123,16 @@ class UserAchievementController extends Controller
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
         ]);
-//        $OrganisationId = 0;
         
-//        if(request('name') == -1 ){
-//            $Org = new Organisation_Master;
-//            $Org->name = request('orgname');
-//            $Org->is_verified = 0;
-//            $Org->save();
-//            $OrganisationId = $Org->id;
-//        }else{
-//            $OrganisationId = request('name');
-//        }
-        $User_Achieve = User_Achievement::find($id);
-        $User_Achieve->user_master_id = Auth::user()->user_master_id;
-        $User_Achieve->title = request('title');
-        $User_Achieve->organization_master_id = request('name');
-        $User_Achieve->location = request('location');
-        $User_Achieve->start_date = request('start_date');
-        $User_Achieve->end_date = request('end_date');
-        $User_Achieve->save();
+        $params = array();
+        $params['id'] = $id;
+        $params['user_master_id'] = Auth::user()->user_master_id;
+        $params['title'] = $request->title;
+        $params['organization_master_id'] = $request->name;
+        $params['location'] = $request->location;
+        $params['start_date'] = $request->start_date;
+        $params['end_date'] = $request->end_date;
+        $User_Achieve = $this->UserAchievement_model->SaveUserBio($params);
         
         if(Auth::user()->role == "admin"){
             return redirect()->route('achieve.index');
@@ -172,7 +149,7 @@ class UserAchievementController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        $User_Achieve = User_Achievement::find($id);
+        $User_Achieve = $this->UserAchievement_model->getById($id);
         $User_Achieve->delete();
         return redirect()->back();
     }

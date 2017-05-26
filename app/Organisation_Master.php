@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\Organisation_Master;
 use Illuminate\Database\Eloquent\Model;
 
 class Organisation_Master extends Model
@@ -12,4 +12,5 @@ class Organisation_Master extends Model
         'name','address', 'landmark', 'city','state', 'country',
         'pincode','business_type', 'business_operation', 'spoc','is_verified'
     ];
+    
 }
