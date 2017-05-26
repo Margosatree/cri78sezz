@@ -5,10 +5,15 @@ namespace App\Http\Controllers\Web\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use PHPZen\LaravelRbac\Model\Role;
+use App\Model\BasicModel\Role_model;
+
 class RoleController extends Controller
 {
-    public function __construct(){
+
+    protected $Role_model;
+
+    public function __construct(Role_model $role){
+        $this->Role_model = $role;
         $this->middleware('auth:admin');
     }
     /**
@@ -44,11 +49,7 @@ class RoleController extends Controller
         'description' => 'required'        
         ]);
 
-        $adminRole = new Role;
-        $adminRole->name = $request->name;
-        $adminRole->slug = strtolower($request->name);
-        $adminRole->description = $request->description;
-        $adminRole->save();
+        $this->Role_model->insert($request);
 
         return redirect('/admin/home');
     }

@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Web\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\User_Organisation;
-use PHPZen\LaravelRbac\Model\Role;
-use DB;
+// use DB;
+use App\Model\BasicModel\UserOrganisation_model;
+use App\Model\BasicModel\Role_model;
+
 // use App\RoleUser;
 
 class RoleUserController extends Controller
 {
     
-    
-    public function __construct(){
+    protected $Role_model;
+
+    public function __construct(Role_model $role){
+        $this->Role_model = $role;
         $this->middleware('auth:admin');
     }
     /**
@@ -35,7 +38,7 @@ class RoleUserController extends Controller
     public function create()
     {   
 
-        $users = User_Organisation::get();
+        // $users = User_Organisation::get();
         // foreach($users as $user){
         // $results = DB::select( DB::raw("select id,name from roles where id not in 
         //                                 (select role_id from role_user 
@@ -47,8 +50,8 @@ class RoleUserController extends Controller
         // }
         // dd($total);
         // return view('acl\assign_role', compact($total));
-        $users = User_Organisation::all();
-        $roles = Role::get();
+        $users = $this->UserOrganisation_model->getAll();
+        $roles = $this->Role_model->getAll();
       //  dd($users);
         return view('acl\assign_role', ['userData' => $users, 'roleData' => $roles]);
     }
@@ -66,7 +69,7 @@ class RoleUserController extends Controller
         'role_id' => 'required'        
         ]);
 
-        $user = User_Organisation::find($request->user_id);
+        $user = $this->UserOrganisation_model->findById($request->user_id);
         $roleId = $request->role_id;
 
         $user->roles()->attach($roleId);
@@ -116,10 +119,10 @@ class RoleUserController extends Controller
     public function displayRoles()
     {   
 
-        $user_data = User_Organisation::get();
+        $user_data = $this->UserOrganisation_model->getAllByGet();
         foreach($user_data as $data){
             $email = $data->email;
-            $roles = User_Organisation::find($data->id)->roles()->get();
+            $roles = $this->UserOrganisation_model->findRole($data->id);
             if(count($roles)){
                 foreach($roles as $role){
                     $data = $role->name;
@@ -136,7 +139,7 @@ class RoleUserController extends Controller
     }
     public function destroy($id,$userId)
     {
-       $user = User_Organisation::find($userId);
+       $user = $this->UserOrganisation_model->findById($userId);
        $user->roles()->detach($id);
         return redirect('/admin/home');
     }

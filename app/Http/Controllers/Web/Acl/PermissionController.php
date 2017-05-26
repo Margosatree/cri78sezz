@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Web\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use PHPZen\LaravelRbac\Model\Permission;
+use App\Model\Permission_model;
 
 class PermissionController extends Controller
 {
-    public function __construct(){
+
+    protected $Permission_model;
+
+    public function __construct(Permission_model $Permission){
+        $this->Permission_model = $Permission;
         $this->middleware('auth:admin');
     }
     /**
@@ -46,12 +50,7 @@ class PermissionController extends Controller
         'description' => 'required'        
         ]);
 
-        $createUser = new Permission;
-        $createUser->name = $request->name;
-        $createUser->slug = $request->slug;
-        $createUser->description = $request->description;
-        $createUser->save();
-        
+        $this->Permission_model->insert($request);
         return redirect('/admin/home');
     }
 

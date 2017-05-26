@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Model;
-use App\User_Organisation;
+use App\Model\BaseModel\User_Organisation;
 use Hash;
 class UserOrganisation_model {
 
 	public function __construct(){
 		//parent::__construct();
 	}
+
+    public function findById($user_id){
+        return User_Organisation::find($user_id);;
+    }
         
     public function getOrgByOrgMasterId($id) {
         return Organisation_Master::selectRaw('*')->where('id', $id)->get()->first();
@@ -17,9 +21,20 @@ class UserOrganisation_model {
         return User_Organisation::selectRaw('user_master_id')
                     ->where('organization_master_id',$id)->get();
     }  
-        public function getAll() {
-            return User_Organisation::all();
-        }
+
+    public function getAll() {
+        return User_Organisation::all();
+    }
+
+    public function getAllByGet(){
+       return User_Organisation::get();
+    }
+
+    public function findRole($id){
+        $data = $this->findById($id);
+        return $data->roles()->get();
+
+    }
 
 	public function insert($data){
             return User_Organisation::create([

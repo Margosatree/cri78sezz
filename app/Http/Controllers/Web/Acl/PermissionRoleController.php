@@ -5,13 +5,20 @@ namespace App\Http\Controllers\Web\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use PHPZen\LaravelRbac\Model\Permission;
-use PHPZen\LaravelRbac\Model\Role;
+use App\Model\BasicModel\Permission_model;
+use App\Model\BasicModel\Role_model;
 // use App\PermissionRole;
 class PermissionRoleController extends Controller
 {
 
-    public function __construct(){
+    protected $Role_model;
+    protected $Permission_model;
+
+    public function __construct(Role_model $role,Permission_model $permission){
+
+        $this->Role_model = $role;
+        $this->Permission_model = $permission;
+
         $this->middleware('auth:admin');
     }
     /**
@@ -31,9 +38,9 @@ class PermissionRoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::get();
-        $roles = Role::get();
-      //  dd($users);
+        $permissions = $this->Permission_model->getAll();
+        $roles = $this->Role_model->getAll();
+
         return view('acl\assign_permission', ['permissionData' => $permissions, 'roleData' => $roles]);
     }
 
@@ -49,10 +56,8 @@ class PermissionRoleController extends Controller
         'role_id' => 'required',
         'permission_id' => 'required'        
         ]);
-
-        $adminRole = Role::find($request->role_id);
-        $roleId = $request->permission_id;
-        $adminRole->permissions()->attach($roleId);
+        
+        $this->Role_model->findByIdForPermission($request->role_id,$request->permission_id)
         return redirect('/admin/home');
     }
 
@@ -97,10 +102,10 @@ class PermissionRoleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function displayPermissions(){
-        $role_data = Role::get();
+        $role_data = $this->Role_model->getAll();
         foreach($role_data as $data){
             $name = $data->name;
-            $permissions = Role::find($data->id)->permissions()->get();
+            $permissions = $this->Role_model->findPermissionById($data->id);
             if(count($permissions)){
                 foreach($permissions as $permission){
                     $data = $permission->name;
@@ -117,8 +122,7 @@ class PermissionRoleController extends Controller
     }
     public function destroy($id,$roleId)
     {
-        $role = Role::find($roleId);
-        $role->permissions()->detach($id);
+        $this->Role_model->detachPermission($id,$roleId);
         return redirect('/admin/home');
     }
 }
