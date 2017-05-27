@@ -10,8 +10,8 @@ use Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Model\BasicModel\UserCricketProfile_model;
-use App\Model\BasicModel\UserMaster_model;
+use App\Model\UserCricketProfile_model;
+use App\Model\UserMaster_model;
 
 
 class UserCricketProfileController extends Controller
@@ -36,7 +36,7 @@ class UserCricketProfileController extends Controller
      */
     public function index()
     {
-        $Cri_Profiles = User_Cricket_Profile::all();
+        $Cri_Profiles = $this->UserCricketProfile_model->getAll();
         return view('user.criprofile.index',compact('Cri_Profiles'));
     }
 
@@ -71,28 +71,20 @@ class UserCricketProfileController extends Controller
 //            'is_completed' => 'required|numeric',
         ]);
         
-        $params = array();
-        $params['user_master_id'] = Auth::user()->user_master_id;
-        $params['your_role'] = $request->your_role;
-        $params['batsman_style'] = $request->batsman_style;
-        $params['batsman_order'] = $request->batsman_order;
-        $params['bowler_style'] = $request->bowler_style;
-        $params['player_type'] = $request->player_type;
-        $params['description'] = $request->description;
         if($request->hasFile('image')){
             $image = $request->file('image');
             $data = $_POST['imagedata'];
-            
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
             $filename = time().'.'.$image->getClientOriginalExtension();
-//            $filename = time().base64_encode($User_Cri_Profile->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
             $params['display_img'] = $filename;
+            $request->request->add(['display_img' => $filename,]);
             $request->session()->put('user_img', $params['display_img']);
         }
-        $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($params);
+        $request->request->add(['user_master_id' => Auth::user()->user_master_id,]);
+        $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
         
         return redirect()->route('userAchieve.create');
     }
@@ -105,7 +97,6 @@ class UserCricketProfileController extends Controller
      */
     public function show($id)
     {
-//        dd($id);
         if(!Auth::guard('admin')->check()){
             $id = Auth::user()->user_master_id;
         }else{
@@ -129,7 +120,7 @@ class UserCricketProfileController extends Controller
      */
     public function edit($id)
     {
-        $Cri_Profile = User_Cricket_Profile::find($id);
+        $Cri_Profile = $this->UserCricketProfile_model->getById($id);
         return view('user.criprofile.edit',compact('Cri_Profile'));
     }
 
@@ -143,7 +134,6 @@ class UserCricketProfileController extends Controller
     public function update(Request $request, $id)
     {
         
-//        dd(request()->all());
         $this->validate($request,[
             'your_role' => 'required|numeric',
             'batsman_style' => 'required|in:Lefthand,Righthand',
@@ -155,27 +145,20 @@ class UserCricketProfileController extends Controller
 //            'display_img' => 'required|max:255',
 //            'is_completed' => 'required|numeric',
         ]);
-        $params = array();
-        $params['id'] = $id;
-        $params['user_master_id'] = Auth::user()->user_master_id;
-        $params['your_role'] = $request->your_role;
-        $params['batsman_style'] = $request->batsman_style;
-        $params['batsman_order'] = $request->batsman_order;
-        $params['bowler_style'] = $request->bowler_style;
-        $params['player_type'] = $request->player_type;
-        $params['description'] = $request->description;
         if($request->hasFile('image')){
             $image = $request->file('image');
             $data = $_POST['imagedata'];
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
             $filename = time().'.'.$image->getClientOriginalExtension();
-//            $filename = time().base64_encode($Cri_Profile->id).'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            $params['display_img'] = $filename;
+            $request->request->add(['display_img' => $filename,]);
             $request->session()->put('user_img', $params['display_img']);
         }
+        $request->request->add(['user_master_id' => Auth::user()->user_master_id,'update' => 1,'id' => $id]);
+        $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
+        
         if(Auth::user()->role == "admin"){
             return redirect()->route('criProfile.index');
         }else{

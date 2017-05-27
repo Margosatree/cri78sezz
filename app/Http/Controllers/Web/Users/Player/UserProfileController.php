@@ -6,11 +6,10 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Model\BasicModel\OrganisationMaster_model;
-use App\Model\BasicModel\UserCricketProfile_model;
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\UserAchievement_model;
-
+use App\Model\OrganisationMaster_model;
+use App\Model\UserCricketProfile_model;
+use App\Model\UserMaster_model;
+use App\Model\UserAchievement_model;
 class UserProfileController extends Controller
 {
     protected $UserMaster_model;
@@ -70,18 +69,13 @@ class UserProfileController extends Controller
      */
     public function show($id)
     {
-      // dd($id);
-        $data=$this->_show($id);
+        $data = $this->_show($id);
         return view('user.profile.show', $data);
-
-
     }
 
     public function showUser($id){
-      // dd($id);
-          $data=$this->_show($id);
-          return view('user.profile.show', $data);
-
+        $data = $this->_show($id);
+        return view('user.profile.show', $data);
     }
 
 
@@ -93,12 +87,11 @@ class UserProfileController extends Controller
             $user_id = Auth::guard('admin')->user();
         }
 
-        $Sr = 0;
-        $Bio = $this->UserMaster_model->getBioById($id);
+        $Bio = $this->UserMaster_model->getById($id);
         $Cri_Profile = $this->UserCricketProfile_model->getCriProfileByUserMasterId($user_id->user_master_id);
         $User_Achieves = $this->UserAchievement_model->getAchievementByUserMasterId($user_id->user_master_id);
         $Org = $this->OrganisationMaster_model->getOrgByOrgMasterId($user_id->organization_master_id);
-        $data=['Bio'=> $Bio,'Cri_Profile'=> $Cri_Profile,'User_Achieves'=> $User_Achieves,'Org'=> $Org];
+        $data = ['Bio' => $Bio,'Cri_Profile' => $Cri_Profile,'User_Achieves' => $User_Achieves,'Org' => $Org];
         return $data;
     }
 

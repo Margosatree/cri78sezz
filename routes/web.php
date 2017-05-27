@@ -16,7 +16,18 @@ Route::get('/', function () {
 });
 
 
-Auth::routes();
+// Auth::routes();
+
+
+// Replace by Auth::routes()
+Route::get('/login', 'Web\Auth\LoginController@showLoginForm')->name('login');
+Route::post('/login', 'Web\Auth\LoginController@login');
+Route::get('/logout', 'Web\Auth\LoginController@logout')->name('logout');
+
+Route::get('/register', 'Web\Auth\RegisterController@showRegistrationForm')
+			->name('register');
+Route::post('/register', 'Web\Auth\RegisterController@register');
+// till this Auth::routes()
 
 Route::get('/home', 'Web\Other\HomeController@index')->name('home');
 

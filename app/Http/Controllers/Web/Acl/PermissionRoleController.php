@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Web\Acl;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Model\BasicModel\Permission_model;
-use App\Model\BasicModel\Role_model;
+use App\Model\Permission_model;
+use App\Model\Role_model;
 // use App\PermissionRole;
 class PermissionRoleController extends Controller
 {

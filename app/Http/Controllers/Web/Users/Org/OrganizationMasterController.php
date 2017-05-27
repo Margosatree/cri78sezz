@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Web\Users\Org;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
+use App\Model\OrganisationMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
-
-use App\Model\BasicModel\OrganisationMaster_model;
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\UserOrganisation_model;
-
+use \App\User_Organisation;
 class OrganizationMasterController extends Controller
 {
     protected $UserMaster_model;
@@ -34,7 +31,7 @@ class OrganizationMasterController extends Controller
      */
     public function index()
     {
-        $Orgs = Organisation_Master::all();
+        $Orgs = $this->OrganisationMaster_model->getAll();
         return view('user.org.index',compact('Orgs'));
     }
 
@@ -60,6 +57,9 @@ class OrganizationMasterController extends Controller
 //        if($Org_Exists->count){
 //            
 //        }
+//        dd(request()->all());
+//        unset($request->name);
+//        dd($request);
         $this->validate($request,[
             'name' => 'required',// Organisation Id
 //            'orgname' => 'required',//Organisation name
@@ -75,25 +75,14 @@ class OrganizationMasterController extends Controller
 //            'is_verified' => 'required',
         ]);
 
-        $params = array();
-        $params['name'] = $request->name;
-        $params['address'] = $request->address;
-        $params['city'] = $request->city;
-        $params['state'] = $request->state;
-        $params['country'] = $request->country;
-        $params['pincode'] = $request->pincode;
-        $params['business_type'] = $request->business_type;
-        $params['business_operation'] = $request->business_operation;
-        $params['spoc'] = $request->spoc;
-        $params['is_verified'] = 0;
-        $Org = $this->OrganisationMaster_model->SaveOrg($params);
+        $request->request->add(['is_verified' => 0]);
+        $Org = $this->OrganisationMaster_model->SaveOrg($request);
         
-        unset($params);
         $params = array();
         $params['id'] = Auth::user()->id;
         $params['organization_master_id'] = $request->organization_master_id;
         $params['role'] = 'organizer';
-        $User_Org = $this->UserOrganisation_model->SaveUserOrg($params);
+        $User_Org = $this->UserOrganisation_model->updateOrgStatus($params);
         
         return redirect()->route('home');
         
@@ -158,7 +147,11 @@ class OrganizationMasterController extends Controller
         $params['business_type'] = $request->business_type;
         $params['business_operation'] = $request->business_operation;
         $params['spoc'] = $request->spoc;
-        $Org = $this->OrganisationMaster_model->SaveOrg($params);
+        if(isset($request->is_verified) && $request->is_verified){
+            $request->request->add(['is_verified' => $request->is_verified]);
+        }
+        $request->request->add(['update' => 1,'id' => $id]);
+        $Org = $this->OrganisationMaster_model->SaveOrg($request);
         
         if(Auth::user()->role == "admin"){
             return redirect()->route('org.index');

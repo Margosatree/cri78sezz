@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\TournamentDetails_model;
-use App\Model\BasicModel\TournamentMaster_model;
-use App\Model\BasicModel\TournamentRules_model;
-use App\Model\BasicModel\OrganisationMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TournamentRules_model;
+use App\Model\OrganisationMaster_model;
 
 
 class TournamentDetailController extends Controller
@@ -20,31 +18,26 @@ class TournamentDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    protected $UserMaster_model;
     protected $OrganisationMaster_model;
     protected $TournamentDetails_model;
-    protected $TournamentMaster_model;
     protected $TournamentRules_model;
     
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
     
     protected function _initModel(){
-        $this->UserMaster_model = new UserMaster_model();
         $this->OrganisationMaster_model = new OrganisationMaster_model();
         $this->TournamentDetails_model = new TournamentDetails_model();
-        $this->TournamentMaster_model = new TournamentMaster_model();
         $this->TournamentRules_model = new TournamentRules_model();
     }
     
     public function index($Tournament)
     {
         
-        $Tour_Dets = Tournament_Details::selectRaw('*')
-                    ->where('tournament_id',$Tournament)->get();
+        $Tour_Dets = $this->TournamentDetails_model->getTourDetById($Tournament);
         return view('user.tourdet.index',compact('Tour_Dets','Tournament'));
     }
 
@@ -55,10 +48,8 @@ class TournamentDetailController extends Controller
      */
     public function create($Tournament)
     {
-        $Rule_id = Tournament_Details::selectRaw('rule_id')
-                    ->where('tournament_id',$Tournament)->get();
-        $Rules = Tournament_Rules::selectRaw('*')->whereNotIn('id',$Rule_id)->get();
-//        $Rules = Tournament_Rules::all();
+        $Rule_id = $this->TournamentDetails_model->getRulesByTourId($Tournament);
+        $Rules = $this->TournamentRules_model->getAllNotIn($Rule_id);
         return view('user.tourdet.add',compact('Rules','Tournament'));
     }
 
@@ -70,7 +61,6 @@ class TournamentDetailController extends Controller
      */
     public function store(Request $request,$Tournament)
     {
-        
         $this->validate($request,[
             'rule' => 'required|numeric|max:190',
             'specification' => 'max:190',
@@ -78,15 +68,8 @@ class TournamentDetailController extends Controller
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        
-        $params = array();
-        $params['tournament_id'] = $Tournament;
-        $params['rule_id'] = $request->rule_id;
-        $params['specification'] = null;
-        $params['value'] = $request->value;
-        $params['range_from'] = null;
-        $params['range_to'] = null;
-        $Tour_Det = $this->TournamentDetails_model->SaveUserBio($params);
+        $request->request->add(['user_master_id' => $Tournament]);
+        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
         
         return redirect()->route('tourdet.index',$Tournament);
     }
@@ -113,7 +96,7 @@ class TournamentDetailController extends Controller
     {
 //        dd($Tournament.' '.$id);
         $Rules = $this->TournamentRules_model->getAll();
-        $Tour_Det = getTourDetByIdRuleId($Tournament,$id);
+        $Tour_Det = $this->TournamentDetails_model->getTourDetByIdRuleId($Tournament,$id);
         return view('user.tourdet.edit',compact('Tour_Det','Rules','Tournament'));
     }
 
@@ -126,7 +109,7 @@ class TournamentDetailController extends Controller
      */
     public function update(Request $request, $Tournament, $id)
     {
-        
+//        dd(request()->all());
         $this->validate($request,[
             'rule' => 'required|numeric|max:190',
             'specification' => 'max:190',
@@ -134,17 +117,16 @@ class TournamentDetailController extends Controller
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        $Tour_Det = Tournament_Details::selectRaw('*')->where('tournament_id',$Tournament)->where('rule_id',$id)->get();
-        if($Tour_Det){
-            $Tour_Detail = Tournament_Details::where('tournament_id', $Tournament)->where('rule_id', $id);
-            $Tour_Detail->update([
-                'rule_id'=>request('rule'),
-                'specification'=>null,
-                'value'=>request('value'),
-                'range_from'=>null,
-                'range_to'=>null,
-            ]);
-        }
+        $params = array();
+        $params['id'] = $id;
+        $params['tournament_id'] = $Tournament;
+        $params['rule_id'] = $request->rule;
+        $params['specification'] = null;
+        $params['value'] = $request->value;
+        $params['range_from'] = null;
+        $params['range_to'] = null;
+//        dd($params);
+        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($params);
         
         return redirect()->route('tourdet.index',$Tournament);
     }
@@ -157,9 +139,9 @@ class TournamentDetailController extends Controller
      */
     public function destroy($Tournament, $id)
     {
-        $Tour_Dets = Tournament_Details::selectRaw('*')->where('tournament_id',$Tournament)->where('rule_id',$id)->get();
+        $Tour_Dets = $this->TournamentDetails_model->getTourDetByIdRuleId($Tournament, $id);
         if($Tour_Dets){
-            Tournament_Details::where(['tournament_id'=>$Tournament,'rule_id'=>$id])->delete();
+            $this->TournamentDetails_model->deleteRuleByRuleId($Tournament,$id);
         }else{
             dd('Not Exist');
         }

@@ -1,7 +1,6 @@
 <?php
 
-namespace App;
-use App\Organisation_Master;
+namespace App\Model\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 class Organisation_Master extends Model

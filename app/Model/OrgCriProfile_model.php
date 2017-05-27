@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Model;
-use App\Password_reset;
+use App\Model\BaseModel\Org_CriProfile;
 
-class PasswordReset_model {
+class OrgCriProfile_model {
 
 	public function __construct(){
 		//parent::__construct();

@@ -1,13 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Model\BaseModel;
 
 use Illuminate\Database\Eloquent\Model;
-use PHPZen\LaravelRbac\Traits\Rbac;
 
 class User_Master extends Model
 {
-	use Rbac;
     protected $table = 'user_masters';
     
     protected $fillable = [

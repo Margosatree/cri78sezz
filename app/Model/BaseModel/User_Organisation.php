@@ -1,13 +1,11 @@
 <?php
 
-namespace App;
-use PHPZen\LaravelRbac\Traits\Rbac;
+namespace App\Model\BaseModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User_Organisation extends Authenticatable
 {
-    use Rbac;
     use Notifiable;
     protected $table = 'user_organizations';
 

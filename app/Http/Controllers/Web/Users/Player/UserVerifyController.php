@@ -7,8 +7,8 @@ use Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\User_Master;
-use App\verify_user;
+use App\Model\User_Master;
+use App\Model\verify_user;
 
 class UserVerifyController extends Controller
 {

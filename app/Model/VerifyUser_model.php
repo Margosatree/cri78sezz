@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-use App\verify_user;
+use App\Model\BaseModel\verify_user;
 
 class VerifyUser_model {
 

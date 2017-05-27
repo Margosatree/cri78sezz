@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\UserAchievement_model;
-use App\Model\BasicModel\OrganisationMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\UserAchievement_model;
+use App\Model\OrganisationMaster_model;
+
 class UserAchievementController extends Controller
 {
     protected $UserMaster_model;
@@ -65,14 +66,8 @@ class UserAchievementController extends Controller
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
         ]);
-        $params = array();
-        $params['user_master_id'] = Auth::user()->user_master_id;
-        $params['title'] = $request->title;
-        $params['organization_master_id'] = $request->name;
-        $params['location'] = $request->location;
-        $params['start_date'] = $request->start_date;
-        $params['end_date'] = $request->end_date;
-        $User_Achieve = $this->UserAchievement_model->SaveUserBio($params);
+        $request->request->add(['user_master_id' => Auth::user()->user_master_id,]);
+        $User_Achieve = $this->UserAchievement_model->SaveAchievement($request);
         
         return redirect()->route('home');
     }
@@ -126,20 +121,13 @@ class UserAchievementController extends Controller
             'end_date' => 'required|date|after:start_date',
         ]);
         
-        $params = array();
-        $params['id'] = $id;
-        $params['user_master_id'] = Auth::user()->user_master_id;
-        $params['title'] = $request->title;
-        $params['organization_master_id'] = $request->name;
-        $params['location'] = $request->location;
-        $params['start_date'] = $request->start_date;
-        $params['end_date'] = $request->end_date;
-        $User_Achieve = $this->UserAchievement_model->SaveUserBio($params);
+        $request->request->add(['user_master_id' => Auth::user()->user_master_id,'update' => 1,'id' => $id]);
+        $User_Achieve = $this->UserAchievement_model->SaveUserBio($request);
         
         if(Auth::user()->role == "admin"){
             return redirect()->route('achieve.index');
         }else{
-            $Bio = User_Master::find(Auth::User()->user_master_id);
+            $Bio = $this->UserMaster_model->getById(Auth::User()->user_master_id);
             return view('user.achieve.show',compact('User_Achieve','Bio'));
         }
     }

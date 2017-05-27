@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-use App\UserBio;
+use App\Model\BaseModel\UserBio;
 
 class UserBio_model {
 

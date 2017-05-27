@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-use App\Tournament_Rules;
+use App\Model\BaseModel\Tournament_Rules;
 
 class TournamentRules_model {
 
@@ -11,6 +11,10 @@ class TournamentRules_model {
         
         public function getAll() {
             return Tournament_Rules::all();
+        }
+        
+        public function getAllNotIn($Rule_id) {
+            return Tournament_Rules::selectRaw('*')->whereNotIn('id',$Rule_id)->get();
         }
         
         public function getById($id) {

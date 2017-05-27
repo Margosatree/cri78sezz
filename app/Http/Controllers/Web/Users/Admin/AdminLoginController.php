@@ -4,52 +4,54 @@ namespace App\Http\Controllers\Web\Users\Admin;
 
 use Auth;
 use Session;
-use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+use App\Model\Permission_model;
+use App\Model\RoleUser_model;
 
 class AdminLoginController extends Controller
 {
     use AuthenticatesUsers;
 
+    protected $Permission_model;
+    protected $RoleUser_model;
+
+    protected function _initModel(){
+        $this->Permission_model = new Permission_model;
+        $this->RoleUser_model = new RoleUser_model;
+    }
+
     //protected $redirectTo = '/admin/home';
     protected $guard = 'admin';
     protected function redirectTo(){
+
         if (Auth::guard('admin')->check())
         {
+            $this->_initModel();
             $id = Auth::guard($this->guard)->user()->id;
-            $check_roles = DB::table('role_user')
-                ->select('*')
-                ->leftJoin('roles','roles.id','=','role_user.role_id')
-                ->where('role_user.user_id', '=', $id)
-                ->get();
-
+            $check_roles = $this->RoleUser_model->getRoleById($id);
+            $is_admin = 0;
+            $perms = array();
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 1){
+                    $is_admin = 1;
                     
-                $permissions = DB::table('permission_role')
-                        ->select('*')
-                        ->leftJoin('permissions','permissions.id','=','permission_role.permission_id')
-                        ->where('permission_role.role_id', '=', $check_role->role_id)
-                        ->get();
+                $permissions = $this->Permission_model->getPermissionByRole($check_role->role_id);
                     foreach($permissions as $permission){
                         $perm = $permission->slug;
                         $perms[]=$perm;
                     }
                 }
             }
-            if(isset($perms)){
-                $arr_perms = array_unique($perms);
-                Session::put('perms',$arr_perms);
+
+            if(!$is_admin) {
+               return '/admin/login';
             }
-            foreach($check_roles as $check_role){
-                if($check_role->is_admin == 1){
-                   return '/admin/home'; 
-                }else{
-                    return '/admin/login';
-                }
-            } 
             
+            Session::put('perms',array_unique($perms));
+
+            return '/admin/home';
         }
     }
     

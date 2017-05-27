@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Web\Other;
 use App\Http\Controllers\Controller;
-use App\User_Organisation;
-use App\User_Master;
+use App\Model\User_Organisation;
+use App\Model\User_Master;
+
 use Illuminate\Http\Request;
 use Auth;
 use Session;

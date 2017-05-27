@@ -1,43 +1,53 @@
 <?php
 
 namespace App\Http\Controllers\Web\Auth;
-use Session;
-use Auth;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\User_Cricket_Profile;
-use DB;
+
+use Auth;
+use Session;
+use App\Model\UserCricketProfile_model;
+use App\Model\Permission_model;
+use App\Model\RoleUser_model;
+
 class LoginController extends Controller
 {
 
+    
     use AuthenticatesUsers;
 
 //    protected $redirectTo = '/home';
+
+    protected $UserCricketProfile_model;
+    protected $Permission_model;
+    protected $RoleUser_model;
+
+    protected function _initModel(){
+        $this->UserCricketProfile_model = new UserCricketProfile_model;
+        $this->Permission_model = new Permission_model;
+        $this->RoleUser_model = new RoleUser_model;
+    }
+
     protected function redirectTo(){
 
         if (Auth::check())
         {
-            $Cri_Profile = User_Cricket_Profile::selectRaw('*')->where('user_master_id',Auth::user()->user_master_id)->get()->first();
+            $this->_initModel();
+            $usermaster_id = Auth::user()->user_master_id;
+            $Cri_Profile = $this->UserCricketProfile_model
+                                ->getCriProfileByUserMasterId($usermaster_id);
             if($Cri_Profile){
                 Session::put('user_img', $Cri_Profile->display_img);
             }
 
             $id = Auth::user()->id;
-            $check_roles = DB::table('role_user')
-                ->select('*')
-                ->leftJoin('roles','roles.id','=','role_user.role_id')
-                ->where('role_user.user_id', '=', $id)
-                ->get();
-                // dd($check_roles);
+            $check_roles = $this->RoleUser_model->getRoleById($id);
             foreach($check_roles as $check_role){
                 if($check_role->is_admin == 0){
 
 
-                $permissions = DB::table('permission_role')
-                        ->select('*')
-                        ->leftJoin('permissions','permissions.id','=','permission_role.permission_id')
-                        ->where('permission_role.role_id', '=', $check_role->role_id)
-                        ->get();
+                $permissions = $this->Permission_model->getPermissionByRole($check_role->role_id);
                     foreach($permissions as $permission){
                         $perm = $permission->slug;
                         $perms[]=$perm;

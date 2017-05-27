@@ -6,14 +6,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPassword;
 use Illuminate\Support\Facades\Mail;
-use App\User_Master;
-use App\Password_reset;
+
 use Session;
-use App\User_Organisation;
+use App\Model\UserMaster_model;
+use App\Model\PasswordReset_model;
+use App\Model\UserOrganisation_model;
 use Illuminate\Support\Facades\Log;
 
 class PassswordController extends Controller
 {
+
+    protected $UserMaster_model;
+    protected $PasswordReset_model;
+    protected $UserOrganisation_model;
+
+    public function __construct(){
+        $this->UserMaster_model = new UserMaster_model();
+        $this->PasswordReset_model = new PasswordReset_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
+    }
     
     function showResetForm(){
 
@@ -61,13 +72,13 @@ class PassswordController extends Controller
     function sendEmail($user_email){
 
     	// dd($user_email);
-    	$token_data = str_random(32);
+    	$token_data = str_random('alnum',32);
     	// dd($token_data);
     	if(!empty($user_email)){
     		// dd($user_email);
-    		$check_email = User_Master::where('email',$user_email)->get();
-    		if(count($check_email)){
-    			// dd($check_email);
+
+            $check_email = $this->UserMaster_model->emailExists($user_email);
+    		if($check_email){
 	   			Mail::to($user_email)
 	   				->send(new ForgetPassword($user_email,$token_data));
 
@@ -83,13 +94,11 @@ class PassswordController extends Controller
     }
     function storeEmail($data){
 
-    	$check_dup_email = Password_reset::where('email',$data['email'])
-    										->get();
+    $check_dup_email = $this->PasswordReset_model->checkByEmailOrPhone($data['email']);
     	if(count($check_dup_email)){
-    		Password_reset::where('email', $data['email'])
-          					->update(['token' => $data['token']]); 
+            $this->PasswordReset_model->updateTokenByEmail($data);
     	}else{
-    		Password_reset::create($data);
+    		$this->PasswordReset_model->insert($data);
     	}
     }
 
@@ -106,15 +115,14 @@ class PassswordController extends Controller
     		'password_confirmation'=>'required|same:password',
     		]);
 
-    	$data = [$request->token,$request->email,$request->password];
-    	$check_email = Password_reset::where('email',$request->email)
-    								  ->where('token',$request->token)
-    								  ->get();
+    	$data = array('token'=>$request->token,
+                      'email'=>$request->email,
+                      'password'=>$request->password);
+
+        $check_email = $this->PasswordReset_model->checkByEmailAndToken($data);
     	if(count($check_email)){
-    		User_Organisation::where('email',$request->email)
-    			->update(['password'=>bcrypt($request->password)]);
-    		Password_reset::where('email',$request->email)
-    					   ->delete();
+            $this->UserOrganisation_model->updatePassByEmail($data);
+            $this->PasswordReset_model->deleteByEmailOrMobile($request->email);
     		Session::flash('status','Successfuly Reset Password');
     		return back();
     	}else{
@@ -127,37 +135,35 @@ class PassswordController extends Controller
 
     function sendSms($mobile_no){
 
-    	$check_mobile = Password_reset::where('phone',$mobile_no)
-    								   ->get();
+    	$check_mobile = $this->PasswordReset_model->checkByEmailOrPhone($mobile_no);
     	if(count($check_mobile)){
-    		Password_reset::where('phone',$mobile_no)->delete();
+            $this->PasswordReset_model->deleteByEmailOrMobile($mobile_no);
     	}
-    	$random_num = mt_rand(1000,9999);
+    	$random_num = mt_rand(100000,999999);
     	while(true){
-    		$check_otp = Password_reset::where('otp',$random_num)
-    								   ->get();							   
+    		$check_otp = $this->PasswordReset_model->checkByEmailOrPhone($random_num);	   
 	    	if(!count($check_otp)){
 	    		break;
 	    	}
-	    	$random_num = mt_rand(1000,9999);
+	    	$random_num = mt_rand(100000,999999);
         }
         // dd($random_num);
     	// dd($mobile_no);
 
     	if(!empty($mobile_no)){
-    		$check_umobile = User_Master::where('phone',$mobile_no)->get();
+            $check_umobile = $this->UserMaster_model->getAllValueByMobile($mobile_no);
     		if(count($check_umobile)){
     			foreach($check_umobile as $check_um){
     				$email = $check_um->email;
     			}
-    	    	$check_email = Password_reset::where('email',$email)
-    								   ->get();
+                $check_email =$this->PasswordReset_model->checkByEmailOrPhone($email);
     			//Sms logic insert here
     			if(count($check_email)){
-    				Password_reset::where('email', $email)
-          					->update(['phone' => $mobile_no,'otp'=>$random_num]);
+                    $data = ['email'=>$email,'phone' => $mobile_no,'otp'=>$random_num];
+                    $this->PasswordReset_model->updatePhoneOtpByEmail($data);
     			}else{
-    				Password_reset::create(['phone'=>$mobile_no,'otp'=>$random_num]);
+                    $data = ['phone'=>$mobile_no,'otp'=>$random_num];
+    				$this->PasswordReset_model->insert($data);
     			}
     			return 1;
     		}else{

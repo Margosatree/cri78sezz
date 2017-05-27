@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\UserOrganisation_model;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 
 class UsersBulkController extends Controller
 {
@@ -28,8 +28,8 @@ class UsersBulkController extends Controller
     }
 
     protected function _initModel(){
-        $this->UserMaster_model=new UserMaster_model();
-        $this->UserOrganisation_model=new UserOrganisation_model();
+        $this->UserMaster_model = new UserMaster_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
     }
 
     public function bulkUploadView(){
@@ -37,9 +37,7 @@ class UsersBulkController extends Controller
         return view('user.org.bulk', compact('Errors'));
     }
     public function bulkUpload(Request $request){
-//        dd('dasdas');
         if(Input::hasFile('import_file')){
-//            dd('dasdas1');
             $path = Input::file('import_file')->getRealPath();
             $data = Excel::load($path, function($reader) {
             })->get();

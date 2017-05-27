@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 // use DB;
-use App\Model\BasicModel\UserOrganisation_model;
-use App\Model\BasicModel\Role_model;
+use App\Model\UserOrganisation_model;
+use App\Model\Role_model;
 
 // use App\RoleUser;
 

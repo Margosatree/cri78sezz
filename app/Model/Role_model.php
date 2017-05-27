@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-use App\Model\BasicModel\Role;
+use App\Model\BaseModel\Role;
 
 class Role_model {
 

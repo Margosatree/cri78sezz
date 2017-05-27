@@ -1,14 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Model\BaseModel;
 
-use PHPZen\LaravelRbac\Traits\Rbac;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable
 {
-    use Rbac;
     use Notifiable;
     
     protected $guard = 'admin';

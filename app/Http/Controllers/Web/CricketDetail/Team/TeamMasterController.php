@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Web\CricketDetail\Team;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
-use App\Model\BasicModel\TeamMaster_model;
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\UserOrganisation_model;
+
+use App\Model\TeamMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 
 class TeamMasterController extends Controller
 {

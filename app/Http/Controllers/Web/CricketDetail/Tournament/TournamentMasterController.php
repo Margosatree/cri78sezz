@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\TournamentDetails_model;
-use App\Model\BasicModel\TournamentMaster_model;
-use App\Model\BasicModel\TournamentRules_model;
-use App\Model\BasicModel\OrganisationMaster_model;
+use App\Model\UserMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TournamentMaster_model;
+use App\Model\TournamentRules_model;
+use App\Model\OrganisationMaster_model;
 class TournamentMasterController extends Controller
 {
     /**

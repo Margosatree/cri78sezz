@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Web\CricketDetail\Tournament;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Model\BasicModel\UserMaster_model;
-use App\Model\BasicModel\TournamentDetails_model;
-use App\Model\BasicModel\TournamentMaster_model;
-use App\Model\BasicModel\TournamentRules_model;
-use App\Model\\BasicModel\OrganisationMaster_model;
+use App\Model\TournamentMaster_model;
+use App\Model\TournamentRules_model;
 
 class TournamentRulesController extends Controller
 {
@@ -24,16 +21,10 @@ class TournamentRulesController extends Controller
         $this->_initModel();
     }
     
-    protected $UserMaster_model;
-    protected $OrganisationMaster_model;
-    protected $TournamentDetails_model;
     protected $TournamentMaster_model;
     protected $TournamentRules_model;
     
     protected function _initModel(){
-        $this->UserMaster_model = new UserMaster_model();
-        $this->OrganisationMaster_model = new OrganisationMaster_model();
-        $this->TournamentDetails_model = new TournamentDetails_model();
         $this->TournamentMaster_model = new TournamentMaster_model();
         $this->TournamentRules_model = new TournamentRules_model();
     }

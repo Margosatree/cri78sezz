@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Web\Auth;
 use Illuminate\Http\Request;
-use App\User_Organisation;
-use App\Model\UserMaster_model;
-use Illuminate\Support\Facades\Auth;
-use App\Model\UserOrganisation_model;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+use App\Model\UserOrganisation_model;
+use App\Model\UserMaster_model;
+use App\Model\VerifyUser_model;
+use App\Model\Role_model;
+use App\Model\RoleUser_model;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\VerifyUser;
 use Illuminate\Support\Facades\Mail;
-use App\Model\VerifyUser_model;
-use App\Model\Role_model;
-use App\Model\RoleUser_model;
 
 class RegisterController extends Controller
 {
