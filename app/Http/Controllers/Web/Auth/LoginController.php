@@ -14,7 +14,7 @@ use App\Model\RoleUser_model;
 class LoginController extends Controller
 {
 
-    
+
     use AuthenticatesUsers;
 
 //    protected $redirectTo = '/home';
@@ -42,35 +42,16 @@ class LoginController extends Controller
             }
 
             $id = Auth::user()->id;
-            $check_roles = $this->RoleUser_model->getRoleById($id);
-            foreach($check_roles as $check_role){
-                if($check_role->is_admin == 0){
+            $get_perms = $this->RoleUser_model->getPermissionsByUserId($id);
 
-
-                $permissions = $this->Permission_model->getPermissionByRole($check_role->role_id);
-                    foreach($permissions as $permission){
-                        $perm = $permission->slug;
-                        $perms[]=$perm;
-                    }
-                }
+            if(is_null($get_perms)) {
+              Auth::logout();
+              Session::flush();
+              return '/login';
             }
-
-            foreach($check_roles as $check_role){
-                if($check_role->is_admin == 0){
-                    if(isset($perms)){
-                        $arr_perms = array_unique($perms);
-                        Session::put('perms',$arr_perms);
-                    }
-                   return '/home';
-                }else{
-                    Auth::logout();
-                    Session::flush();
-                    return '/login';
-                }
-            }
-
+            Session::put('perms',array_unique($get_perms));
+            return '/home';
         }
-        //return '/home';
     }
 
     public function __construct()

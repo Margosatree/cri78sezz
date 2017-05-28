@@ -93,7 +93,7 @@ Route::get('/admin/logout', 'Web\Users\Admin\AdminLoginController@logout')->name
 
 
 
-Route::get('/test', 'Web\Other\HomeController@test');
+Route::get('/test', 'Web\test\HomeControllers@test');
 
 //For Reset Password
 

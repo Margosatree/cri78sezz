@@ -21,7 +21,7 @@ class RegisterController extends Controller
     use RegistersUsers;
     protected $redirectTo = '/verify/create';
 
-    //call model class via object 
+    //call model class via object
 
     protected $UserMaster_model;
     protected $UserOrganisation_model;
@@ -49,7 +49,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data){
-        
+
         return Validator::make($data, [
             'username' => 'required|max:50|alpha_num|unique:user_masters',
             'phone' => [
@@ -76,7 +76,7 @@ class RegisterController extends Controller
         ]);
 
     }
-    
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -87,12 +87,21 @@ class RegisterController extends Controller
         // dd($this->UserMaster_model->getAll());
 
         $User_Master = $this->UserMaster_model->insert($data);
+        sendOTP($email, $phone) {
+          list($email_otp,$phone_otp) = generateOTP($email, $phone);
+          if($email) {
+            EMAIL::sendOTP($email,$email_otp);
+          }
 
+          if($phone) {
+            PHONE::sendOTP($email,$email_otp);
+          }
+        }
         $status_email = $this->sendEmail($data['email']);
         $status_sms = $this->sendSms($data['phone']);
 
         $this->redirectTo = '/verify/'.$status_email;
-        
+
         $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
                     'organization_master_id' => 0,'password'=>$data['password']];
         $user_orgId = $this->UserOrganisation_model->insert($OrgData);
@@ -109,7 +118,7 @@ class RegisterController extends Controller
     function sendEmail($user_email){
         $random_num = mt_rand(100000,999999);
         while(true){
-            $check_otp = $this->VerifyUser_model->getEmailOtp($random_num);    
+            $check_otp = $this->VerifyUser_model->getEmailOtp($random_num);
             if(!count($check_otp)){
                 break;
             }
@@ -131,7 +140,7 @@ class RegisterController extends Controller
                 return 0;
             }
         }
-        
+
     }
 
     function storeEmail($data){
@@ -184,5 +193,5 @@ class RegisterController extends Controller
             }
         }
     }
-    
+
 }

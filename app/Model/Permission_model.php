@@ -23,6 +23,14 @@ class Permission_model {
                         ->get();
 	}
 
+	public function getPermissionByRoleIds($role_id_arr){
+		return DB::table('permission_role')
+                        ->select('*')
+                        ->leftJoin('permissions','permissions.id','=','permission_role.permission_id')
+                        ->whereIn('permission_role.role_id',$role_id_arr)
+                        ->get();
+	}
+
 	public function insert($request){
 		$createUser = new Permission;
         $createUser->name = $request->name;
@@ -31,5 +39,5 @@ class Permission_model {
         $createUser->save();
         return $createUser;
 	}
-	
+
 }
