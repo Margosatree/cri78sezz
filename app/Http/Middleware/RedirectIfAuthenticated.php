@@ -18,7 +18,8 @@ class RedirectIfAuthenticated
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)
-    { 
+    {
+      // dd($guard);
         switch ($guard){
             case 'admin':
                 if (Auth::guard($guard)->check())
@@ -32,12 +33,12 @@ class RedirectIfAuthenticated
 
                     foreach($check_roles as $check_role){
                         if($check_role->is_admin == 1){
-                           return redirect('/admin/home'); 
+                           return redirect('/admin/home');
                         }
-                    }            
+                    }
                 }
                 break;
-            
+
             default:
                 if (Auth::guard($guard)->check()) {
                     $id = Auth::guard($guard)->user()->id;
@@ -49,13 +50,13 @@ class RedirectIfAuthenticated
 
                     foreach($check_roles as $check_role){
                         if($check_role->is_admin == 0){
-                           return redirect('/home'); 
+                           return redirect('/home');
                         }
                     }
                 }
                 break;
         }
-        
+
         return $next($request);
     }
 }

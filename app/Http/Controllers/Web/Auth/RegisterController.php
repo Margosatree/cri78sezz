@@ -87,16 +87,16 @@ class RegisterController extends Controller
         // dd($this->UserMaster_model->getAll());
 
         $User_Master = $this->UserMaster_model->insert($data);
-        sendOTP($email, $phone) {
-          list($email_otp,$phone_otp) = generateOTP($email, $phone);
-          if($email) {
-            EMAIL::sendOTP($email,$email_otp);
-          }
-
-          if($phone) {
-            PHONE::sendOTP($email,$email_otp);
-          }
-        }
+        // sendOTP($email, $phone) {
+        //   list($email_otp,$phone_otp) = generateOTP($email, $phone);
+        //   if($email) {
+        //     EMAIL::sendOTP($email,$email_otp);
+        //   }
+        //
+        //   if($phone) {
+        //     PHONE::sendOTP($email,$email_otp);
+        //   }
+        // }
         $status_email = $this->sendEmail($data['email']);
         $status_sms = $this->sendSms($data['phone']);
 

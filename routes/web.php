@@ -83,13 +83,13 @@ Route::get('/pass/{id}/adminrequest','Web\Other\ChangePasswordController@adminre
 Route::post('/pass/{id}/adminupdate','Web\Other\ChangePasswordController@adminupdate')->name('pass.adminupdate');
 
 Route::prefix('admin')->group(function(){
-    Route::get('login', 'Web\Users\Admin\AdminLoginController@showLoginForm')->name('admin.login');
-    Route::post('login', 'Web\Users\Admin\AdminLoginController@login')->name('admin.login.submit');
+    Route::get('login', 'Web\Auth\LoginController@showAdminLoginForm')->name('admin.login');
+    Route::post('login', 'Web\Auth\LoginController@adminLogin')->name('admin.login.submit');
 
     Route::get('home','Web\Users\Admin\AdminController@dashboard')->name('admin.dashboard');
     //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
 });
-Route::get('/admin/logout', 'Web\Users\Admin\AdminLoginController@logout')->name('admin.logout');
+Route::get('/admin/logout', 'Web\Auth\LoginController@logout')->name('admin.logout');
 
 
 

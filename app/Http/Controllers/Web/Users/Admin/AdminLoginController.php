@@ -33,10 +33,10 @@ class AdminLoginController extends Controller
 
             if(is_null($get_perms)) {
                return '/admin/login';
-            }else{
+            }
+
               Session::put('perms',array_unique($get_perms));
               return '/admin/home';
-            }
         }
     }
 
@@ -47,4 +47,9 @@ class AdminLoginController extends Controller
     protected function guard(){
         return Auth::guard($this->guard);
     }
+
+    // public function logout(){
+  	// 	Auth::guard('admin')->logout();
+  	// 	return redirect('/admin/login');
+  	// }
 }
