@@ -10,45 +10,45 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 // Auth::routes();
 
 
 // Replace by Auth::routes()
 Route::get('/login', 'Web\Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login', 'Web\Auth\LoginController@login');
-Route::get('/logout', 'Web\Auth\LoginController@logout')->name('logout');
+Route::post('/logout', 'Web\Auth\LoginController@logout')->name('logout');
+Route::get('/home', 'Web\Other\HomeController@index')->name('home');
 
 Route::get('/register', 'Web\Auth\RegisterController@showRegistrationForm')
 			->name('register');
 Route::post('/register', 'Web\Auth\RegisterController@register');
 // till this Auth::routes()
 
-Route::get('/home', 'Web\Other\HomeController@index')->name('home');
+//--Admin Login Start--//
+Route::prefix('admin')->group(function(){
+    Route::get('login', 'Web\Auth\LoginController@showAdminLoginForm')->name('admin.login');
+    Route::post('login', 'Web\Auth\LoginController@adminLogin')->name('admin.login.submit');
+    Route::get('home','Web\Users\Admin\AdminController@dashboard')->name('admin.dashboard');
+});
+//--Admin Login End--//
 
 Route::Resource('/matchmaster','Web\CricketDetail\Match\MatchMastersController');
 
+//--Start Verification Logic--//
 Route::Resource('/verify','Web\Users\Player\UserVerifyController');
-
 Route::get('/verifes/{token}/{otp}','Web\Users\Player\UserVerifyController@showVerify');
-
 Route::post('/verifyguest','Web\Users\Player\UserVerifyController@storeGuest')->name('verifes.guest');
+//--End Verification Logic--//
 
+//--Start User Bio--//
 Route::get('/userBio/createInfo','Web\Users\Player\UsersBioController@createInfo')
 	   ->name('userBio.createInfo');
-
 Route::post('/userBio/storeInfo','Web\Users\Player\UsersBioController@storeInfo')
 	   ->name('userBio.storeInfo');
-
 Route::get('/userBio/{userBio}/editInfo','Web\Users\Player\UsersBioController@editInfo')
 	   ->name('userBio.editInfo');
-
 Route::Resource('/userBio','Web\Users\Player\UsersBioController');
+//--End User Bio--//
 
 Route::get('/User/bulkUploadView','Web\Users\Player\UsersBulkController@bulkUploadView')
 	   ->name('User.bulkUploadView');
@@ -60,7 +60,6 @@ Route::Resource('/org','Web\Users\Org\OrganizationMasterController');
 Route::Resource('/criProfile','Web\Users\Player\UserCricketProfileController');
 
 Route::get('/Profile/{id}','Web\Users\Player\UserProfileController@show')->name('profile.show');
-
 Route::get('/ProfileUser/{id}','Web\Users\Player\UserProfileController@showUSer')->name('profile.showUser');
 
 Route::Resource('/userAchieve','Web\Users\Player\UserAchievementController');
@@ -82,37 +81,19 @@ Route::post('/pass/update','Web\Other\ChangePasswordController@update')->name('p
 Route::get('/pass/{id}/adminrequest','Web\Other\ChangePasswordController@adminrequest')->name('pass.adminrequest');
 Route::post('/pass/{id}/adminupdate','Web\Other\ChangePasswordController@adminupdate')->name('pass.adminupdate');
 
-Route::prefix('admin')->group(function(){
-    Route::get('login', 'Web\Auth\LoginController@showAdminLoginForm')->name('admin.login');
-    Route::post('login', 'Web\Auth\LoginController@adminLogin')->name('admin.login.submit');
-
-    Route::get('home','Web\Users\Admin\AdminController@dashboard')->name('admin.dashboard');
-    //Route::get('/','AdminController@dashboard')->name('admin.dashboard');
-});
-Route::get('/admin/logout', 'Web\Auth\LoginController@logout')->name('admin.logout');
-
-
-
 Route::get('/test', 'Web\test\HomeControllers@test');
 
-//For Reset Password
-
+//--Start Reset Password--//
 Route::get('passwords/reset','Web\Auth\PassswordController@showResetForm')->name('password.show');
 Route::post('passwords/email','Web\Auth\PassswordController@sendResetLinkEmail');
-
 Route::get('passwords/reset/{token}','Web\Auth\PassswordController@showResetEmailForm');
-
 Route::post('passwords/reset','Web\Auth\PassswordController@reset')->name('passwords.reset');
 //For sms To Reset Password
 
-Route::post('password/resetSms','Web\Auth\PassswordController@resetSms')
-	  ->name('password.resetSms');
+Route::post('password/resetSms','Web\Auth\PassswordController@resetSms')->name('password.resetSms');
+//--End of Reset Password--//
 
-//End of Reset Password
-
-
-//ACL
-
+//--Start ACL Logic--//
 Route::get('/adminhome', 'Web\Other\HomeController@display')->name('adminhome');
 Route::get('/create_role', 'Web\Acl\RoleController@create')->name('create_role');
 Route::post('/create_role', 'Web\Acl\RoleController@store');
@@ -131,4 +112,4 @@ Route::post('/assign_permission', 'Web\Acl\PermissionRoleController@store');
 
 Route::get('/revoke_permission', 'Web\Acl\PermissionRoleController@displayPermissions')->name('revoke_permission');
 Route::get('/revoke_permission/{id}/{userId}', 'Web\Acl\PermissionRoleController@destroy')->name('revoke.permission');
-//end Acl
+//--End ACL Logic--//

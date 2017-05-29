@@ -9,34 +9,20 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Session;
 use App\Model\UserCricketProfile_model;
-use App\Model\Permission_model;
 use App\Model\RoleUser_model;
 
 class LoginController extends Controller
 {
-
-
     use AuthenticatesUsers;
 
-//    protected $redirectTo = '/home';
-
     protected $UserCricketProfile_model;
-    protected $Permission_model;
     protected $RoleUser_model;
-
-    protected function _initModel(){
-        $this->UserCricketProfile_model = new UserCricketProfile_model;
-        $this->Permission_model = new Permission_model;
-        $this->RoleUser_model = new RoleUser_model;
-    }
-
-    // protected $guard = 'admin';
 
     protected function redirectTo(){
 
         if (Auth::check())
         {
-            $this->_initModel();
+            $this->UserCricketProfile_model = new UserCricketProfile_model;
             $usermaster_id = Auth::user()->user_master_id;
             $Cri_Profile = $this->UserCricketProfile_model
                                 ->getCriProfileByUserMasterId($usermaster_id);
@@ -44,6 +30,7 @@ class LoginController extends Controller
                 Session::put('user_img', $Cri_Profile->display_img);
             }
 
+            $this->RoleUser_model = new RoleUser_model;
             $id = Auth::user()->id;
             $get_perms = $this->RoleUser_model->getPermissionsByUserId($id);
 
@@ -93,9 +80,5 @@ class LoginController extends Controller
        }
    }
 
-
-    // protected function guard(){
-    //     return Auth::guard('admin');
-    // }
 
 }
