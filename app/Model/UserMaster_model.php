@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-
+use Illuminate\Http\Request;
 use App\Model\BaseModel\User_Master;
 
 class UserMaster_model {
@@ -55,6 +55,7 @@ class UserMaster_model {
     }
     
     public function SaveUserBio($request) {
+//        dd($request->first_name);
         if(isset($request->update) && $request->update == 1){
             $User_master = User_Master::find($request->id);
         }else{
