@@ -34,9 +34,9 @@ class TournamentDetails_model {
         
         public function SaveTourDetail($request) {
             if(isset($request->update) && $request->update == 1){
-                $Tour_Detail = Tournament_Details::where('tournament_id', $request->tournament_id)->where('rule_id', $request->rule);
+                $Tour_Detail = Tournament_Details::where('tournament_id', $request->tournament_id)->where('rule_id', $request->rule_id);
                 $Tour_Detail->update([
-                    'rule_id' => $request->rule,
+                    'rule_id' => $request->rule_id,
                     'specification' => $request->specification,
                     'value' => $request->value,
                     'range_from' => $request->range_from,
@@ -45,7 +45,7 @@ class TournamentDetails_model {
             }else{
                 $Tour_Detail = new Tournament_Details;
                 $Tour_Detail->tournament_id = $request->tournament_id;
-                $Tour_Detail->rule_id = $request->rule;
+                $Tour_Detail->rule_id = $request->rule_id;
                 $Tour_Detail->specification = $request->specification;
                 $Tour_Detail->value = $request->value;
                 $Tour_Detail->range_from = $request->range_from;

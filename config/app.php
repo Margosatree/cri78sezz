@@ -193,14 +193,14 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         //aws service library
-        Aws\Laravel\AwsServiceProvider::class,
+//        Aws\Laravel\AwsServiceProvider::class,
         //Excel Uploading
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         //ACL Provider
 //        PHPZen\LaravelRbac\RbacServiceProvider::class,
         //Auto migration
-        Way\Generators\GeneratorsServiceProvider::class,
+//        Way\Generators\GeneratorsServiceProvider::class,
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
 
     ],

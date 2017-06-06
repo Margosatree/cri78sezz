@@ -101,7 +101,6 @@ class RegisterController extends Controller
         $status_sms = $this->sendSms($data['phone']);
 
         $this->redirectTo = '/verify/'.$status_email;
-
         $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
                     'organization_master_id' => 0,'password'=>$data['password']];
         $user_orgId = $this->UserOrganisation_model->insert($OrgData);

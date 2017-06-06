@@ -18,3 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/bio/addBio', 'Api\V1\Users\UsersBioControllerApi@addUserBio');
+
+
+
+Route::post('/tourmast/listTournament', 'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listTournament');
+Route::post('/tourmast/addTournament', 'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addTournament');
+Route::post('/tourmast/updateTournament', 'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@updateTournament');
+Route::post('/tourmast/deleteTournament', 'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@deleteTournament');
