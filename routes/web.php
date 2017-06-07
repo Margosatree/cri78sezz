@@ -14,6 +14,9 @@
 
 
 // Replace by Auth::routes()
+Route::get('/',function(){
+	return view('welcome');
+});
 
 Route::get('/login', 'Web\Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login', 'Web\Auth\LoginController@login');
