@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Scoreboard extends Model
+class Batsmanmaster extends Model
 {
-	
-    protected $table = 'scoremaster';
+	protected $primaryKey = 'TransId';
+    protected $table = 'batsmanmaster';
     protected $guarded = [];
     public $timestamps = False;
 }
