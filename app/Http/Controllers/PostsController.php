@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 //use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
-use App\ScoreMaster;
-use App\Balldata;
-use App\Batsman;
-use App\Bowler;
-use App\Fielder;
-use App\Partnership;
-use App\BatsmanDetail;
-use App\BowlerDetail;
-use App\PartnershipDetail;
-use App\FielderDetail;
-use App\UpdateBowler;
+use App\Model\BaseModel\ScoreMaster;
+use App\Model\BaseModel\Balldata;
+use App\Model\BaseModel\Batsman;
+use App\Model\BaseModel\Bowler;
+use App\Model\BaseModel\Fielder;
+use App\Model\BaseModel\Partnership;
+use App\Model\BaseModel\BatsmanDetail;
+use App\Model\BaseModel\BowlerDetail;
+use App\Model\BaseModel\PartnershipDetail;
+use App\Model\BaseModel\FielderDetail;
+use App\Model\BaseModel\UpdateBowler;
 use DB;
 class PostsController extends Controller{
     
@@ -29,14 +29,17 @@ class PostsController extends Controller{
     protected $PartnershipMaster_model;
     protected $UpdateBowler_model;
     protected $UpdateFielder_model;
+    protected $TourSquad_model;
     public function __construct() {
         
     }
     
     public function tourSquad(Request $request){
-        $output = array();
-        $output['data'] = "Hello";
-        return response()->json($request);
+       // $output = array();
+       // $output['data'] = "Hello";
+        $this->TourSquad_model = new TourSquad();
+        $this->TourSquad_model->storeTourSquad($request);
+        //return response()->json($request);
     }
 
     public function matchSquad(Request $request){

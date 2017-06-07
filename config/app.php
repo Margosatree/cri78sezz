@@ -11,7 +11,7 @@ return [
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
     */
-
+    
     'name' => 'Cric8pro',
     
     /*
@@ -198,7 +198,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         //ACL Provider
-        PHPZen\LaravelRbac\RbacServiceProvider::class,
+//        PHPZen\LaravelRbac\RbacServiceProvider::class,
         //Auto migration
         Way\Generators\GeneratorsServiceProvider::class,
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
