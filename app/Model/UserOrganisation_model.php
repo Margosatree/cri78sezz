@@ -21,12 +21,16 @@ class UserOrganisation_model {
             return $data->roles()->get();
         }
         
+        public function getIdByUserId($id) {
+            return User_Organisation::selectRaw('*')->where('user_master_id',$id)->get();
+        }
+        
         public function getOrgById($id) {
             return User_Organisation::selectRaw('user_master_id')->where('organization_master_id',$id)->get();
         }
         
         public function findById($user_id){
-            return User_Organisation::find($user_id);;
+            return User_Organisation::find($user_id);
         }
     
         public function updateOrgStatus($data){

@@ -62,6 +62,7 @@ class MatchMaster_model {
                 'overs' => $request->overs,
                 'innings' => $request->innings,
             ]);
+            return $Match;
 	}
 
 	public function deleteByTourMatch($Tournament,$id){

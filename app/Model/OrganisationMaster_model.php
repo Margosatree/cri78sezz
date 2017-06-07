@@ -12,6 +12,10 @@ class OrganisationMaster_model {
         public function getAll() {
             return Organisation_Master::all();
         }
+        
+        public function getById($id) {
+            return Organisation_Master::find($id);
+        }
 
         public function getRaw($sSql) {
             return Organisation_Master::selectRaw($sSql)->get();
