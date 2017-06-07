@@ -17,3 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
+
+Route::post('/tickdata', 'PostsController@saveTick');
+Route::post('/getbowler', 'PostsController@getBowler');
+Route::post('/changebowler', 'PostsController@changeBowler');
+
+Route::post('/getfielder', 'PostsController@getFielder');
+Route::post('/changefielder', 'PostsController@changeFielder');
+
+Route::post('/toursquad', 'PostsController@tourSquad');
+Route::post('/matchsquad', 'PostsController@matchSquad');
