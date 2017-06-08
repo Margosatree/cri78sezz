@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\CricketDetail\Tournament;
+namespace App\Http\Controllers\Api\V1\CricketDetail\Tournament;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

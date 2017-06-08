@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Other;
+namespace App\Http\Controllers\Api\V1\Other;
 use App\Http\Controllers\Controller;
 use App\Model\User_Organisation;
 use App\Model\User_Master;

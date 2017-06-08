@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\CricketDetail\Match;
+namespace App\Http\Controllers\Api\V1\CricketDetail\Match;
 
 use Illuminate\Http\Request;
 use Auth;

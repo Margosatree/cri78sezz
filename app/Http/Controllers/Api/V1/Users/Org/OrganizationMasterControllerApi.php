@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Users\Org;
 use App\Model\OrganisationMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Users\Org;
+namespace App\Http\Controllers\Api\V1\Users\Org;
 use App\Http\Controllers\Controller;
 use App\Model\Organisation_Master;
 use Illuminate\Http\Request;

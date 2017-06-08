@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Users\Player;
+namespace App\Http\Controllers\Api\V1\Users\Player;
 
 use Auth;
 use Image;
