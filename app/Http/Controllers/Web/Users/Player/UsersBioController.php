@@ -145,7 +145,7 @@ class UsersBioController extends Controller
             ]);
         }
         
-        $Bio = User_Master::find($id);
+        $Bio = $this->UserMaster_model->getById($id);
         if($callfrom == 'info'){
             $request->request->add(['update' => 1,'id' => Auth::user()->user_master_id]);
             $User_Bio = $this->UserMaster_model->SaveUserBio($request);

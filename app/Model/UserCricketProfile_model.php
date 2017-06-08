@@ -26,9 +26,9 @@ class UserCricketProfile_model {
         
         public function SaveCriProfile($request) {
             if(isset($request->update) && $request->update == 1){
-                $User_Cri_Profile = User_Cri_Profile::find($request->id);
+                $User_Cri_Profile = User_Cricket_Profile::find($request->id);
             }else{
-                $User_Cri_Profile = new User_Cri_Profile;
+                $User_Cri_Profile = new User_Cricket_Profile;
             }
             $User_Cri_Profile->user_master_id = $request->user_master_id;
             $User_Cri_Profile->your_role = $request->your_role;

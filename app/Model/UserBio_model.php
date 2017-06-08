@@ -9,7 +9,11 @@ class UserBio_model {
 		//parent::__construct();
 	}
         
-        public function getBioByUserMasterId($id) {
-            return User_Cricket_Profile::selectRaw('*')->where('user_master_id', $id)->get()->first();
+        public function getById() {
+            return User_Cricket_Profile::find($id);
         }
+        
+//        public function getBioByUserMasterId($id) {
+//            return User_Cricket_Profile::selectRaw('*')->where('user_master_id', $id)->get()->first();
+//        }
 }

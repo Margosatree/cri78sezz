@@ -140,19 +140,19 @@ class SendMailAndOtpServices{
      *
      * @throws \App\Exceptions\ModelNotCompliantException
      */
-    protected function saveToken($user, $token, $flag)
-    {
-    	$this->send_otp_services = new SendOtpServices();
-        $random_num = $this->send_otp_services->generateOtp();
-
-        $store_data = ['email'=>$user->email,
-                        'token'=>$token,
-                        'email_otp'=>$random_num,
-                        'is_password_reset'=>$flag];
-                        
-        $this->storeEmail($store_data);
-        return $store_data;
-    }
+//    protected function saveToken($user, $token, $flag)
+//    {
+//    	$this->send_otp_services = new SendOtpServices();
+//        $random_num = $this->send_otp_services->generateOtp();
+//
+//        $store_data = ['email'=>$user->email,
+//                        'token'=>$token,
+//                        'email_otp'=>$random_num,
+//                        'is_password_reset'=>$flag];
+//                        
+//        $this->storeEmail($store_data);
+//        return $store_data;
+//    }
 
     protected function storeEmail($data){
     	$check_user =['email'=>$data['email'],

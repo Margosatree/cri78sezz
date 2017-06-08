@@ -57,6 +57,21 @@ Route::post('/CriProfile/update',     'Api\V1\Users\Player\UserCricketProfileCon
 Route::post('/CriProfile/delete',     'Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
 
 
+//Vrajeshbhai
+Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
+
+Route::post('/tickdata', 'PostsController@saveTick');
+
+Route::post('/getbowler', 'PostsController@getBowler');
+Route::post('/changebowler', 'PostsController@changeBowler');
+
+Route::post('/getfielder', 'PostsController@getFielder');
+Route::post('/changefielder', 'PostsController@changeFielder');
+
+Route::post('/toursquad', 'PostsController@tourSquad');
+Route::post('/matchsquad', 'PostsController@matchSquad');
+//Vrajeshbhai
+
 Route::post('auth/register', 'Api\V1\UserController@register');
 Route::post('auth/login', 'Api\V1\UserController@login');
 Route::group(['middleware' => 'jwt.auth'], function () {

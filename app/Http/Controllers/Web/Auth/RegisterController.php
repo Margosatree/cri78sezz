@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\VerifyUser;
 use Illuminate\Support\Facades\Mail;
 
-use App\Services\V1\SendMailServices;
+use App\Services\V1\SendMailAndOtpServices;
 
 class RegisterController extends Controller
 {
@@ -31,7 +31,7 @@ class RegisterController extends Controller
     protected $Role_model;
     protected $RoleUser_model;
 
-    protected $SendMailServices;
+    protected $SendMailAndOtpServices;
 
 
     public function __construct(){
@@ -45,7 +45,7 @@ class RegisterController extends Controller
         $this->VerifyUser_model=new VerifyUser_model();
         $this->Role_model=new Role_model();
         $this->RoleUser_model=new RoleUser_model();
-        $this->SendMailServices = new SendMailServices();
+        $this->SendMailAndOtpServices = new SendMailAndOtpServices();
     }
 
     /**
@@ -103,8 +103,8 @@ class RegisterController extends Controller
         //     PHONE::sendOTP($email,$email_otp);
         //   }
         // }
-        $sendEmail =$this->SendMailServices->generate($User_Master,$flag=0);
-        dd($sendEmail);
+//          $sendEmail =$this->SendMailAndOtpServices->generate($User_Master,$flag=0);
+//        dd($sendEmail);
 
 
         $status_email = $this->sendEmail($data['email']);
