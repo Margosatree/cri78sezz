@@ -12,6 +12,9 @@ class Tournament_Details extends Model
         'specification','value', 'range_from', 'range_to'
         
     ];
+    protected $hidden = [
+        'created_at','updated_at'
+    ];
     public function rules(){
         return $this->belongsTo(Tournament_Rules::class,'rule_id','id');
     }

@@ -16,8 +16,8 @@ class UserAchievementControllerApi extends Controller{
     protected $OrganisationMaster_model;
     
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
     
@@ -28,7 +28,7 @@ class UserAchievementControllerApi extends Controller{
     }
     
     public function listAchievement(){
-        $User_Achieve = $this->UserMaster_model->getAll();
+        $User_Achieve = $this->UserAchievement_model->getAll();
         if($User_Achieve){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Achieve);
         }else{
@@ -41,7 +41,7 @@ class UserAchievementControllerApi extends Controller{
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:190',
             'location' => 'required|max:190',
-            '$organization_master_id' => 'required|numeric|min:1',
+            'organization_master_id' => 'required|numeric|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
         ]);
@@ -50,7 +50,7 @@ class UserAchievementControllerApi extends Controller{
             $request->request->add(['user_master_id' => $user_master_id]);
             $User_Achieve = $this->UserAchievement_model->SaveAchievement($request);
             if($User_Achieve){
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Achieve);
             }else{
                 $output = array('status' => 400 ,'msg' => 'Transection Fail');
             }

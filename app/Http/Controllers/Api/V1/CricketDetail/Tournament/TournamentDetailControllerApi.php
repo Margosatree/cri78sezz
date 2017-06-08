@@ -57,8 +57,8 @@ class TournamentDetailControllerApi extends Controller
             'rule_id' => 'required|numeric|min:1',
             'specification' => 'max:190',
             'value' => 'required|max:190',
-            'range_from' => 'numeric|min:1',
-            'range_to' => 'numeric|min:1',
+            'range_from' => 'max:190',
+            'range_to' => 'max:190',
         ]);
         if(!$validator->fails()){
             $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
@@ -79,8 +79,8 @@ class TournamentDetailControllerApi extends Controller
             'rule_id' => 'required|numeric|min:1',
             'specification' => 'max:190',
             'value' => 'required|max:190',
-            'range_from' => 'date|before:end_date',
-            'range_to' => 'date|after:start_date',
+            'range_from' => 'max:190',
+            'range_to' => 'max:190',
         ]);
         if(!$validator->fails()){
             $Rule_Exists = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
@@ -88,7 +88,7 @@ class TournamentDetailControllerApi extends Controller
                 $request->request->add(['update' => 1]);
                 $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
                 if($Tour_Det){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+                    $output = array('status' => 200 ,'msg' => 'Sucess');
                 }else{
                     $output = array('status' => 400 ,'msg' => 'Transection Fail');
                 }
