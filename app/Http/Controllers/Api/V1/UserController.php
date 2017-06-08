@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
 use JWTAuthException;
-
+use Validator;
 use App\Model\UserOrganisation_model;
 use App\Model\UserMaster_model;
 use App\Model\VerifyUser_model;

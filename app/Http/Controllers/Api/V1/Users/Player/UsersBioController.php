@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Users\Player;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Validator;
 use App\Model\UserMaster_model;
 
 class UsersBioController extends Controller
@@ -34,7 +34,7 @@ class UsersBioController extends Controller
     }
 
     public function addUsersBio(Request $request){
-        $this->validate(request(), [
+        $validator = Validator::make($request->all(),[
             'first_name' => 'required|max:50|alpha',
             'middle_name' => 'required|max:50|alpha',
             'last_name' => 'required|max:50|alpha',
@@ -42,17 +42,21 @@ class UsersBioController extends Controller
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
         ]);
-        $User_Bio = $this->UserMaster_model->SaveUserBio($request);
-        if($User_Bio){
-            $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+        if(!$validator->fails()){
+            $User_Bio = $this->UserMaster_model->SaveUserBio($request);
+            if($User_Bio){
+                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function addUsersBioInfo(Request $request){
-        $this->validate(request(), [
+        $validator = Validator::make($request->all(),[
             'address' => 'required|max:255',
             'suburb' => 'required|max:255',
             'city' => 'required|max:255',
@@ -60,11 +64,15 @@ class UsersBioController extends Controller
             'country' => 'required|max:255',
             'pin' => 'required|digits:6|numeric',
         ]);
-        $User_Bio = $this->UserMaster_model->SaveUserAddress($request);
-        if($User_Bio){
-            $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+        if(!$validator->fails()){
+            $User_Bio = $this->UserMaster_model->SaveUserAddress($request);
+            if($User_Bio){
+                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
@@ -73,7 +81,7 @@ class UsersBioController extends Controller
         $callfrom = "";
         if($request->first_name || $request->middle_name || $request->last_name ||
            $request->date_of_birth || $request->gender || $request->physically_challenged){
-            $this->validate(request(), [
+            $validator = Validator::make($request->all(),[
                 'id' => 'numeric|min:1',
                 'first_name' => 'required|max:255',
                 'middle_name' => 'required|max:255',
@@ -84,7 +92,7 @@ class UsersBioController extends Controller
             ]);
             $callfrom = 'info';
         }else{
-            $this->validate(request(), [
+            $validator = Validator::make($request->all(),[
                 'id' => 'numeric|min:1',
                 'address' => 'required|max:255',
                 'suburb' => 'required|max:255',
@@ -94,20 +102,23 @@ class UsersBioController extends Controller
                 'pin' => 'required|digits:6|numeric',
             ]);
         }
-        
-        $Bio = User_Master::find($request->id);
-        if($Bio){
-            if($callfrom == 'info'){
-                $request->request->add([ 'update' => 1,'id' => $request->id ]);
-                $User_Bio = $this->UserMaster_model->SaveUserBio($request);
-                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+        if(!$validator->fails()){
+            $Bio = User_Master::find($request->id);
+            if($Bio){
+                if($callfrom == 'info'){
+                    $request->request->add([ 'update' => 1,'id' => $request->id ]);
+                    $User_Bio = $this->UserMaster_model->SaveUserBio($request);
+                    $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+                }else{
+                    $request->request->add([ 'update' => 1,'id' => $request->id ]);
+                    $User_Address = $this->UserMaster_model->SaveUserAddress($request);
+                    $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Address);
+                }
             }else{
-                $request->request->add([ 'update' => 1,'id' => $request->id ]);
-                $User_Address = $this->UserMaster_model->SaveUserAddress($request);
-                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Address);
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

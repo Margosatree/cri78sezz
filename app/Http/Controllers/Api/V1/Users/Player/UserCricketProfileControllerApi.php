@@ -6,7 +6,7 @@ use Auth;
 use Image;
 use Storage;
 use Session;
-
+use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -41,7 +41,7 @@ class UserCricketProfileControllerApi extends Controller
     }
     
     public function addCriProfile(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'your_role' => 'required|numeric',
             'batsman_style' => 'required|in:Lefthand,Righthand',
             'batsman_order' => 'required|numeric',
@@ -52,6 +52,7 @@ class UserCricketProfileControllerApi extends Controller
 //            'display_img' => 'required|max:255',
 //            'is_completed' => 'required|numeric',
         ]);
+        if(!$validator->fails()){
 //        if($request->hasFile('image')){
 //            $image = $request->file('image');
 //            $data = $_POST['imagedata'];
@@ -64,19 +65,22 @@ class UserCricketProfileControllerApi extends Controller
 //            $request->request->add(['display_img' => $filename,]);
 //            $request->session()->put('user_img', $params['display_img']);
 //        }
-        $user_master_id = 1;
-        $request->request->add(['user_master_id' => $user_master_id]);
-        $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
-        if($User_Cri_Profile){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
+            $user_master_id = 1;
+            $request->request->add(['user_master_id' => $user_master_id]);
+            $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
+            if($User_Cri_Profile){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function updateCriProfile(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'your_role' => 'required|numeric',
             'batsman_style' => 'required|in:Lefthand,Righthand',
             'batsman_order' => 'required|numeric',
@@ -87,6 +91,7 @@ class UserCricketProfileControllerApi extends Controller
 //            'display_img' => 'required|max:255',
 //            'is_completed' => 'required|numeric',
         ]);
+        if(!$validator->fails()){
 //        if($request->hasFile('image')){
 //            $image = $request->file('image');
 //            $data = $_POST['imagedata'];
@@ -98,13 +103,16 @@ class UserCricketProfileControllerApi extends Controller
 //            $request->request->add(['display_img' => $filename,]);
 //            $request->session()->put('user_img', $params['display_img']);
 //        }
-        $user_master_id = 1;
-        $request->request->add(['user_master_id' => $user_master_id,'update' => 1,'id' => $id]);
-        $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
-        if($User_Cri_Profile){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
+            $user_master_id = 1;
+            $request->request->add(['user_master_id' => $user_master_id,'update' => 1,'id' => $id]);
+            $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
+            if($User_Cri_Profile){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

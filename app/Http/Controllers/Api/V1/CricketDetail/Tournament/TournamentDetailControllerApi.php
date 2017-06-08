@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\CricketDetail\Tournament;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Validator;
 
 use App\Model\TournamentDetails_model;
 use App\Model\TournamentRules_model;
@@ -35,40 +35,46 @@ class TournamentDetailControllerApi extends Controller
     }
     
     public function listTourDet(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(),[
             'tournament_id' => 'required|numeric|min:1',
         ]);
-        
-        $Tour_Dets = $this->TournamentDetails_model->getTourDetById($request->tournament_id);
-        if($Tour_Dets){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Dets);
+        if(!$validator->fails()){
+            $Tour_Dets = $this->TournamentDetails_model->getTourDetById($request->tournament_id);
+            if($Tour_Dets){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Dets);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
     
     public function addTourDet(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(),[
             'tournament_id' => 'required|numeric|min:1',
             'rule_id' => 'required|numeric|min:1',
             'specification' => 'max:190',
             'value' => 'required|max:190',
-            'range_from' => 'date|before:end_date',
-            'range_to' => 'date|after:start_date',
+            'range_from' => 'numeric|min:1',
+            'range_to' => 'numeric|min:1',
         ]);
-        
-        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
-        if($Tour_Det){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+        if(!$validator->fails()){
+            $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
+            if($Tour_Det){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function updateTourDet(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(),[
             'tournament_id' => 'required|numeric|min:1',
             'rule_id' => 'required|numeric|min:1',
             'specification' => 'max:190',
@@ -76,27 +82,35 @@ class TournamentDetailControllerApi extends Controller
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        $request->request->add(['update' => 1]);
-        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
-        if($Tour_Det){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+        if(!$validator->fails()){
+            $request->request->add(['update' => 1]);
+            $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
+            if($Tour_Det){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function deleteTourDet(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(),[
             'tournament_id' => 'required|numeric|min:1',
             'rule_id' => 'required|numeric|min:1',
         ]);
-        $Tour_Dets = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
-        if($Tour_Dets){
-            $this->TournamentDetails_model->deleteRuleByRuleId($request->tournament_id, $request->rule_id);
-            $output = array('status' => 200 ,'msg' => 'Sucess');
+        if(!$validator->fails()){
+            $Tour_Dets = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
+            if($Tour_Dets){
+                $this->TournamentDetails_model->deleteRuleByRuleId($request->tournament_id, $request->rule_id);
+                $output = array('status' => 200 ,'msg' => 'Sucess');
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

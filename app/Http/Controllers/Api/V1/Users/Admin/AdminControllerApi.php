@@ -5,7 +5,7 @@ use Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Validator;
 class AdminControllerApi extends Controller
 {
     /**

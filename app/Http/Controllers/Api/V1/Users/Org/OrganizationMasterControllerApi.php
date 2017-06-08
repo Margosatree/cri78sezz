@@ -6,6 +6,7 @@ use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
+use Validator;
 use \App\User_Organisation;
 class OrganizationMasterControllerApi extends Controller
 {
@@ -40,7 +41,7 @@ class OrganizationMasterControllerApi extends Controller
     }
 
     public function addOrg(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',// Organisation Id
 //            'orgname' => 'required',//Organisation name
             'address' => 'required',
@@ -54,29 +55,32 @@ class OrganizationMasterControllerApi extends Controller
             'spoc' => 'required',
 //            'is_verified' => 'required',
         ]);
-        
-        DB::beginTransaction();
-        try {
-            $request->request->add(['is_verified' => 0]);
-            $Org = $this->OrganisationMaster_model->SaveOrg($request);
-            if($Org){
-                $params = array();
-                $params['id'] = Auth::user()->id;
-                $params['organization_master_id'] = $request->organization_master_id;
-                $params['role'] = 'organizer';
-                $User_Org = $this->UserOrganisation_model->updateOrgStatus($params);
-                if($User_Org){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+        if(!$validator->fails()){
+            DB::beginTransaction();
+            try {
+                $request->request->add(['is_verified' => 0]);
+                $Org = $this->OrganisationMaster_model->SaveOrg($request);
+                if($Org){
+                    $params = array();
+                    $params['id'] = Auth::user()->id;
+                    $params['organization_master_id'] = $request->organization_master_id;
+                    $params['role'] = 'organizer';
+                    $User_Org = $this->UserOrganisation_model->updateOrgStatus($params);
+                    if($User_Org){
+                        $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+                    }else{
+                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    }
                 }else{
                     $output = array('status' => 400 ,'msg' => 'Transection Fail');
                 }
-            }else{
+                DB::commit();
+            } catch (\Exception $e) {
                 $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                DB::rollback();
             }
-            DB::commit();
-        } catch (\Exception $e) {
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
-            DB::rollback();
+        }else{
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
@@ -87,7 +91,7 @@ class OrganizationMasterControllerApi extends Controller
     }
 
     public function updateOrg(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:191',
             'address' => 'required|max:191',
             'landmark' => 'required|max:191',
@@ -99,16 +103,20 @@ class OrganizationMasterControllerApi extends Controller
             'business_operation' => 'required|max:191',
             'spoc' => 'required|max:191',
         ]);
-        if(isset($request->is_verified) && $request->is_verified){
-            $request->request->add(['is_verified' => $request->is_verified]);
-        }
-        $organization_master_id = 1;
-        $request->request->add(['update' => 1,'id' => $organization_master_id]);
-        $Org = $this->OrganisationMaster_model->SaveOrg($request);
-        if($Org){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+        if(!$validator->fails()){
+            if(isset($request->is_verified) && $request->is_verified){
+                $request->request->add(['is_verified' => $request->is_verified]);
+            }
+            $organization_master_id = 1;
+            $request->request->add(['update' => 1,'id' => $organization_master_id]);
+            $Org = $this->OrganisationMaster_model->SaveOrg($request);
+            if($Org){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

@@ -10,7 +10,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-
+use Validator;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 

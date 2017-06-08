@@ -63,7 +63,7 @@ class TournamentMasterControllerApi extends Controller {
         
         if(!$validator->fails()){
             $organization_master_id = 1;//have to find Org id from login
-            $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+            $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
                     $organization_master_id,$request->tournament_name);
             if(!$Tournament_Exist){
 //                if($request->hasFile('image')){
@@ -76,7 +76,6 @@ class TournamentMasterControllerApi extends Controller {
 //                    file_put_contents(public_path('images/'. $filename), $data);
 //                    $params['tournament_logo'] = $filename;
 //                }
-
                 $request->request->add(['organization_master_id' => $organization_master_id]);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 if($Tournament){
@@ -95,6 +94,7 @@ class TournamentMasterControllerApi extends Controller {
 
     public function updateTournament(Request $request){
         $validator = Validator::make($request->all(),[
+            'id' => 'required|numeric|min:1',
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
             'tournament_logo' => 'max:190',
@@ -105,7 +105,7 @@ class TournamentMasterControllerApi extends Controller {
         ]);
         if(!$validator->fails()){
             $organization_master_id = 1;//have to find Org id from login
-            $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+            $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
                     $organization_master_id,
                     $request->tournament_name);
             if(!$Tournament_Exist){

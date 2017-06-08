@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\CricketDetail\Team;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
-
+use Validator;
 use App\Model\TeamMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
@@ -44,7 +44,7 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function addTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
             'team_logo' => 'max:190',
@@ -64,17 +64,21 @@ class TeamMasterControllerApi extends Controller
 //            $request->request->add(['team_logo' => $filename]);
 //            file_put_contents(public_path('images/'. $filename), $data);
 //        }
-        $Team = $this->TeamMaster_model->SaveTeam($request);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+        if(!$validator->fails()){
+            $Team = $this->TeamMaster_model->SaveTeam($request);
+            if($Team){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function updateTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
@@ -93,12 +97,16 @@ class TeamMasterControllerApi extends Controller
 //            $data = base64_decode($data);
 //            file_put_contents(public_path('images/'. $filename), $data);
 //        }
-        $request->request->add(['update' => 1,'id' => $request->id]);
-        $Team = $this->TeamMaster_model->SaveTeam($request);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+        if(!$validator->fails()){
+            $request->request->add(['update' => 1,'id' => $request->id]);
+            $Team = $this->TeamMaster_model->SaveTeam($request);
+            if($Team){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
@@ -110,14 +118,18 @@ class TeamMasterControllerApi extends Controller
      * @return \Illuminate\Http\Response
      */
     public function deleteTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
         ]);
-        $Team = $this->TeamMaster_model->deleteById($request->id);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess');
+        if(!$validator->fails()){
+            $Team = $this->TeamMaster_model->deleteById($request->id);
+            if($Team){
+                $output = array('status' => 200 ,'msg' => 'Sucess');
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

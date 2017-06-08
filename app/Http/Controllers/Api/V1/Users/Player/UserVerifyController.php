@@ -6,7 +6,7 @@ use Auth;
 use Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Validator;
 use App\Model\User_Master;
 use App\Model\verify_user;
 
