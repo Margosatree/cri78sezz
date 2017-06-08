@@ -27,12 +27,19 @@ class TournamentDetails_model {
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
             return Tournament_Details::selectRaw('*')->where('tournament_id',$tour_id)->where('rule_id',$rule_id)->get()->first();
         }
+        
         public function getRulesByTourId($tour_id) {
             return Tournament_Details::selectRaw('rule_id')
                     ->where('tournament_id',$tour_id)->get();
         }
         
+        public function RulsExists($tour_id,$rule_id) {
+            return Tournament_Details::where('tournament_id',$tour_id)
+                    ->where('rule_id',$rule_id)->value('rule_id');
+        }
+        
         public function SaveTourDetail($request) {
+//            dd(request()->all());
             if(isset($request->update) && $request->update == 1){
                 $Tour_Detail = Tournament_Details::where('tournament_id', $request->tournament_id)->where('rule_id', $request->rule_id);
                 $Tour_Detail->update([

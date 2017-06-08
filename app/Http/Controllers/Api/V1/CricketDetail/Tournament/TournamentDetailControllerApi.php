@@ -83,12 +83,17 @@ class TournamentDetailControllerApi extends Controller
             'range_to' => 'date|after:start_date',
         ]);
         if(!$validator->fails()){
-            $request->request->add(['update' => 1]);
-            $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
-            if($Tour_Det){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+            $Rule_Exists = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
+            if($Rule_Exists){
+                $request->request->add(['update' => 1]);
+                $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
+                if($Tour_Det){
+                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+                }else{
+                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status' => 400 ,'msg' => 'Rule Not Exists');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
@@ -107,7 +112,7 @@ class TournamentDetailControllerApi extends Controller
                 $this->TournamentDetails_model->deleteRuleByRuleId($request->tournament_id, $request->rule_id);
                 $output = array('status' => 200 ,'msg' => 'Sucess');
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status' => 400 ,'msg' => 'Rule Not Exists');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
