@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-
+use Illuminate\Http\Request;
 use App\Model\BaseModel\User_Master;
 
 class UserMaster_model {
@@ -60,12 +60,24 @@ class UserMaster_model {
         }else{
             $User_master = new User_master;
         }
-        $User_master->first_name = $request->first_name;
-        $User_master->middle_name = $request->middle_name;
-        $User_master->last_name = $request->last_name;
-        $User_master->date_of_birth = $request->date_of_birth;
-        $User_master->gender = $request->gender;
-        $User_master->physically_challenged = $request->physically_challenged;
+        if(isset($User_master->first_name) && $User_master->first_name){
+            $User_master->first_name = $request->first_name;
+        }
+        if(isset($User_master->middle_name) && $User_master->middle_name){
+            $User_master->middle_name = $request->middle_name;
+        }
+        if(isset($User_master->last_name) && $User_master->last_name){
+            $User_master->last_name = $request->last_name;
+        }
+        if(isset($User_master->date_of_birth) && $User_master->date_of_birth){
+            $User_master->date_of_birth = $request->date_of_birth;
+        }
+        if(isset($User_master->gender) && $User_master->gender){
+            $User_master->gender = $request->gender;
+        }
+        if(isset($User_master->physically_challenged) && $User_master->physically_challenged){
+            $User_master->physically_challenged = $request->physically_challenged;
+        }
         $User_master->save();
         return $User_master;
     }

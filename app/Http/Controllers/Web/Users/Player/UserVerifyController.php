@@ -7,8 +7,8 @@ use Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Model\User_Master;
-use App\Model\verify_user;
+use App\Model\BaseModel\User_Master;
+use App\Model\BaseModel\verify_user;
 
 class UserVerifyController extends Controller
 {
@@ -54,7 +54,7 @@ class UserVerifyController extends Controller
             'verify_phone' => 'required|numeric',
         ]);
 
-        $get_datas =verify_user::where('token',$request->token)
+        $get_datas = verify_user::where('token',$request->token)
                                 ->get();
 
         foreach($get_datas as $get_data){

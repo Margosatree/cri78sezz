@@ -19,7 +19,7 @@ class RoleUser_model {
 		return DB::table('role_user')
                 ->select('*')
                 ->leftJoin('roles','roles.id','=','role_user.role_id')
-								->where('role_user.user_id', '=', $id)
+				->where('role_user.user_id', '=', $id)
                 ->where('roles.is_admin', '=', $is_admin)
                 ->get();
 	}
@@ -31,21 +31,48 @@ class RoleUser_model {
 	    return $user_role->save();
     }
 
-		public function getPermissionsByUserId($id,$admin = 0){
-			$check_roles = $this->getRoleById($id,$admin);
-			$role_id_arr = array();
-			foreach($check_roles as $check_role){
-				$role_id_arr[] = $check_role->role_id;
-			}
-
-			$permissions = $this->Permission_model->getPermissionByRoleIds($role_id_arr);
-			$perms = array();
-			foreach($permissions as $permission){
-					$perm = $permission->slug;
-					$perms[]=$perm;
-			}
-
-			return $perms;
+	public function getPermissionsByUserId($id,$admin = 0){
+		$check_roles = $this->getRoleById($id,$admin);
+		$role_id_arr = array();
+		foreach($check_roles as $check_role){
+			$role_id_arr[] = $check_role->role_id;
 		}
+
+		$permissions = $this->Permission_model->getPermissionByRoleIds($role_id_arr);
+		$perms = array();
+		foreach($permissions as $permission){
+				$perm = $permission->slug;
+				$perms[]=$perm;
+		}
+
+		return $perms;
+	}
+
+	//Only For API
+
+	public function getRoleByIdAPI($id){
+		return DB::table('role_user')
+                ->select('*')
+                ->leftJoin('roles','roles.id','=','role_user.role_id')
+				->where('role_user.user_id', '=', $id)
+                ->get();
+	}
+
+	public function getPermissionsByUserIdAPI($id){
+		$check_roles = $this->getRoleByIdAPI($id);
+		$role_id_arr = array();
+		foreach($check_roles as $check_role){
+			$role_id_arr[] = $check_role->role_id;
+		}
+
+		$permissions = $this->Permission_model->getPermissionByRoleIds($role_id_arr);
+		$perms = array();
+		foreach($permissions as $permission){
+				$perm = $permission->slug;
+				$perms[]=$perm;
+		}
+
+		return $perms;
+	}
 
 }

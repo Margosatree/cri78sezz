@@ -22,9 +22,7 @@ class User_Organisation extends Authenticatable
         'registration_date','email', 'password','role', 'remember_token','current_password'
     ];
 
-    public function user(){
-        return $this->belongsTo(User_Master::class,'user_master_id','id');
-    }
+    
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -33,4 +31,20 @@ class User_Organisation extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+    public function user(){
+        return $this->belongsTo(User_Master::class,'user_master_id','id');
+    }
+    
+    public function criprofile(){
+        return $this->belongsTo(User_Cricket_Profile::class,'user_master_id','user_master_id');
+    }
+    
+    public function achieves(){
+        return $this->hasMany(User_Achievement::class,'user_master_id','user_master_id');
+    }
+    
+    public function org(){
+        return $this->belongsTo(Organisation_Master::class,'organization_master_id','id');
+    }
 }

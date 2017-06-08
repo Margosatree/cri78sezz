@@ -44,7 +44,7 @@ class VerifyUser_model {
 	}
 
 	public function deleteByMobile($mobile){
-		return verify_user::where('mobile',$mobile_no)->delete();  
+		return verify_user::where('mobile',$mobile)->delete();  
 	}
 
 }

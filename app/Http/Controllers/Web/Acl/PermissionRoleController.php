@@ -57,7 +57,7 @@ class PermissionRoleController extends Controller
         'permission_id' => 'required'        
         ]);
         
-        $this->Role_model->findByIdForPermission($request->role_id,$request->permission_id)
+        $this->Role_model->findByIdForPermission($request->role_id,$request->permission_id);
         return redirect('/admin/home');
     }
 

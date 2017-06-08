@@ -45,7 +45,7 @@ class UserAchievementController extends Controller
      */
     public function create()
     {
-        $Orgs = $this->OrganisationMaster_model->getAllColumnWise('id,name');
+        $Orgs = $this->OrganisationMaster_model->getAll('id,name');
         return view('user.achieve.add',compact('Orgs'));
     }
 

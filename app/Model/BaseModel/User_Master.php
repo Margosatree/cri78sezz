@@ -15,4 +15,6 @@ class User_Master extends Model
     public function user_master(){
         return $this->belongsTo(User::class);
     }
+    
+    
 }

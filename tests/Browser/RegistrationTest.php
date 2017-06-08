@@ -19,19 +19,20 @@ class RegistrationTest extends DuskTestCase
      * @return void
      */
     //
-    public function testRegistrationTest(){
-        $this->browse(function (Browser $browser) {
-            $browser->visit('/login')
-                    ->clickLink('Register')
-                    ->assertSee('Register')
-                    ->value('#username','@123')
-                    ->value('#phone','4225662626')
-                    ->value('#email','brijeshdubey144gmail.com')
-                    ->value('#password','Brijesh@144')
-                    ->value('#password-confirm','Brijesh@145')
-                    ->press('Register')
-                    ->assertPathIs('/login');
-    }
+//    public function testRegistrationTest(){
+//        $this->browse(function (Browser $browser) {
+//            $browser->visit('/login')
+//                    ->clickLink('Register')
+//                    ->assertSee('Register')
+//                    ->value('#username','@123')
+//                    ->value('#phone','4225662626')
+//                    ->value('#email','brijeshdubey144gmail.com')
+//                    ->value('#password','Brijesh@144')
+//                    ->value('#password-confirm','Brijesh@145')
+//                    ->press('Register')
+//                    ->assertPathIs('/login');
+//        }
+//    }
 
 
     // public function testRegistrationForOrg()
@@ -158,3 +159,4 @@ class RegistrationTest extends DuskTestCase
     //     });
     // }
 }
+
