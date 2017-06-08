@@ -10,7 +10,7 @@ use App\Model\UserMaster_model;
 use App\Model\UserAchievement_model;
 use App\Model\OrganisationMaster_model;
 
-class UserAchievementController extends Controller{
+class UserAchievementControllerApi extends Controller{
     protected $UserMaster_model;
     protected $UserAchievement_model;
     protected $OrganisationMaster_model;
@@ -27,7 +27,7 @@ class UserAchievementController extends Controller{
         $this->OrganisationMaster_model = new OrganisationMaster_model();
     }
     
-    public function listAchiement(){
+    public function listAchievement(){
         $User_Achieve = $this->UserMaster_model->getAll();
         if($User_Achieve){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Achieve);
@@ -37,7 +37,7 @@ class UserAchievementController extends Controller{
         return response()->json($output);
     }
 
-    public function addAchiement(Request $request){
+    public function addAchievement(Request $request){
         $this->validate($request,[
             'title' => 'required|max:190',
             'location' => 'required|max:190',
@@ -56,7 +56,7 @@ class UserAchievementController extends Controller{
         return response()->json($output);
     }
 
-    public function update(Request $request) {
+    public function updateAchievement(Request $request) {
         $this->validate($request,[
             'id' => 'required|numeric|min:1',
             '$organization_master_id' => 'required|numeric|min:1',
@@ -76,7 +76,7 @@ class UserAchievementController extends Controller{
         return response()->json($output);
     }
 
-    public function destroy(Request $request){
+    public function deleteAchievement(Request $request){
         $this->validate($request,[
             'id' => 'required|numeric|min:1',
         ]);

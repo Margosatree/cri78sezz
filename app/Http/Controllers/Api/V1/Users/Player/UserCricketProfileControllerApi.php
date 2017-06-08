@@ -14,7 +14,7 @@ use App\Model\UserCricketProfile_model;
 use App\Model\UserMaster_model;
 
 
-class UserCricketProfileController extends Controller
+class UserCricketProfileControllerApi extends Controller
 {
     protected $UserMaster_model;
     protected $UserCricketProfile_model;
@@ -24,12 +24,13 @@ class UserCricketProfileController extends Controller
         $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
+    
     protected function _initModel(){
         $this->UserMaster_model = new UserMaster_model();
         $this->UserCricketProfile_model = new UserCricketProfile_model();
     }
     
-    function lisetCriProfile(Request $request){
+    function listCriProfile(Request $request){
         $Cri_Profiles = $this->UserCricketProfile_model->getAll();
         if($Cri_Profiles){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Cri_Profiles);

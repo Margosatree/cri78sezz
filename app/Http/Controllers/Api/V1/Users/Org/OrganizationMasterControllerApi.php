@@ -7,7 +7,7 @@ use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
 use \App\User_Organisation;
-class OrganizationMasterController extends Controller
+class OrganizationMasterControllerApi extends Controller
 {
     protected $UserMaster_model;
     protected $OrganisationMaster_model;

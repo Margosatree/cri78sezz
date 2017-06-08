@@ -41,9 +41,22 @@ Route::post('/TourDet/delete',      'Api\V1\CricketDetail\Tournament\TournamentD
 
 Route::post('/TourRule/list',       'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@listRules');
 Route::post('/TourRule/add',        'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@addRules');
-//Route::post('/TourRule/update',     'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@updateRules');
-//Route::post('/TourRule/delete',     'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@deleteRules');
 
-Route::post('/TourRule/list',       'Api\V1\Other\ChangePasswordController@updatePass');
-Route::post('/TourRule/add',        'Api\V1\Other\ChangePasswordController@adminUpdatePass');
+Route::post('/ChangePass/updateUser',   'Api\V1\Other\ChangePasswordController@updatePass');
+Route::post('/ChangePass/updateAdmin',  'Api\V1\Other\ChangePasswordController@adminUpdatePass');
+
+Route::post('/Org/list',       'Api\V1\Users\Org\OrganizationMasterControllerApi@listOrg');
+Route::post('/Org/add',        'Api\V1\Users\Org\OrganizationMasterControllerApi@addOrg');
+Route::post('/Org/update',     'Api\V1\Users\Org\OrganizationMasterControllerApi@updateOrg');
+Route::post('/Org/delete',     'Api\V1\Users\Org\OrganizationMasterControllerApi@deleteOrg');
+
+Route::post('/Org/list',       'Api\V1\Users\Player\UserAchievementControllerApi@listAchievement');
+Route::post('/Org/add',        'Api\V1\Users\Player\UserAchievementControllerApi@addAchievement');
+Route::post('/Org/update',     'Api\V1\Users\Player\UserAchievementControllerApi@updateAchievement');
+Route::post('/Org/delete',     'Api\V1\Users\Player\UserAchievementControllerApi@deleteAchievement');
+
+Route::post('/CriProfile/list',       'Api\V1\Users\Player\UserCricketProfileControllerApi@listCriProfile');
+Route::post('/CriProfile/add',        'Api\V1\Users\Player\UserCricketProfileControllerApi@addCriProfile');
+Route::post('/CriProfile/update',     'Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
+Route::post('/CriProfile/delete',     'Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
 

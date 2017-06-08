@@ -11,7 +11,7 @@ use Session;
 use Hash;
 //use Illuminate\Support\Facades\Crypt;
 //use \Crypt;
-class ChangePasswordController extends Controller {
+class ChangePasswordControllerApi extends Controller {
     protected $UserOrganisation_model;
     
     public function __constructor(){

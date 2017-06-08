@@ -54,7 +54,7 @@ class UserVerifyController extends Controller
             'verify_phone' => 'required|numeric',
         ]);
 
-        $get_datas =verify_user::where('token',$request->token)
+        $get_datas = verify_user::where('token',$request->token)
                                 ->get();
 
         foreach($get_datas as $get_data){

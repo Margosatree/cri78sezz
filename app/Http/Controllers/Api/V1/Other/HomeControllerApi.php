@@ -6,7 +6,7 @@ use Auth;
 use Illuminate\Http\Request;
 use DB;
 
-class HomeController extends Controller
+class HomeControllerApi extends Controller
 {
     /**
      * Create a new controller instance.

@@ -11,8 +11,7 @@ use App\Model\TournamentDetails_model;
 use App\Model\TournamentMaster_model;
 use App\Model\TournamentRules_model;
 use App\Model\OrganisationMaster_model;
-class TournamentMasterControllerApi extends Controller
-{
+class TournamentMasterControllerApi extends Controller {
     /**
      * Display a listing of the resource.
      *

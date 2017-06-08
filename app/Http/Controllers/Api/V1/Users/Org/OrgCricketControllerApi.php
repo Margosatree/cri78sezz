@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Organisation_Master;
 use Illuminate\Http\Request;
 
-class OrgCricketController extends Controller
+class OrgCricketControllerApi extends Controller
 {
     public function __construct(){
 //        $this->middleware('auth:admin');
