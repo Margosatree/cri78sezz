@@ -51,6 +51,8 @@ class TeamMasterControllerApi extends Controller
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
 
 //        if($request->hasFile('image')){
@@ -65,6 +67,17 @@ class TeamMasterControllerApi extends Controller
 //            file_put_contents(public_path('images/'. $filename), $data);
 //        }
         if(!$validator->fails()){
+
+           $data = $request->image;
+           $mime_data = $request->mime;
+           $rand_str = str_random(40);
+           
+           $filename = "$rand_str.$mime_data";
+           $data = base64_decode($data);
+           file_put_contents(public_path('images/'. $filename), $data);
+           $params['team_logo'] = $filename;
+           $request->request->add(['team_logo' => $filename]);
+
             $Team = $this->TeamMaster_model->SaveTeam($request);
             if($Team){
                 $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
@@ -86,6 +99,8 @@ class TeamMasterControllerApi extends Controller
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
 //        if($request->hasFile('image')){
 //            $image = $request->file('image');
@@ -98,6 +113,17 @@ class TeamMasterControllerApi extends Controller
 //            file_put_contents(public_path('images/'. $filename), $data);
 //        }
         if(!$validator->fails()){
+
+           $data = $request->image;
+           $mime_data = $request->mime;
+           $rand_str = str_random(40);
+           
+           $filename = "$rand_str.$mime_data";
+           $data = base64_decode($data);
+           file_put_contents(public_path('images/'. $filename), $data);
+           $params['team_logo'] = $filename;
+           $request->request->add(['team_logo' => $filename]);
+
             $request->request->add(['update' => 1,'id' => $request->id]);
             $Team = $this->TeamMaster_model->SaveTeam($request);
             if($Team){

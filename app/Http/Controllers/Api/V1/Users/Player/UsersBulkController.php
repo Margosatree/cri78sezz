@@ -33,6 +33,8 @@ class UsersBulkController extends Controller
     }
     
     public function bulkUpload(Request $request){
+        //abc.excel
+        
         if(Input::hasFile('import_file')){
             $path = Input::file('import_file')->getRealPath();
             $data = Excel::load($path, function($reader) {

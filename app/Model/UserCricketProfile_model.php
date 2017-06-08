@@ -37,6 +37,7 @@ class UserCricketProfile_model {
             $User_Cri_Profile->bowler_style = $request->bowler_style;
             $User_Cri_Profile->player_type = $request->player_type;
             $User_Cri_Profile->description = $request->description;
+            $User_Cri_Profile->display_img = $request->display_img;
             $User_Cri_Profile->save();
             return $User_Cri_Profile;
         }
