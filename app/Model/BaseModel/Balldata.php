@@ -14,18 +14,19 @@ class Balldata extends Authenticatable
     protected $guarded = [];
     public $timestamps = false;
     
-//    public function username(){
-//        return $this->belongsTo(Batsman::class,'batsman_id','trans_id');
-//    }
+
     public function userinfo(){
         return $this->belongsTo(User_Master::class,'batsman_id','id');
     }
+
     public function userCrickinfo(){
         return $this->belongsTo(User_Cricket_Profile::class,'batsman_id','user_master_id');
     }
+
     public function isBowlerRecordExists($where_array){
         return Balldata::where($where_array)->value('trans_id');
     }
+
     public function getBatsmanSummery($where_data){
         return Balldata::selectRaw(" 
             SUM(IF(batsman_score = 1,1,0)) AS run1,
@@ -44,6 +45,7 @@ class Balldata extends Authenticatable
         ->groupby(['batsman_id','match_id','innings'])
         ->get()->first();
     }
+
     public function overwiseBallerInfo($where_array){
        return Balldata::select('match_id','innings','bowler_id',DB::raw('CEIL(over_no) as over_no'),DB::raw('GROUP_CONCAT(ball_no) as ball_no_list'))
            ->where('match_id',$where_array['match_id'])
@@ -51,16 +53,22 @@ class Balldata extends Authenticatable
            ->groupBy(DB::raw('CEIL(over_no)'),'match_id','innings','bowler_id')
            ->get();
     }
+
     public function overwiseFielderInfo($where_array){
-       return Balldata::select('match_id','innings','fielder_id',DB::raw('CEIL(over_no) as over_no'),DB::raw('GROUP_CONCAT(ball_no) as ball_no_list'))
+       return Balldata::select('match_id','innings','fielder_id',DB::raw('GROUP_CONCAT(ball_no) as ball_no_list'))
            ->where('match_id',$where_array['match_id'])
            ->where('innings',$where_array['innings'])
-           ->groupBy(DB::raw('CEIL(over_no)'),'match_id','innings','bowler_id')
+           ->groupBy('fielder_id','match_id','innings')
+           ->orderBy('fielder_id')
            ->get();
     }
 
     public function updateBallerInfo($where_array){
         return Balldata::where('match_id',$where_array['match_id'])->where('innings',$where_array['innings'])->where('bowler_id',$where_array['old_id'])->where(DB::raw('CEIL(over_no)'),$where_array['over_no'])->update(['bowler_id'=>$where_array['new_id']]);
+    }
+
+    public function updateFielderInfo($where_array){
+        return Balldata::where('match_id',$where_array['match_id'])->where('innings',$where_array['innings'])->where('ball_no',$where_array['ball_no'])->where('fielder_id',$where_array['old_fielder_id'])->update(['fielder_id'=>$where_array['new_fielder_id']]);
     }
 
     public function getBatsmanDetails($where_data){
@@ -229,6 +237,7 @@ class Balldata extends Authenticatable
             }*/
     public function saveBalldata($request){ 
         $validate = new CoreValidation(); 
+        $m_trans_id = 0;
         $maiden_parameters = array();
         $maiden_parameters['ball_type'] = $request->ball_type;
         $maiden_parameters['ball_no'] = $request->ball_no;
@@ -238,14 +247,25 @@ class Balldata extends Authenticatable
         $maiden_parameters['bowler_given'] = $request->bowler_given;
         $maiden = $validate->checkMaiden($maiden_parameters);
         //dd($maiden);
+        $max_m_trans_id = Balldata::select(DB::raw('MAX(m_trans_id) as m_trans_id'))
+        ->where('match_id',$request->match_id)
+        ->get();
+        if(count($max_m_trans_id) != 0)
+        {
+            $m_trans_id = $max_m_trans_id->first()->m_trans_id + 1;
+        }
+        else{
+            $m_trans_id = 1; 
+        }
 
         if(isset($request->trans_id) && $request->trans_id > 0){
             //Update
             dd('Update Balldata');
         }else{
             //Add 
+
             $Balldata = new Balldata();
-            $Balldata->m_tsrans_id = $request->m_trans_id;
+            $Balldata->m_trans_id = $m_trans_id;
             $Balldata->match_id = $request->match_id;
             $Balldata->team_id1 = $request->team_id1;
             $Balldata->team_id2 = $request->team_id2;

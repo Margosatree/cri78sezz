@@ -39,9 +39,9 @@ class UpdateFielder extends Model
     	$where_array = [
             'match_id' => $request->match_id,            
             'innings' => $request->innings,
-            'old_id' => $request->old_id,
-            'over_no' => $request->over_no,
-            'new_id' => $request->new_id
+            'old_fielder_id' => $request->old_fielder_id,
+            'new_fielder_id' => $request->new_fielder_id,
+            'ball_no' => $request->ball_no
         ]; 
 
         $Fielder_Summery = $this->Balldata_Model->updateFielderInfo($where_array);
@@ -52,7 +52,7 @@ class UpdateFielder extends Model
         	$where_data1 = [
             'match_id' => $request->match_id,            
             'innings' => $request->innings,
-            'fielder_id' => $request->old_id           
+            'fielder_id' => $request->old_fielder_id           
         	]; 
 
         	$fielder_exists = $this->Fielder_Model->isFielderExists($where_data1);
@@ -70,7 +70,7 @@ class UpdateFielder extends Model
         	$where_data2 = [
 	            'match_id' => $request->match_id,            
 	            'innings' => $request->innings,
-	            'fielder_id' => $request->new_id           
+	            'fielder_id' => $request->new_fielder_id           
         	]; 
 
         	$fielder_exists = $this->Fielder_Model->isFielderExists($where_data2);

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\BaseModel;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Model\Balldata;
+use App\Model\BaseModel\Balldata;
 use Illuminate\Database\Eloquent\Collection;
 class Partnership extends Authenticatable
 {

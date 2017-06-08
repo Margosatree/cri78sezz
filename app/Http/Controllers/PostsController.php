@@ -14,6 +14,9 @@ use App\Model\BaseModel\BowlerDetail;
 use App\Model\BaseModel\PartnershipDetail;
 use App\Model\BaseModel\FielderDetail;
 use App\Model\BaseModel\UpdateBowler;
+use App\Model\BaseModel\UpdateFielder;
+use App\Model\BaseModel\TourSquad;
+use App\Model\BaseModel\MatchSquad;
 use DB;
 class PostsController extends Controller{
     
@@ -30,23 +33,37 @@ class PostsController extends Controller{
     protected $UpdateBowler_model;
     protected $UpdateFielder_model;
     protected $TourSquad_model;
+    protected $MatchSquad_model;
     public function __construct() {
         
     }
     
     public function tourSquad(Request $request){
-       // $output = array();
-       // $output['data'] = "Hello";
         $this->TourSquad_model = new TourSquad();
-        $this->TourSquad_model->storeTourSquad($request);
-        //return response()->json($request);
+        $status = $this->TourSquad_model->storeTourSquad($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        }
     }
 
     public function matchSquad(Request $request){
-        $output = array();
-        $output['data'] = "Hello World";
-        return response()->json($request);
+        /*$output = array();
+        $output['data'] = "Hello World";*/
+        $this->MatchSquad_model = new MatchSquad();
+        $status = $this->MatchSquad_model->storeMatchSquad($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        }
     }
+
     public function getBowler(Request $request){              
         $this->UpdateBowler_model = new UpdateBowler();
         $data_change = $this->UpdateBowler_model->calBowlerChanger($request);
@@ -55,11 +72,12 @@ class PostsController extends Controller{
 
     public function getFielder(Request $request){
         $this->UpdateFielder_model = new UpdateFielder();
-        $data_change = $this->UpdateFielder_model->calFieldersChanger($request);
+        $data_change = $this->UpdateFielder_model->calFielderChanger($request);
         return $data_change;        
     }
 
     public function changeFielder(Request $request){
+        //return response()->json($request);
         $this->UpdateFielder_model = new UpdateFielder();
         $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
     }
