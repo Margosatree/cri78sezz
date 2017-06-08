@@ -5,7 +5,6 @@ use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use App\Model\BaseModel\Role;
 
-namespace database\seeds;
 class RolesTableSeeder extends Seeder {
 
     public function run() {
@@ -35,8 +34,10 @@ class RolesTableSeeder extends Seeder {
                 , 'slug' => 'player'
             )
         );
+
         foreach ($insert_data as $index) {
             Role::create($index);
         }
     }
+
 }

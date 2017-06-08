@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/bio/addBio', 'Api\V1\Users\UsersBioControllerApi@addUserBio');
 
 Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
@@ -60,3 +56,9 @@ Route::post('/CriProfile/add',        'Api\V1\Users\Player\UserCricketProfileCon
 Route::post('/CriProfile/update',     'Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
 Route::post('/CriProfile/delete',     'Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
 
+
+Route::post('auth/register', 'Api\V1\UserController@register');
+Route::post('auth/login', 'Api\V1\UserController@login');
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('user', 'Api\V1\UserController@getAuthUser');
+});
