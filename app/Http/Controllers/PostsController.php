@@ -17,6 +17,9 @@ use App\Model\BaseModel\UpdateBowler;
 use App\Model\BaseModel\UpdateFielder;
 use App\Model\BaseModel\TourSquad;
 use App\Model\BaseModel\MatchSquad;
+use App\Model\BaseModel\BatsmanPowerplay;
+use App\Model\BaseModel\BowlerPowerplay;
+use App\Model\BaseModel\FielderPowerplay;
 use DB;
 class PostsController extends Controller{
     
@@ -34,6 +37,9 @@ class PostsController extends Controller{
     protected $UpdateFielder_model;
     protected $TourSquad_model;
     protected $MatchSquad_model;
+    protected $BatsmanPowerplay_model;
+    protected $BowlerPowerplay_model;
+    protected $FilderPowerplay_model;
     public function __construct() {
         
     }
@@ -80,12 +86,31 @@ class PostsController extends Controller{
         //return response()->json($request);
         $this->UpdateFielder_model = new UpdateFielder();
         $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
+        if($data_change == true)
+        {
+            $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
+            return response()->json($response);
+        }
+        else{
+            $response = ['status'=>400, 'Message'=>'There was an error in updating the record'];
+            return response()->json($response);
+        }
+        
     }
 
     public function changeBowler(Request $request){ 
 
         $this->UpdateBowler_model = new UpdateBowler();
         $data_change = $this->UpdateBowler_model->bowlerChangeMaker($request);
+        if($data_change == true)
+        {
+            $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
+            return response()->json($response);
+        }
+        else{
+            $response = ['status'=>400, 'Message'=>'There was an error in updating the record'];
+            return response()->json($response);
+        }
     }
 
     public function saveTick(Request $request){
@@ -102,6 +127,13 @@ class PostsController extends Controller{
             $this->calBowlerDetail($request);
             $this->calPartnershipDetail($request);
             $this->calFielderDetail($request);
+
+            if($request->power_play == 1)
+            {
+                $this->calBatsmanPowerplay($request);
+                $this->calBowlerPowerplay($request);
+                $this->calFilderPowerplay($request);
+            }
            
 
             // DB::commit();
@@ -113,6 +145,19 @@ class PostsController extends Controller{
             $output['error'] = $e;
             return response()->json($output);
         // }
+    }
+
+    public function calBatsmanPowerplay($request){
+        $this->BatsmanPowerplay_model = new BatsmanPowerplay();
+        $this->BatsmanPowerplay_model->saveBatsmanTickData($request);
+    }
+    public function calBowlerPowerplay($request){
+        $this->BowlerPowerplay_model = new BowlerPowerplay();
+        $this->BowlerPowerplay_model->saveBowlerTickData($request);
+    }
+    public function calFilderPowerplay($request){
+        $this->FilderPowerplay_model = new FielderPowerplay();
+        $this->FilderPowerplay_model->saveFielderTickData($request);
     }
     
     public function calFielderDetail($request){

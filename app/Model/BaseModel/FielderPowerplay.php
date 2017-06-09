@@ -4,13 +4,11 @@ namespace App\Model\BaseModel;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
 use App\Model\BaseModel\Balldata;
-
-class Fielder extends Authenticatable
+class FielderPowerplay extends Authenticatable
 {
     use Notifiable;
-    protected $table = 'fielder_master';
+    protected $table = 'fielder_master_powerplay';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
     public $timestamps = false;
@@ -21,7 +19,7 @@ class Fielder extends Authenticatable
     }
     
     public function isFielderExists($where_array){
-        return Fielder::where($where_array)->value('trans_id');
+        return FielderPowerplay::where($where_array)->value('trans_id');
     }
     
     public function saveFielderTickData($request){
@@ -40,7 +38,7 @@ class Fielder extends Authenticatable
     }
     public function dropFielder($where_data1)
     {
-        Fielder::where('match_id', $where_data1['match_id'])
+        FielderPowerplay::where('match_id', $where_data1['match_id'])
         ->where('innings', $where_data1['innings'])
         ->where('fielder_id', $where_data1['fielder_id'])
         ->delete();
@@ -48,9 +46,9 @@ class Fielder extends Authenticatable
     public function saveFielderMaster($update,$BowlerTick){
         if($BowlerTick != null){            
         if($update){
-            $Fielder = Fielder::find($update);//Update
+            $Fielder = FielderPowerplay::find($update);//Update
         }else{
-            $Fielder = new Fielder();//Add
+            $Fielder = new FielderPowerplay();//Add
         }
         //dd($BowlerTick->match_id);
         $Fielder->match_id = $BowlerTick->match_id;

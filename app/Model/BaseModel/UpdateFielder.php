@@ -15,6 +15,7 @@ class UpdateFielder extends Model
     protected $guarded = [];
     public $timestamps = false;
     protected $Balldata_Model;
+    protected $Fielder_Model;
 
     public function __construct() {
         $this->Balldata_Model = new Balldata();
@@ -46,22 +47,24 @@ class UpdateFielder extends Model
 
         $Fielder_Summery = $this->Balldata_Model->updateFielderInfo($where_array);
         //$bowler_obj = new Bowler();
-       // dd($Bowler_Summery);
         if($Fielder_Summery > 0)
         {	
-        	$where_data1 = [
+    $where_data1 = [
             'match_id' => $request->match_id,            
             'innings' => $request->innings,
             'fielder_id' => $request->old_fielder_id           
         	]; 
-
-        	$fielder_exists = $this->Fielder_Model->isFielderExists($where_data1);
-        	//dd($bowler_exists);
+    $fielder_exists = $this->Fielder_Model->isFielderExists($where_data1);
+        	
         	if($fielder_exists != null){
         	$flag =$this->Balldata_Model->isFielderRecordExists($where_data1);
+            //dd($flag);
         	if($flag != null){
-        	$Fielder_Summery = $this->Balldata_Model->getFielderSummery($where_data1);
-        	$this->Fielder_Model->saveFielderMaster(true,$Fielder_Summery);
+
+        	$Fielder_Summery = $this->Balldata_Model->getFilderSummery($where_data1);
+
+            //dd("Hello".$Fielder_Summery);
+            $this->Fielder_Model->saveFielderMaster($fielder_exists,$Fielder_Summery);
         	}
         	else{
         	$fielder_drop = $this->Fielder_Model->dropFielder($where_data1);
@@ -74,8 +77,10 @@ class UpdateFielder extends Model
         	]; 
 
         	$fielder_exists = $this->Fielder_Model->isFielderExists($where_data2);
-        	$Fielder_Summery = $this->Balldata_Model->getFielderSummery($where_data2);
-        	$this->Fielder_Model->saveFielderMaster($fielder_exists,$Fielder_Summery);
+        	$Fielder_Summery = $this->Balldata_Model->getFilderSummery($where_data2);
+        	$result = $this->Fielder_Model->saveFielderMaster($fielder_exists,$Fielder_Summery);
+            //dd($result);
+            return $result;
         }
     	
     }

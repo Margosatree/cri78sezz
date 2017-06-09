@@ -4,13 +4,11 @@ namespace App\Model\BaseModel;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
 use App\Model\BaseModel\Balldata;
-
-class Bowler extends Authenticatable
+class BowlerPowerplay extends Authenticatable
 {
     use Notifiable;
-    protected $table = 'bowler_master';
+    protected $table = 'bowler_master_powerplay';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
     public $timestamps = false;
@@ -20,7 +18,7 @@ class Bowler extends Authenticatable
     }
     
     public function isBowlerExists($where_array){
-        return Bowler::where($where_array)->value('trans_id');
+        return BowlerPowerplay::where($where_array)->value('trans_id');
     }
     
     public function saveBowlerTickData($request){
@@ -41,7 +39,7 @@ class Bowler extends Authenticatable
     }
     public function dropBowler($where_data1)
     {
-        Bowler::where('match_id', $where_data1['match_id'])
+        BowlerPowerplay::where('match_id', $where_data1['match_id'])
         ->where('innings', $where_data1['innings'])
         ->where('bowler_id', $where_data1['bowler_id'])
         ->delete();
@@ -49,9 +47,9 @@ class Bowler extends Authenticatable
     public function saveBowlerMaster($update,$BowlerTick){
         if($BowlerTick != null){
         if($update){
-            $Bowler = Bowler::find($update);//Update
+            $Bowler = BowlerPowerplay::find($update);//Update
         }else{
-            $Bowler = new Bowler();//Add
+            $Bowler = new BowlerPowerplay();//Add
         }
         $Bowler->match_id = $BowlerTick->match_id;
         $Bowler->order_id = $BowlerTick->order_id; //find

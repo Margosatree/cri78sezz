@@ -14,7 +14,7 @@ class UpdateBowler extends Model
     protected $guarded = [];
     public $timestamps = false;
     protected $Balldata_Model;
-
+    protected $Bowler_Model;
     public function __construct() {
         $this->Balldata_Model = new Balldata();
         $this->Bowler_Model = new Bowler(); 
@@ -60,7 +60,7 @@ class UpdateBowler extends Model
         	$flag =$this->Balldata_Model->isBowlerRecordExists($where_data1);
         	if($flag != null){
         	$Ball_Summery = $this->Balldata_Model->getBowlerSummery($where_data1);
-        	$this->Bowler_Model->saveBowlerMaster(true,$Ball_Summery);
+        	$this->Bowler_Model->saveBowlerMaster($bowler_exists,$Ball_Summery);
         	}
         	else{
         	$bowler_drop = $this->Bowler_Model->dropBowler($where_data1);	
@@ -74,7 +74,9 @@ class UpdateBowler extends Model
 
         	$bowler_exists = $this->Bowler_Model->isBowlerExists($where_data2);
         	$Ball_Summery = $this->Balldata_Model->getBowlerSummery($where_data2);
-        	$this->Bowler_Model->saveBowlerMaster($bowler_exists,$Ball_Summery);
+        	$result = $this->Bowler_Model->saveBowlerMaster($bowler_exists,$Ball_Summery);
+            //dd($result);
+            return $result;
         }
     	
     }

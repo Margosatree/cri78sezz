@@ -27,6 +27,10 @@ class Balldata extends Authenticatable
         return Balldata::where($where_array)->value('trans_id');
     }
 
+    public function isFielderRecordExists($where_array){
+        return Balldata::where($where_array)->value('trans_id');
+    }
+
     public function getBatsmanSummery($where_data){
         return Balldata::selectRaw(" 
             SUM(IF(batsman_score = 1,1,0)) AS run1,
@@ -40,6 +44,7 @@ class Balldata extends Authenticatable
             SUM(IF(batsman_score = 0,1,0)) AS run0,
             SUM(IF(ball_type='NORM',1,0)) AS balls,
             ROUND((SUM(batsman_score)/SUM(IF(ball_type='NORM',1,0)))*100,2) AS strike_rate,
+            IF(power_play = 1,1,0) AS power_play,
             batsman_id,match_id,innings")
         ->where($where_data)
         ->groupby(['batsman_id','match_id','innings'])
@@ -133,6 +138,7 @@ class Balldata extends Authenticatable
             SUM(IF(ball_type NOT IN ('WD','NB+WD'),1,0)) AS balls,
             ROUND(SUM(IF(ball_type NOT IN ('WD','NB+WD','NB'),1,0)) / 6,1) AS overs,
             ROUND(SUM(bowler_given)*6/COUNT(ball_no)) AS econ,
+            IF(power_play = 1,1,0) AS power_play,
             bowler_id,match_id,innings")
         ->where($where_data)
         ->groupby(['bowler_id','match_id','innings'])
@@ -161,6 +167,7 @@ class Balldata extends Authenticatable
             sum(if(field_type_id in (9),1,0)) AS misfield,
             sum(if(wicket_id in (6),1,0)) AS stumping,
             sum(if(field_type_id in (12),1,0)) AS over_throw,
+            IF(power_play = 1,1,0) AS power_play,
             fielder_id, match_id, innings
             ")
         ->where($where_data)
@@ -291,6 +298,7 @@ class Balldata extends Authenticatable
             $Balldata->ball_area_id = $request->ball_area_id;
             //$Balldata->insidecircle = $request->insidecircle;
             $Balldata->field_type_id = $request->field_type_id;
+            $Balldata->power_play = $request->power_play;
             $Balldata->remark = $request->remark;
             $Balldata->commentry = $request->commentry;
             $Balldata->save();
