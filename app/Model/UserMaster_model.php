@@ -13,6 +13,13 @@ class UserMaster_model {
     public function getAll() {
         return User_Master::all();
     }
+    public function getAllFilter($where_array = false) {
+        if($where_array){
+            return User_Master::selectRaw('*')->where($where_array)->get();
+        }else{
+            return User_Master::all();
+        }
+    }
 
     public function getById($user_id) {
         return User_Master::find($user_id);
@@ -60,22 +67,22 @@ class UserMaster_model {
         }else{
             $User_master = new User_master;
         }
-        if(isset($User_master->first_name) && $User_master->first_name){
+        if(isset($request->first_name) && $request->first_name){
             $User_master->first_name = $request->first_name;
         }
-        if(isset($User_master->middle_name) && $User_master->middle_name){
+        if(isset($request->middle_name) && $request->middle_name){
             $User_master->middle_name = $request->middle_name;
         }
-        if(isset($User_master->last_name) && $User_master->last_name){
+        if(isset($request->last_name) && $request->last_name){
             $User_master->last_name = $request->last_name;
         }
-        if(isset($User_master->date_of_birth) && $User_master->date_of_birth){
+        if(isset($request->date_of_birth) && $request->date_of_birth){
             $User_master->date_of_birth = $request->date_of_birth;
         }
-        if(isset($User_master->gender) && $User_master->gender){
+        if(isset($request->gender) && $request->gender){
             $User_master->gender = $request->gender;
         }
-        if(isset($User_master->physically_challenged) && $User_master->physically_challenged){
+        if(isset($request->physically_challenged) && $request->physically_challenged){
             $User_master->physically_challenged = $request->physically_challenged;
         }
         $User_master->save();
@@ -88,12 +95,24 @@ class UserMaster_model {
         }else{
             $User_master = new User_master;
         }
-        $User_master->address = $request->address;
-        $User_master->suburb = $request->suburb;
-        $User_master->city = $request->city;
-        $User_master->state = $request->state;
-        $User_master->country = $request->country;
-        $User_master->pin = $request->pin;
+        if(isset($User_master->address) && $User_master->address){
+            $User_master->address = $request->address;
+        }
+        if(isset($User_master->suburb) && $User_master->suburb){
+            $User_master->suburb = $request->suburb;
+        }
+        if(isset($User_master->city) && $User_master->city){
+            $User_master->city = $request->city;
+        }
+        if(isset($User_master->state) && $User_master->state){
+            $User_master->state = $request->state;
+        }
+        if(isset($User_master->country) && $User_master->country){
+            $User_master->country = $request->country;
+        }
+        if(isset($User_master->pin) && $User_master->pin){
+            $User_master->pin = $request->pin;
+        }
         $User_master->save();
         return $User_master;
     }

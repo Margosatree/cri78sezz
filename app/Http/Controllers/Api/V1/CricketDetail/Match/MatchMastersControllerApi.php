@@ -43,10 +43,9 @@ class MatchMastersControllerApi extends Controller
     public function listMatch(Request $request){
         $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|numeric|min:1',
-            'organization_master_id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
-            $organization_master_id = 1;//have to find Org id from login
+            $organization_master_id = 1; //have to find Org id from login
             $Tour_id = $this->TournamentMaster_model->getId($organization_master_id,$request->tournament_id);
             $Matches = $this->MatchMaster_model->checkTourId($Tour_id);
             if($Matches){
@@ -73,12 +72,24 @@ class MatchMastersControllerApi extends Controller
             'innings' => 'required|numeric',
         ]);
         if(!$validator->fails()){
-            if(!$request->team1 == $request->team2){
-                $Matches = $this->MatchMaster_model->SaveMatch($request);
-                if($Matches){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Matches);
+            if(!($request->team1 == $request->team2)){
+                $org_id = $this->TournamentMaster_model->getOrgIDByTourId($request->tournament_id);
+                $teams = $this->TeamMaster_model->getTeamByOrg($org_id);
+                $validateTeam = 0;
+                foreach ($teams as $team){
+                    if($request->team1 == $team['id']){ $validateTeam++; }
+                    if($request->team2 == $team['id']){ $validateTeam++; }
+                    if($validateTeam == 2){ break; }
+                }
+                if($validateTeam == 2){
+                    $Matches = $this->MatchMaster_model->SaveMatch($request);
+                    if($Matches){
+                        $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Matches);
+                    }else{
+                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    }
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status' => 400 ,'msg' => 'Team Not Exists In Tournament');
                 }
             }else{
                 $output = array('status' => 400 ,'msg' => 'Please Select Another Team');
@@ -91,8 +102,8 @@ class MatchMastersControllerApi extends Controller
 
     public function updateMatch(Request $request){
         $validator = Validator::make($request->all(), [
-            'tournament_id' => 'required|numeric',
-            'match_id' => 'required|numeric',
+            'match_id' => 'required|numeric|min:1',
+            'tournament_id' => 'required|numeric|min:1',
             'team1' => 'required|numeric',
             'team2' => 'required|numeric',
             'match_name' => 'required|max:190',
@@ -102,14 +113,27 @@ class MatchMastersControllerApi extends Controller
             'overs' => 'required|numeric',
             'innings' => 'required|numeric',
         ]);
+//        dd($request->all());
         if(!$validator->fails()){
-            if(!$request->team1 == $request->team2){
-                $Match = $this->MatchMaster_model->getDetailByTourMatch($request->tournament_id,$request->match_id);
-                if($Match){
-                    $this->MatchMaster_model->updateByTourId($request->tournament_id,$request->match_id,$request);
-                    $output = array('status' => 200 ,'msg' => 'Sucess');
+            if(!($request->team1 == $request->team2)){
+                $org_id = $this->TournamentMaster_model->getOrgIDByTourId($request->tournament_id);
+                $teams = $this->TeamMaster_model->getTeamByOrg($org_id);
+                $validateTeam = 0;
+                foreach ($teams as $team){
+                    if($request->team1 == $team['id']){ $validateTeam++; }
+                    if($request->team2 == $team['id']){ $validateTeam++; }
+                    if($validateTeam == 2){ break; }
+                }
+                if($validateTeam == 2){
+                    $Match = $this->MatchMaster_model->getDetailByTourMatch($request->tournament_id,$request->match_id);
+                    if($Match){
+                        $this->MatchMaster_model->updateByTourId($request->tournament_id,$request->match_id,$request);
+                        $output = array('status' => 200 ,'msg' => 'Sucess');
+                    }else{
+                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    }
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status' => 400 ,'msg' => 'Team Not Exists In Tournament');
                 }
             }else{
                 $output = array('status' => 400 ,'msg' => 'Please Select Another Team');

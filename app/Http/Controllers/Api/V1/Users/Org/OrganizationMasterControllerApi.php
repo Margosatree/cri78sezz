@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Users\Org;
+use App\Http\Controllers\Controller;
 use App\Model\OrganisationMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
+use DB;
 use Validator;
 use \App\User_Organisation;
 class OrganizationMasterControllerApi extends Controller
@@ -15,8 +17,8 @@ class OrganizationMasterControllerApi extends Controller
     protected $UserOrganisation_model;
     
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
     
@@ -42,42 +44,30 @@ class OrganizationMasterControllerApi extends Controller
 
     public function addOrg(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required',// Organisation Id
+            'name' => 'required|max:190',// Organisation Id
 //            'orgname' => 'required',//Organisation name
-            'address' => 'required',
-            'landmark' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'pincode' => 'required',
-            'business_type' => 'required',
-            'business_operation' => 'required',
-            'spoc' => 'required',
-//            'is_verified' => 'required',
+            'address' => 'required|max:190',
+            'landmark' => 'required|max:190',
+            'city' => 'required|max:190',
+            'state' => 'required|max:190',
+            'country' => 'required|max:190',
+            'pincode' => 'required|numeric|digits:6',
+            'business_type' => 'required|max:190',
+            'business_operation' => 'required|max:190',
+            'spoc' => 'required|max:190',
         ]);
         if(!$validator->fails()){
-            DB::beginTransaction();
-            try {
+            $Org_Exists = $this->OrganisationMaster_model->OrgNameExists($request->name);
+            if(!$Org_Exists){
                 $request->request->add(['is_verified' => 0]);
                 $Org = $this->OrganisationMaster_model->SaveOrg($request);
                 if($Org){
-                    $params = array();
-                    $params['id'] = Auth::user()->id;
-                    $params['organization_master_id'] = $request->organization_master_id;
-                    $params['role'] = 'organizer';
-                    $User_Org = $this->UserOrganisation_model->updateOrgStatus($params);
-                    if($User_Org){
-                        $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
-                    }else{
-                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
-                    }
+                    $output = array('status' => 200 ,'msg' => 'Sucess');
                 }else{
                     $output = array('status' => 400 ,'msg' => 'Transection Fail');
                 }
-                DB::commit();
-            } catch (\Exception $e) {
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
-                DB::rollback();
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Organisation Name Already Exists');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
@@ -99,16 +89,21 @@ class OrganizationMasterControllerApi extends Controller
             'spoc' => 'required|max:191',
         ]);
         if(!$validator->fails()){
-            if(isset($request->is_verified) && $request->is_verified){
-                $request->request->add(['is_verified' => $request->is_verified]);
-            }
-            $organization_master_id = 1;
-            $request->request->add(['update' => 1,'id' => $organization_master_id]);
-            $Org = $this->OrganisationMaster_model->SaveOrg($request);
-            if($Org){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+            $Org_Exists = $this->OrganisationMaster_model->OrgNameExists($request->name);
+            if(!$Org_Exists){
+                if(isset($request->is_verified) && $request->is_verified){
+                    $request->request->add(['is_verified' => $request->is_verified]);
+                }
+                $organization_master_id = 1;
+                $request->request->add(['update' => 1,'id' => $organization_master_id]);
+                $Org = $this->OrganisationMaster_model->SaveOrg($request);
+                if($Org){
+                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+                }else{
+                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status' => 400 ,'msg' => 'Organisation Name Already Exists');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
@@ -117,12 +112,20 @@ class OrganizationMasterControllerApi extends Controller
     }
     
     public function deleteOrg(Request $request){
-        $organization_master_id = 1;
-        $Org = $this->OrganisationMaster_model->getById($organization_master_id);
-        if($Org){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|min:1'
+        ]);
+        if(!$validator->fails()){
+            $organization_master_id = 1;
+            $Org = $this->OrganisationMaster_model->getById($request->id);
+            if($Org){
+                $Org->delete();
+                $output = array('status' => 200 ,'msg' => 'Sucess');
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

@@ -27,11 +27,24 @@ class TournamentRules_model {
         }else{
             $Rules = new Tournament_Details;
         }
-        $Rules->name = $request->name;
-        $Rules->specification = $request->specification;
-        $Rules->value = $request->value;
-        $Rules->range_from = $request->range_from;
-        $Rules->range_to = $request->range_to;
+        if(isset($request->name) && $request->name){
+            $Rules->name = $request->name;
+        }
+        if(isset($request->specification) && $request->specification){
+            $Rules->specification = $request->specification;
+        }
+        if(isset($request->user_master_id) && $request->user_master_id){
+            $Rules->user_master_id = $request->user_master_id;
+        }
+        if(isset($request->value) && $request->value){
+            $Rules->value = $request->value;
+        }
+        if(isset($request->range_from) && $request->range_from){
+            $Rules->range_from = $request->range_from;
+        }
+        if(isset($request->range_to) && $request->range_to){
+            $Rules->range_to = $request->range_to;
+        }
         $Rules->save();
         return $Rules;
     }
