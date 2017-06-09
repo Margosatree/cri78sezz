@@ -25,6 +25,11 @@ class OrganisationMaster_model {
             return Organisation_Master::selectRaw('*')->where('id', $id)->get()->first();
         }
         
+        public function OrgNameExists($name) {
+            return Organisation_Master::selectRaw('*')
+                    ->where('name',$name)->value('name');
+        }
+        
         public function SaveOrg($request) {
             if(isset($request->update) && $request->update == 1){
                 $Org = Organisation_Master::find($request->id);

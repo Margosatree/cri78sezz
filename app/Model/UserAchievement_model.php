@@ -12,6 +12,14 @@ class UserAchievement_model {
         public function getAll() {
             return User_Achievement::all();
         }
+        public function getAllFilter($where_array = false) {
+            if($where_array){
+                return User_Achievement::selectRaw('*')->where($where_array)->get();
+            }else{
+                return User_Achievement::all();
+            }
+            
+        }
         
         public function getById($id) {
             return User_Achievement::find($id);

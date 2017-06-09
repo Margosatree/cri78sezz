@@ -12,8 +12,15 @@ class UserCricketProfile_model {
         public function getAll() {
             return User_Cricket_Profile::all();
         }
+        public function getAllFilter($where_array = false) {
+            if($where_array){
+                return User_Cricket_Profile::selectRaw('*')->where($where_array)->get();
+            }else{
+                return User_Cricket_Profile::all();
+            }
+        }
         
-        public function getById() {
+        public function getById($id) {
             return User_Cricket_Profile::find($id);
         }
         
@@ -53,6 +60,9 @@ class UserCricketProfile_model {
             }
             if(isset($request->description) && $request->description){
                 $User_Cri_Profile->description = $request->description;
+            }
+            if(isset($request->display_img) && $request->display_img){
+                $User_Cri_Profile->display_img = $request->display_img;
             }
             $User_Cri_Profile->save();
             return $User_Cri_Profile;

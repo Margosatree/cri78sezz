@@ -19,13 +19,13 @@ class TeamMaster_model {
         public function TeamNameExistsByOwner($organization_master_id,$team_name){
             return Team_Master::selectRaw('*')
                     ->where('team_name',$team_name)
-                    ->where('owner_id',$organization_master_id)->get();
+                    ->where('owner_id',$organization_master_id)->first();
 	}
 	public function getTeamDetail($organization_master_id){
             return Team_Master::selectRaw('*')->where('owner_id',$organization_master_id)->get();
 	}
 	public function getTeamByOrg($organization_master_id){
-            return Team_Master::selectRaw('*')->where('owner_id',$organization_master_id)->get();
+            return Team_Master::selectRaw('id')->where('owner_id',$organization_master_id)->get();
 	}
 
 	public function SaveTeam($request){
@@ -57,7 +57,6 @@ class TeamMaster_model {
 	}
 
 	public function deleteById($id){
-            $Team = Team_Master::find($id);
-            $Team->delete();
+            return Team_Master::find($id);
 	}
 }

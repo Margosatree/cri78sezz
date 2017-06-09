@@ -13,6 +13,13 @@ class UserMaster_model {
     public function getAll() {
         return User_Master::all();
     }
+    public function getAllFilter($where_array = false) {
+        if($where_array){
+            return User_Master::selectRaw('*')->where($where_array)->get();
+        }else{
+            return User_Master::all();
+        }
+    }
 
     public function getById($user_id) {
         return User_Master::find($user_id);

@@ -112,13 +112,10 @@ class TournamentMasterControllerApi extends Controller {
             if(!$Tournament_Exist){
                 $mime_data = $request->mime;
                 $rand_str = str_random(40);
-
                 $filename = "$rand_str.$mime_data";
                 $data = base64_decode($data);
                 file_put_contents(public_path('images/'. $filename), $data);
-                $params['tournament_logo'] = $filename;
                 $request->request->add(['tournament_logo' => $filename]);
-                
                 $request->request->add(['update' => 1,'id' => $request->id,'organization_master_id' => $organization_master_id]);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 if($Tournament){

@@ -15,12 +15,16 @@ class TournamentMaster_model {
                 ->where('id',$Tournament)->get();
     }
         
-        public function getById($id) {
-            return Tournament_Master::find($id);
-        }
+    public function getById($id) {
+        return Tournament_Master::find($id);
+    }
         
     public function getTourByOrgId($org_id){
             return Tournament_Master::selectRaw('*')->where('organization_master_id',$org_id)->get();
+    }
+    
+    public function getOrgIDByTourId($id){
+            return Tournament_Master::selectRaw('*')->where('id',$id)->value('organization_master_id');
     }
         
     public function TourNameExists($org_id,$name,$notinuserid = null){
