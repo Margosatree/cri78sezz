@@ -42,16 +42,30 @@ class TournamentMaster_model {
             }else{
                 $Tour_Master = new Tournament_Master;
             }
-            $Tour_Master->tournament_name = $request->tournament_name;
-            $Tour_Master->tournament_location = $request->tournament_location;
+            if(isset($request->tournament_name) && $request->tournament_name){
+                $Tour_Master->tournament_name = $request->tournament_name;
+            }
+            if(isset($request->tournament_location) && $request->tournament_location){
+                $Tour_Master->tournament_location = $request->tournament_location;
+            }
             if(isset($request->tournament_logo) && $request->tournament_logo){
                 $Tour_Master->tournament_logo = $request->tournament_logo;
             }
-            $Tour_Master->organization_master_id = $request->organization_master_id;
-            $Tour_Master->start_date = $request->start_date;
-            $Tour_Master->end_date = $request->end_date;
-            $Tour_Master->reg_start_date = $request->reg_start_date;
-            $Tour_Master->reg_end_date = $request->reg_end_date;
+            if(isset($request->organization_master_id) && $request->organization_master_id){
+                $Tour_Master->organization_master_id = $request->organization_master_id;
+            }
+            if(isset($request->start_date) && $request->start_date){
+                $Tour_Master->start_date = $request->start_date;
+            }
+            if(isset($request->end_date) && $request->end_date){
+                $Tour_Master->end_date = $request->end_date;
+            }
+            if(isset($request->reg_start_date) && $request->reg_start_date){
+                $Tour_Master->reg_start_date = $request->reg_start_date;
+            }
+            if(isset($request->reg_end_date) && $request->reg_end_date){
+                $Tour_Master->reg_end_date = $request->reg_end_date;
+            }
             $Tour_Master->save();
             
             return $Tour_Master;

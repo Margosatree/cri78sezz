@@ -56,20 +56,25 @@ class TeamMasterControllerApi extends Controller
         ]);
         
         if(!$validator->fails()){
-            $data = $request->image;
-            $mime_data = $request->mime;
-            $rand_str = str_random(40);
-            $filename = "$rand_str.$mime_data";
-            $data = base64_decode($data);
-            file_put_contents(public_path('images/'. $filename), $data);
-            $params['team_logo'] = $filename;
-            $request->request->add(['team_logo' => $filename]);
-            
-            $Team = $this->TeamMaster_model->SaveTeam($request);
-            if($Team){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+            $Team_name = $this->TeamMaster_model->TeamNameExistsByOwner($request->owner_id,$request->team_name);
+            if(!$Team_name){
+                $data = $request->image;
+                $mime_data = $request->mime;
+                $rand_str = str_random(40);
+                $filename = "$rand_str.$mime_data";
+                $data = base64_decode($data);
+                file_put_contents(public_path('images/'. $filename), $data);
+                $params['team_logo'] = $filename;
+                $request->request->add(['team_logo' => $filename]);
+
+                $Team = $this->TeamMaster_model->SaveTeam($request);
+                if($Team){
+                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                }else{
+                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());

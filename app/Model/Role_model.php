@@ -37,11 +37,11 @@ class Role_model {
 	}
 
 	public function insert($request){
-		$adminRole = new Role;
-        $adminRole->name = $request->name;
-        $adminRole->slug = strtolower($request->name);
-        $adminRole->description = $request->description;
-        $adminRole->save();
-        return $adminRole;
+            $adminRole = new Role;
+            $adminRole->name = $request->name;
+            $adminRole->slug = strtolower($request->name);
+            $adminRole->description = $request->description;
+            $adminRole->save();
+            return $adminRole;
 	}
 }

@@ -16,7 +16,11 @@ class TeamMaster_model {
 	public function getById($id){
             return Team_Master::find($id);
 	}
-
+        public function TeamNameExistsByOwner($organization_master_id,$team_name){
+            return Team_Master::selectRaw('*')
+                    ->where('team_name',$team_name)
+                    ->where('owner_id',$organization_master_id)->get();
+	}
 	public function getTeamDetail($organization_master_id){
             return Team_Master::selectRaw('*')->where('owner_id',$organization_master_id)->get();
 	}
@@ -30,12 +34,24 @@ class TeamMaster_model {
             }else{
                 $Team = new Team_Master;
             }
-            $Team->team_name = $request->team_name;
-            $Team->team_owner_id = $request->team_owner_id;
-            $Team->team_type = $request->team_type;
-            $Team->order_id = $request->order_id;
-            $Team->owner_id = $request->owner_id;
-            $Team->team_logo = $request->team_logo;
+            if(isset($request->team_name) && $request->team_name){
+                $Team->team_name = $request->team_name;
+            }
+            if(isset($request->team_owner_id) && $request->team_owner_id){
+                $Team->team_owner_id = $request->team_owner_id;
+            }
+            if(isset($request->team_type) && $request->team_type){
+                $Team->team_type = $request->team_type;
+            }
+            if(isset($request->order_id) && $request->order_id){
+                $Team->order_id = $request->order_id;
+            }
+            if(isset($request->owner_id) && $request->owner_id){
+                $Team->owner_id = $request->owner_id;
+            }
+            if(isset($request->team_logo) && $request->team_logo){
+                $Team->team_logo = $request->team_logo;
+            }
             $Team->save();
             return $Team;
 	}
