@@ -44,27 +44,27 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function addTeam(Request $request){
+//        dd($request->all());
         $validator = Validator::make($request->all(), [
             'team_name' => 'required|max:190',
-            'team_owner_id' => 'required|numeric',
-            'team_logo' => 'max:190',
+            'team_owner_id' => 'required|numeric|min:1',
             'team_type' => 'required|max:190',
-            'order_id' => 'required|numeric',
-            'owner_id' => 'required|numeric',
+            'order_id' => 'required|numeric|min:1',
+            'owner_id' => 'required|numeric|min:1',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
-
-//        if($request->hasFile('image')){
-//            $image = $request->file('image');
-//            $data = $_POST['imagedata'];
-//
-//            list($type, $data) = explode(';', $data);
-//            list(, $data)      = explode(',', $data);
-//            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
-//            $data = base64_decode($data);
-//            $request->request->add(['team_logo' => $filename]);
-//            file_put_contents(public_path('images/'. $filename), $data);
-//        }
+        
         if(!$validator->fails()){
+            $data = $request->image;
+            $mime_data = $request->mime;
+            $rand_str = str_random(40);
+            $filename = "$rand_str.$mime_data";
+            $data = base64_decode($data);
+            file_put_contents(public_path('images/'. $filename), $data);
+            $params['team_logo'] = $filename;
+            $request->request->add(['team_logo' => $filename]);
+            
             $Team = $this->TeamMaster_model->SaveTeam($request);
             if($Team){
                 $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
@@ -82,22 +82,23 @@ class TeamMasterControllerApi extends Controller
             'id' => 'required|numeric|min:1',
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
-            'team_logo' => 'max:190',
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
-//        if($request->hasFile('image')){
-//            $image = $request->file('image');
-//            $data = $_POST['imagedata'];
-//
-//            list($type, $data) = explode(';', $data);
-//            list(, $data)      = explode(',', $data);
-//            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
-//            $data = base64_decode($data);
-//            file_put_contents(public_path('images/'. $filename), $data);
-//        }
+
         if(!$validator->fails()){
+            $data = $request->image;
+            $mime_data = $request->mime;
+            $rand_str = str_random(40);
+            $filename = "$rand_str.$mime_data";
+            $data = base64_decode($data);
+            file_put_contents(public_path('images/'. $filename), $data);
+            $params['team_logo'] = $filename;
+            $request->request->add(['team_logo' => $filename]);
+            
             $request->request->add(['update' => 1,'id' => $request->id]);
             $Team = $this->TeamMaster_model->SaveTeam($request);
             if($Team){

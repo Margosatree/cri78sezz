@@ -63,7 +63,7 @@ class TournamentDetailControllerApi extends Controller
         if(!$validator->fails()){
             $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
             if($Tour_Det){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Det);
+                $output = array('status' => 200 ,'msg' => 'Sucess');
             }else{
                 $output = array('status' => 400 ,'msg' => 'Transection Fail');
             }
