@@ -85,11 +85,6 @@ class OrganizationMasterControllerApi extends Controller
         return response()->json($output);
     }
 
-    public function edit($id){
-        $Org = $this->OrganisationMaster_model->getById($id);
-        return view('user.org.edit', compact('Org'));
-    }
-
     public function updateOrg(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:191',

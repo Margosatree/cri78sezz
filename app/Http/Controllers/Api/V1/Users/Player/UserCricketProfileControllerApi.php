@@ -28,7 +28,7 @@ class UserCricketProfileControllerApi extends Controller
         $this->UserCricketProfile_model = new UserCricketProfile_model();
     }
     
-    function listCriProfile(Request $request){
+    public function listCriProfile(Request $request){
         $Cri_Profiles = $this->UserCricketProfile_model->getAll();
         if($Cri_Profiles){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Cri_Profiles);
@@ -53,16 +53,29 @@ class UserCricketProfileControllerApi extends Controller
         ]);
         if(!$validator->fails()){
 
-           $data = $request->image;
-           $mime_data = $request->mime;
-           $rand_str = str_random(40);
-           
-           $filename = "$rand_str.$mime_data";
-           $data = base64_decode($data);
-           file_put_contents(public_path('images/'. $filename), $data);
-           $params['display_img'] = $filename;
-           $request->request->add(['display_img' => $filename]);
-           // dd($request->all());
+//        if($request->hasFile('image')){
+//            $image = $request->file('image');
+//            $data = $_POST['imagedata'];
+//            list($type, $data) = explode(';', $data);
+//            list(, $data)      = explode(',', $data);
+//            $filename = time().'.'.$image->getClientOriginalExtension();
+//            $data = base64_decode($data);
+//            file_put_contents(public_path('images/'. $filename), $data);
+//            $params['display_img'] = $filename;
+//            $request->request->add(['display_img' => $filename,]);
+//            $request->session()->put('user_img', $params['display_img']);
+//        }
+            
+            $data = $request->image;
+            $mime_data = $request->mime;
+            $rand_str = str_random(40);
+
+            $filename = "$rand_str.$mime_data";
+            $data = base64_decode($data);
+            file_put_contents(public_path('images/'. $filename), $data);
+            $params['display_img'] = $filename;
+            $request->request->add(['display_img' => $filename]);
+            
             $user_master_id = 1;
             $request->request->add(['user_master_id' => $user_master_id]);
             $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
@@ -91,6 +104,7 @@ class UserCricketProfileControllerApi extends Controller
 //            'is_completed' => 'required|numeric',
         ]);
         if(!$validator->fails()){
+<<<<<<< HEAD
 //        $data = $request->image;
            $mime_data = $request->mime;
            $rand_str = str_random(40);
@@ -101,6 +115,28 @@ class UserCricketProfileControllerApi extends Controller
            $params['display_img'] = $filename;
            $request->request->add(['display_img' => $filename]);
            
+=======
+//        if($request->hasFile('image')){
+//            $image = $request->file('image');
+//            $data = $_POST['imagedata'];
+//            list($type, $data) = explode(';', $data);
+//            list(, $data)      = explode(',', $data);
+//            $filename = time().'.'.$image->getClientOriginalExtension();
+//            $data = base64_decode($data);
+//            file_put_contents(public_path('images/'. $filename), $data);
+//            $request->request->add(['display_img' => $filename,]);
+//            $request->session()->put('user_img', $params['display_img']);
+//        }
+            $mime_data = $request->mime;
+            $rand_str = str_random(40);
+
+            $filename = "$rand_str.$mime_data";
+            $data = base64_decode($data);
+            file_put_contents(public_path('images/'. $filename), $data);
+            $params['display_img'] = $filename;
+            $request->request->add(['display_img' => $filename]);
+            
+>>>>>>> 6dec3553beaff956f06e74f531f5e218ae5ec20c
             $user_master_id = 1;
             $request->request->add(['user_master_id' => $user_master_id,'update' => 1,'id' => $id]);
             $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);

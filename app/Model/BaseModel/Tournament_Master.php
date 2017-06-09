@@ -13,4 +13,8 @@ class Tournament_Master extends Model
         'start_date','end_date', 'reg_start_date', 'reg_end_date','image','imagedata'
         
     ];
+    
+    protected $hidden = [
+        'created_at','updated_at'
+    ];
 }
