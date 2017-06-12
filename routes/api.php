@@ -22,7 +22,7 @@ Route::post('/output', function(){
 });
 
 
-Route::post('/bio/addBio', 'Api\V1\Users\UsersBioControllerApi@addUserBio');
+//Route::post('/bio/addBio', 'Api\V1\Users\UsersBioControllerApi@addUserBio');
 
 Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');

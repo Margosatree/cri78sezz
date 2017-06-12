@@ -37,16 +37,7 @@ class UserCricketProfile_model {
             }else{
                 $User_Cri_Profile = new User_Cricket_Profile;
             }
-<<<<<<< HEAD
-            $User_Cri_Profile->user_master_id = $request->user_master_id;
-            $User_Cri_Profile->your_role = $request->your_role;
-            $User_Cri_Profile->batsman_style = $request->batsman_style;
-            $User_Cri_Profile->batsman_order = $request->batsman_order;
-            $User_Cri_Profile->bowler_style = $request->bowler_style;
-            $User_Cri_Profile->player_type = $request->player_type;
-            $User_Cri_Profile->description = $request->description;
-            $User_Cri_Profile->display_img = $request->display_img;
-=======
+
             if(isset($request->user_master_id) && $request->user_master_id){
                 $User_Cri_Profile->user_master_id = $request->user_master_id;
             }
@@ -74,7 +65,6 @@ class UserCricketProfile_model {
             if(isset($request->display_img) && $request->display_img){
                 $User_Cri_Profile->display_img = $request->display_img;
             }
->>>>>>> 27cbaf69bcf454067dd05f6453a90a55a4012ffc
             $User_Cri_Profile->save();
             return $User_Cri_Profile;
         }
