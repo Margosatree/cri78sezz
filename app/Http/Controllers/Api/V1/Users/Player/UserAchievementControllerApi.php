@@ -27,12 +27,23 @@ class UserAchievementControllerApi extends Controller{
         $this->OrganisationMaster_model = new OrganisationMaster_model();
     }
     
-    public function listAchievement(){
-        $User_Achieve = $this->UserAchievement_model->getAll();
-        if($User_Achieve){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Achieve);
+    public function listAchievement(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'min:1',
+        ]);
+        if(!$validator->fails()){
+            $where = null;
+            if(isset($request->id) && $request->id){
+                $where['id'] = $request->id;
+            }
+            $User_Achieve = $this->UserAchievement_model->getAllFilter($where);
+            if($User_Achieve){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Achieve);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

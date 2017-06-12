@@ -47,8 +47,8 @@ Route::post('/TourDet/delete',      'Api\V1\CricketDetail\Tournament\TournamentD
 Route::post('/TourRule/list',       'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@listRules');
 Route::post('/TourRule/add',        'Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@addRules');
 
-Route::post('/ChangePass/updateUser',   'Api\V1\Other\ChangePasswordController@updatePass');
-Route::post('/ChangePass/updateAdmin',  'Api\V1\Other\ChangePasswordController@adminUpdatePass');
+Route::post('/ChangePass/updateUser',   'Api\V1\Other\ChangePasswordControllerApi@updatePass');
+Route::post('/ChangePass/updateAdmin',  'Api\V1\Other\ChangePasswordControllerApi@adminUpdatePass');
 
 Route::post('/Org/list',       'Api\V1\Users\Org\OrganizationMasterControllerApi@listOrg');
 Route::post('/Org/add',        'Api\V1\Users\Org\OrganizationMasterControllerApi@addOrg');
@@ -65,6 +65,10 @@ Route::post('/CriProfile/add',        'Api\V1\Users\Player\UserCricketProfileCon
 Route::post('/CriProfile/update',     'Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
 Route::post('/CriProfile/delete',     'Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
 
+Route::post('/UserBio/list',            'Api\V1\Users\Player\UsersBioController@listUsersBio');
+Route::post('/UserBio/add',             'Api\V1\Users\Player\UsersBioController@addUsersBio');
+Route::post('/UserBio/addInfo',         'Api\V1\Users\Player\UsersBioController@addUsersBioInfo');
+Route::post('/UserBio/update',          'Api\V1\Users\Player\UsersBioController@updateUsersBio');
 
 
 

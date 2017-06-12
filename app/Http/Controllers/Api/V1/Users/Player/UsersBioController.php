@@ -14,8 +14,8 @@ class UsersBioController extends Controller
     protected $UserMaster_model;
     
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
 
@@ -23,12 +23,23 @@ class UsersBioController extends Controller
         $this->UserMaster_model = new UserMaster_model();
     }
     
-    public function listUsersBio(){
-        $User_Bios = $this->getAll();
-        if($User_Bios){
-            $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bios);
+    public function listUsersBio(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'min:1',
+        ]);
+        if(!$validator->fails()){
+            $where = null;
+            if(isset($request->id) && $request->id){
+                $where['id'] = $request->id;
+            }
+            $User_Bios = $this->UserMaster_model->getAllFilter($where);
+            if($User_Bios){
+                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bios);
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
@@ -103,12 +114,12 @@ class UsersBioController extends Controller
             ]);
         }
         if(!$validator->fails()){
-            $Bio = User_Master::find($request->id);
+            $Bio = $this->UserMaster_model->getById($request->id);
             if($Bio){
                 if($callfrom == 'info'){
                     $request->request->add([ 'update' => 1,'id' => $request->id ]);
                     $User_Bio = $this->UserMaster_model->SaveUserBio($request);
-                    $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bio);
+                    $output = array('status' => 200 ,'msg' => 'sucess');
                 }else{
                     $request->request->add([ 'update' => 1,'id' => $request->id ]);
                     $User_Address = $this->UserMaster_model->SaveUserAddress($request);

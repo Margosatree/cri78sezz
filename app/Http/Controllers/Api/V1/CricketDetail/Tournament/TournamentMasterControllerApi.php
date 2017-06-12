@@ -66,8 +66,6 @@ class TournamentMasterControllerApi extends Controller {
             $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
                     $organization_master_id,$request->tournament_name);
             if(!$Tournament_Exist){
-
-                
                 $data = $request->image;
                 $mime_data = $request->mime;
                 $rand_str = str_random(40);
@@ -103,11 +101,7 @@ class TournamentMasterControllerApi extends Controller {
             'reg_start_date' => 'required|date|before:end_date',
             'reg_end_date' => 'required|date|after:start_date',
             'image'=>'required',
-<<<<<<< HEAD
-            'mime'=>'required|in:png,jpg,gif,jpeg',
-=======
             'mime'=>'required|in:png,jpg,gif,jpeg'
->>>>>>> 6dec3553beaff956f06e74f531f5e218ae5ec20c
         ]);
         if(!$validator->fails()){
             $organization_master_id = 1;//have to find Org id from login
@@ -115,29 +109,14 @@ class TournamentMasterControllerApi extends Controller {
                     $organization_master_id,
                     $request->tournament_name);
             if(!$Tournament_Exist){
-<<<<<<< HEAD
-    //            $data = $request->image;
-                   $mime_data = $request->mime;
-                   $rand_str = str_random(40);
-                   
-                   $filename = "$rand_str.$mime_data";
-                   $data = base64_decode($data);
-                   file_put_contents(public_path('images/'. $filename), $data);
-                   $params['tournament_logo'] = $filename;
-                   $request->request->add(['tournament_logo' => $filename]);
-    //                $params['tournament_logo'] = $filename;
-    //            }
-=======
+                $data = $request->image;
                 $mime_data = $request->mime;
                 $rand_str = str_random(40);
-
                 $filename = "$rand_str.$mime_data";
                 $data = base64_decode($data);
                 file_put_contents(public_path('images/'. $filename), $data);
-                $params['tournament_logo'] = $filename;
                 $request->request->add(['tournament_logo' => $filename]);
-                
->>>>>>> 6dec3553beaff956f06e74f531f5e218ae5ec20c
+
                 $request->request->add(['update' => 1,'id' => $request->id,'organization_master_id' => $organization_master_id]);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 if($Tournament){
