@@ -30,6 +30,11 @@ class UsersBulkController extends Controller
         $this->UserMaster_model = new UserMaster_model();
         $this->UserOrganisation_model = new UserOrganisation_model();
     }
+
+    public function bulkUploadView(){
+        $Errors = 0;
+        return view('user.org.bulk', compact('Errors'));
+    }
    
     public function bulkUpload(Request $request){
         //abc.excel
