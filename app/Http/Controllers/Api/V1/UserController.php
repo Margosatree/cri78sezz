@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\V1;
+
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
@@ -10,6 +12,11 @@ use App\Model\UserMaster_model;
 use App\Model\VerifyUser_model;
 use App\Model\Role_model;
 use App\Model\RoleUser_model;
+use App\Services\V1\SendMailAndOtpServices;
+
+//--for mail 
+use Event;
+use App\Events\SendMail;
 
 class UserController extends Controller
 {   
@@ -21,6 +28,8 @@ class UserController extends Controller
     protected $VerifyUser_model;
     protected $Role_model;
     protected $RoleUser_model;
+    protected $SendMailAndOtpServices;
+
 
     public function __construct(){
         $this->UserMaster_model=new UserMaster_model();
@@ -28,6 +37,7 @@ class UserController extends Controller
         $this->VerifyUser_model=new VerifyUser_model();
         $this->Role_model=new Role_model();
         $this->RoleUser_model=new RoleUser_model();
+        $this->SendMailAndOtpServices =new SendMailAndOtpServices();
     }
    
     public function register(Request $request){
@@ -48,6 +58,8 @@ class UserController extends Controller
         $normal_user = $user_role->id;
 
         $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
+
+        $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
 
         return response()->json(['status'=>true,'message'=>'User created successfully','data'=>$user_orgId]);
     }
@@ -70,9 +82,174 @@ class UserController extends Controller
         return response()->json(['result' => $user]);
     }
 
-    public function getAuthUser1(){
-        $user = JWTAuth::parseToken()->authenticate();
+    public function verifyUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email_otp' => 'required|numeric|digits:6',
+            'mobile_otp' => 'required|numeric|digits:6'
+        ]);
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
+        $data = array(
+                        'token' => $request->token,
+                        'email_otp' => $request->email_otp,
+                        'mobile_otp' => $request->mobile_otp
+                    );
 
-        return response()->json(['result' => $user]);
+        $check_if_exists = $this->SendMailAndOtpServices->verifyEmailMobileUser($data);
+        if(count($check_if_exists)){
+            return Response::json(
+                            ['success'=>[
+                                        'message'=>'successfuly verified.',
+                                        'status_code'=>200
+                                ]],200);
+        }else{
+            return Response::json(
+                            ['error'=>[
+                                    'message'=>'Email and Mobile Otp is not correct',
+                                    'status_code'=>403
+                                ]],403);
+        }
+    }
+
+
+    public function forgetPassword(Request $request){
+
+        if(is_numeric($request->email_or_mobile)){
+            $validator = Validator::make($request->all(),[
+                'email_or_mobile'=>'required|numeric|min:10',
+            ]);
+
+            if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+            }
+            // dd('number');
+            $status = $this->SendMailAndOtpServices
+                            ->sendOtpForForgetPass($request->email_or_mobile);
+
+        }else{
+            $validator = Validator::make($request->all(),[
+                'email_or_mobile'=>'required|email',
+            ]);
+            
+            if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+            }
+
+            $status = $this->SendMailAndOtpServices
+                            ->sendEmailForForgetPass($request->email_or_mobile);
+        }
+
+        if(count($status)){
+            return Response::json(
+                            ['success'=>[
+                                        'message'=>'successfuly Send.',
+                                        'status_code'=>200
+                                ]],200);
+        }else{
+            return Response::json(
+                            ['error'=>[
+                                    'message'=>'Email OR Mobile Invalid',
+                                    'status_code'=>403
+                                ]],403);
+        }
+    }
+
+    public function resetPassByEmail(Request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'conf_pass' => 'required|same:password'
+        ]);
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
+
+        $data = array('token'=>$request->token,
+                      'email'=>$request->email,
+                      'password'=>$request->password);
+
+        
+
+        $status = $this->SendMailAndOtpServices->resetPassByEmails($data);
+
+        if(count($status)){
+            return Response::json(
+                            ['success'=>[
+                                        'message'=>'successfuly Changed Password.',
+                                        'status_code'=>200
+                                ]],200);
+        }else{
+            return Response::json(
+                            ['error'=>[
+                                    'message'=>'Email OR Mobile Invalid',
+                                    'status_code'=>403
+                                ]],403);
+        }
+
+    }
+
+    public function resetPassByMobile(Request $request){
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required',
+            'mobile_otp' => 'required|numeric|digits:6',
+            'password' => 'required',
+            'conf_pass' => 'required|same:password'
+        ]);
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
+
+        $data = array('mobile'=>$request->mobile,
+                      'mobile_otp'=>$request->mobile_otp,
+                      'password'=>$request->password
+                      );
+
+        $status = $this->SendMailAndOtpServices->resetPassByMobiles($data);
+
+        if(count($status)){
+            return Response::json(
+                            ['success'=>[
+                                        'message'=>'successfuly Send.',
+                                        'status_code'=>200
+                                ]],200);
+        }else{
+            return Response::json(
+                            ['error'=>[
+                                    'message'=>'Email and Mobile is not correct',
+                                    'status_code'=>403
+                                ]],403);
+        }    
+    }
+
+    public function eventMail(){
+        $data = array(
+                        'user_email'=>'brijeshdubey144@gmail.com',
+                        'random_num'=>546789,
+                        'token_data'=>'bvkejjkejkejlwjnwkwjkjwljwleldjlj'
+                    );
+        Event::fire(new SendMail($data));
     }
 } 

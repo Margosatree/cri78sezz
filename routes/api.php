@@ -85,6 +85,13 @@ Route::post('/matchsquad', 'PostsController@matchSquad');
 //Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 Route::post('auth/register', 'Api\V1\UserController@register');
 Route::post('auth/login', 'Api\V1\UserController@login');
+Route::post('verifyuser', 'Api\V1\UserController@verifyUser');
+Route::post('forgetpass', 'Api\V1\UserController@forgetPassword');
+Route::post('resetpass/email', 'Api\V1\UserController@resetPassByEmail');
+Route::post('resetpass/mobile', 'Api\V1\UserController@resetPassByMobile');
+
+//--for testing event
+Route::post('sendmails', 'Api\V1\UserController@eventMail');
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user', 'Api\V1\UserController@getAuthUser');
     

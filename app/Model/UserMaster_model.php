@@ -98,4 +98,8 @@ class UserMaster_model {
         return $User_master;
     }
 
+    public function updateUserMaster($check_data=array(),$update_data=array()){
+        return User_Master::where($check_data)->update($update_data);
+    }
+
 }
