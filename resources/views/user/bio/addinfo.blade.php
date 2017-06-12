@@ -106,7 +106,6 @@
                   </a>
                 </li> -->
               </ul>
-                    
                     <div id="step-3">
                     <form id="frm" class="form-horizontal" role="form" method="POST" action="{{ route('userBio.storeInfo') }}">
                         {{ csrf_field() }}

@@ -73,18 +73,18 @@ Route::post('/UserBio/update',          'Api\V1\Users\Player\UsersBioController@
 
 
 //Vrajeshbhai
-Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
+// Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
 
-Route::post('/tickdata', 'PostsController@saveTick');
+// Route::post('/tickdata', 'PostsController@saveTick');
 
-Route::post('/getbowler', 'PostsController@getBowler');
-Route::post('/changebowler', 'PostsController@changeBowler');
+// Route::post('/getbowler', 'PostsController@getBowler');
+// Route::post('/changebowler', 'PostsController@changeBowler');
 
-Route::post('/getfielder', 'PostsController@getFielder');
-Route::post('/changefielder', 'PostsController@changeFielder');
+// Route::post('/getfielder', 'PostsController@getFielder');
+// Route::post('/changefielder', 'PostsController@changeFielder');
 
-Route::post('/toursquad', 'PostsController@tourSquad');
-Route::post('/matchsquad', 'PostsController@matchSquad');
+// Route::post('/toursquad', 'PostsController@tourSquad');
+// Route::post('/matchsquad', 'PostsController@matchSquad');
 //Vrajeshbhai
 //Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 Route::post('auth/register', 'Api\V1\UserController@register');

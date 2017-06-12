@@ -95,22 +95,22 @@ class UserMaster_model {
         }else{
             $User_master = new User_master;
         }
-        if(isset($User_master->address) && $User_master->address){
+        if(isset($request->address) && $request->address){
             $User_master->address = $request->address;
         }
-        if(isset($User_master->suburb) && $User_master->suburb){
+        if(isset($request->suburb) && $request->suburb){
             $User_master->suburb = $request->suburb;
         }
-        if(isset($User_master->city) && $User_master->city){
+        if(isset($request->city) && $request->city){
             $User_master->city = $request->city;
         }
-        if(isset($User_master->state) && $User_master->state){
+        if(isset($request->state) && $request->state){
             $User_master->state = $request->state;
         }
-        if(isset($User_master->country) && $User_master->country){
+        if(isset($request->country) && $request->country){
             $User_master->country = $request->country;
         }
-        if(isset($User_master->pin) && $User_master->pin){
+        if(isset($request->pin) && $request->pin){
             $User_master->pin = $request->pin;
         }
         $User_master->save();
