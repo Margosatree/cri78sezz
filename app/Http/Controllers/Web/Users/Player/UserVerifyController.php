@@ -9,14 +9,16 @@ use App\Http\Controllers\Controller;
 
 use App\Model\BaseModel\User_Master;
 use App\Model\BaseModel\verify_user;
+use App\Services\V1\SendMailAndOtpServices;
 
 class UserVerifyController extends Controller
 {
-    
+
+    protected $SendMailAndOtpServices;   
     public function __construct(){
          //$this->middleware('guest',['only'=>['storeGuest','showVerify']]);
          $this->middleware('auth',['except'=>['storeGuest','showVerify']]);
-         
+        $this->SendMailAndOtpServices =new SendMailAndOtpServices();
     }
     
     /**
@@ -54,80 +56,38 @@ class UserVerifyController extends Controller
             'verify_phone' => 'required|numeric',
         ]);
 
-        $get_datas = verify_user::where('token',$request->token)
-                                ->get();
-
-        foreach($get_datas as $get_data){
-            $mobile_otp = $get_data->mobile_otp;
-            $email_otp = $get_data->email_otp;
-            $email = $get_data->email;
-            $mobile = $get_data->mobile;
-        }
-        
-        if($email_otp!=$request->verify_email){
-            Session::flash('status','Email Otp is Invalid');
-            return redirect()->back()->withInput();
+        $check_if_exists = $this->_checkVerifyUser($request);
+        if(count($check_if_exists)){
+            Session::flash('status','Successfuly Verified'); 
+            return redirect()->route('userBio.createInfo'); 
         }
 
-        if($mobile_otp!=$request->verify_phone){
-           Session::flash('status','Mobile Otp is Invalid');
-           return redirect()->back()->withInput();
-        }
-
-        User_Master::where(['phone'=>$mobile,'email'=>$email])
-                    ->update(['is_verify_phone'=>1,'is_verify_email'=>1]);
-
-        Session::flash('status','Successfuly Verified'); 
-        // if(Auth::user()->role =="organizer"){
-        //     return redirect()->route('org.create');
-        // }else{
-            return redirect()->route('userBio.createInfo');
-        // }
-
-        if(Auth::guest()){
-            return back()->withInput();
-        }
+        Session::flash('status','Email Or Mobile Otp is Invalid');
+        return redirect()->back()->withInput();
        
     }
+
     function showVerify($token,$email_otp){
 
         return view('auth.verifyguest',['token'=>$token,'email_otp'=>$email_otp]);
     }
 
     function storeGuest(Request $request){
-        // if(Session::has('key')){
-        //     Session::forget('key');
-        // }
         $this->validate($request,[
             'token' => 'required',
             'verify_email' => 'required|numeric',
             'verify_phone' => 'required|numeric',
         ]);
 
-        $get_datas =verify_user::where('token',$request->token)
-                                ->get();
-        foreach($get_datas as $get_data){
-            $mobile_otp = $get_data->mobile_otp;
-            $email_otp = $get_data->email_otp;
-            $email = $get_data->email;
-            $mobile = $get_data->mobile;
-        }
-        
-        if($email_otp!=$request->verify_email){
-            Session::flash('status','Email Otp is Invalid');
-            return redirect()->back()->withInput();
+        $check_if_exists = $this->_checkVerifyUser($request);
+        if(count($check_if_exists)){
+            Session::flash('status','Successfuly Verified');
+            return $this->showVerify($token =null); 
         }
 
-        if($mobile_otp!=$request->verify_phone){
-           Session::flash('status','Mobile Otp is Invalid');
-           return redirect()->back()->withInput();
-        }
+        Session::flash('status','Email Or Mobile Otp is Invalid');
+        return redirect()->back()->withInput();
 
-        User_Master::where(['phone'=>$mobile,'email'=>$email])
-                    ->update(['is_verify_phone'=>1,'is_verify_email'=>1]);
-
-        Session::flash('status','Successfuly Verified');
-        return $this->showVerify($token =null);
     }
 
     /**
@@ -139,6 +99,16 @@ class UserVerifyController extends Controller
     public function show($token)
     {
         return view('auth.verify',['token'=>$token]);
+    }
+
+    private function _checkVerifyUser($request){
+        $data = array(
+                        'token' => $request->token,
+                        'email_otp' => $request->verify_email,
+                        'mobile_otp' => $request->verify_phone
+                    );
+
+        return $this->SendMailAndOtpServices->verifyEmailMobileUser($data);
     }
 
     /**

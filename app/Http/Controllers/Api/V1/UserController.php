@@ -155,7 +155,7 @@ class UserController extends Controller
         }else{
             return Response::json(
                             ['error'=>[
-                                    'message'=>'Email and Mobile Otp is not correct',
+                                    'message'=>'Email and Mobile Otp is Invalid',
                                     'status_code'=>403
                                 ]],403);
         }
