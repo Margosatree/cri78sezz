@@ -10,7 +10,7 @@ class User_Organisation extends Authenticatable
     protected $table = 'user_organizations';
 
     public function roles(){
-        return $this->belongsToMany('PHPZen\LaravelRbac\Model\Role','role_user','user_id','role_id');
+        return $this->belongsToMany('App\Model\BaseModel\Role','role_user','user_id','role_id');
     }
     /**
      * The attributes that are mass assignable.

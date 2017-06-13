@@ -9,14 +9,9 @@ use JWTAuthException;
 use Validator;
 use App\Model\UserOrganisation_model;
 use App\Model\UserMaster_model;
-use App\Model\VerifyUser_model;
 use App\Model\Role_model;
 use App\Model\RoleUser_model;
 use App\Services\V1\SendMailAndOtpServices;
-
-//--for mail 
-use Event;
-use App\Events\SendMail;
 
 class UserController extends Controller
 {   
@@ -25,7 +20,6 @@ class UserController extends Controller
 
     protected $UserMaster_model;
     protected $UserOrganisation_model;
-    protected $VerifyUser_model;
     protected $Role_model;
     protected $RoleUser_model;
     protected $SendMailAndOtpServices;
@@ -34,7 +28,6 @@ class UserController extends Controller
     public function __construct(){
         $this->UserMaster_model=new UserMaster_model();
         $this->UserOrganisation_model=new UserOrganisation_model();
-        $this->VerifyUser_model=new VerifyUser_model();
         $this->Role_model=new Role_model();
         $this->RoleUser_model=new RoleUser_model();
         $this->SendMailAndOtpServices =new SendMailAndOtpServices();
@@ -77,8 +70,9 @@ class UserController extends Controller
                         'email'=>$request->email,
                         'password'=>$request->password,
                     );
-        $datas = $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
-        var_dump($datas);exit;
+
+        $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+        
         $User_Master = $this->UserMaster_model->insert($data);
 
         $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
@@ -89,8 +83,6 @@ class UserController extends Controller
         $normal_user = $user_role->id;
 
         $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
-
-        
 
         return response()->json(['status'=>true,'message'=>'User created successfully','data'=>$user_orgId]);
     }
@@ -122,7 +114,6 @@ class UserController extends Controller
     }
     public function getAuthUser(){
         $user = JWTAuth::parseToken()->authenticate();
-
         return response()->json(['result' => $user]);
     }
 
@@ -288,12 +279,4 @@ class UserController extends Controller
         }    
     }
 
-    public function eventMail(){
-        $data = array(
-                        'user_email'=>'brijeshdubey144@gmail.com',
-                        'random_num'=>546789,
-                        'token_data'=>'bvkejjkejkejlwjnwkwjkjwljwleldjlj'
-                    );
-        Event::fire(new SendMail($data));
-    }
 } 

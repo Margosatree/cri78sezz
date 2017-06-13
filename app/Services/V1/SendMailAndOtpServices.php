@@ -6,7 +6,9 @@ use Illuminate\Support\Str;
 use App\Model\ResetVerify_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
-use Illuminate\Support\Facades\Mail;
+
+use Event;
+use App\Events\SendMail;
 
 class SendMailAndOtpServices{
 
@@ -129,6 +131,12 @@ class SendMailAndOtpServices{
                                     ,'email_otp'=>$verify_email_otp
                                     ,'token'=>$verify_token
                                 );
+        $data = array(
+                        'user_email'=>$email,
+                        'random_num'=>$verify_email_otp,
+                        'token_data'=>$verify_token
+                    );
+        Event::fire(new SendMail($data));
         // var_dump($email_mobile_data);exit;
 
         $this->saveVerifyEmailMobileData($email_mobile_data);
