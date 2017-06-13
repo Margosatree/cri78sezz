@@ -7,14 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Model\UserOrganisation_model;
 use App\Model\UserMaster_model;
-use App\Model\VerifyUser_model;
 use App\Model\Role_model;
 use App\Model\RoleUser_model;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Mail\VerifyUser;
-use Illuminate\Support\Facades\Mail;
 
 use App\Services\V1\SendMailAndOtpServices;
 
@@ -27,7 +24,6 @@ class RegisterController extends Controller
 
     protected $UserMaster_model;
     protected $UserOrganisation_model;
-    protected $VerifyUser_model;
     protected $Role_model;
     protected $RoleUser_model;
 
@@ -42,7 +38,6 @@ class RegisterController extends Controller
     protected function _initModel(){
         $this->UserMaster_model=new UserMaster_model();
         $this->UserOrganisation_model=new UserOrganisation_model();
-        $this->VerifyUser_model=new VerifyUser_model();
         $this->Role_model=new Role_model();
         $this->RoleUser_model=new RoleUser_model();
         $this->SendMailAndOtpServices = new SendMailAndOtpServices();
