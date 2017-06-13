@@ -39,6 +39,11 @@ class SendMailAndOtpServices{
 
         //save Token in Reset_Verify Table with Flag=1 --done
         if(count($check_email)){
+            $data = array(
+                        'user_email'=>$email,
+                        'token_data'=>$forgetpass_token
+                    );
+            Event::fire(new SendMail($data));
             return $this->saveToken($email,$forgetpass_token);
         }else{
             return $check_email;
