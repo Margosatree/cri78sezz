@@ -131,7 +131,8 @@ class SendMailAndOtpServices{
                                 );
         // var_dump($email_mobile_data);exit;
 
-        return $this->saveVerifyEmailMobileData($email_mobile_data);
+        $this->saveVerifyEmailMobileData($email_mobile_data);
+        return $verify_token;
 
     }
 

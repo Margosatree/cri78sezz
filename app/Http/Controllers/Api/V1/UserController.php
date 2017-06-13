@@ -59,7 +59,6 @@ class UserController extends Controller
             ],
             'password' => [
                 'required',
-                'confirmed',
                 'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
             ]
         ]);
@@ -78,6 +77,8 @@ class UserController extends Controller
                         'email'=>$request->email,
                         'password'=>$request->password,
                     );
+        $datas = $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+        var_dump($datas);exit;
         $User_Master = $this->UserMaster_model->insert($data);
 
         $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
@@ -89,7 +90,7 @@ class UserController extends Controller
 
         $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
 
-        $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+        
 
         return response()->json(['status'=>true,'message'=>'User created successfully','data'=>$user_orgId]);
     }
