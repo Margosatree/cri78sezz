@@ -41,7 +41,37 @@ class UserController extends Controller
     }
    
     public function register(Request $request){
-        // dd($request);
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|max:50|alpha_num|unique:user_masters',
+            'phone' => [
+                'required',
+                'unique:user_masters',
+                'min:10',
+                'numeric',
+                'regex:/(7|8|9)\d{9}/'
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:user_masters',
+                'regex:/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
+            ]
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
+
         $data = array(
                         'username'=>$request->username,
                         'phone'=>$request->phone,
@@ -65,6 +95,19 @@ class UserController extends Controller
     }
     
     public function login(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
         $credentials = $request->only('email', 'password');
         $token = null;
         try {
