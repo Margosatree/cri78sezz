@@ -73,7 +73,7 @@ class TournamentMasterController extends Controller
             'reg_end_date' => 'required|date|after:start_date',
         ]);
         
-        $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+        $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
                 Auth::user()->organization_master_id,
                 $request->tournament_name);
         if($Tournament_Exist){
