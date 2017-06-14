@@ -8,17 +8,27 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Cric8pro') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+
 </head>
 <body>
     <div id="app">
@@ -36,7 +46,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        {{ config('app.name', 'Cric8pro') }}
                     </a>
                 </div>
 
@@ -53,20 +63,70 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
+                            @if(Auth::guard('admin')->check())
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        Users  <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                        @if(session()->has('perms'))
+                                            @foreach(Session::get("perms") as $per)
+                                            @if($per=="UsersBioController.index")
+                                            <a href="{{ route('userBio.index') }}">Bio</a>
+                                            @elseif($per=="UserCricketProfileController.index")
+                                            <a href="{{ route('criProfile.index') }}">Cricket Profile</a>
+                                            @elseif($per=="OrganizationMasterController.index")
+                                            <a href="{{ route('org.index') }}">Org Bio</a>
+                                            @endif
+                                            @endforeach
+                                        @endif
+                                            <a href="/">home</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @elseif(Auth::user()->role == "organizer")
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        Master's  <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="{{ route('User.bulkUploadView') }}">Bulk Upload</a>
+                                            <a href="{{ route('tourmst.index') }}">Tournament's</a>
+                                            <a href="{{ route('team.index') }}">Team's</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endif
+                            <li >
 
+                            </li>
+                            <li class="dropdown">
+
+                                <a href="#" class="dropdown-toggle" style="padding-right: 50px" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    @if (Session::has('user_img'))
+                                        <img src ="{{asset('images/'.Session::get('user_img'))}}" width="32px" class="img-rounded"/>
+                                    @else
+                                        <img src ="{{asset('images/default128_128.png')}}" width="32px" class="img-rounded"/>
+                                    @endif
+                                    {{ Auth::user()->email}} <span class="caret"></span>
+                                </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                      @if(Auth::check())
+                                        <a href="{{ route('profile.show',Auth::user()->user_master_id) }}"><b>Profile</b></a>
+                                      @else
+                                        <a href="{{ route('profile.showUser',Auth::guard('admin')->user()->user_master_id) }}"><b>Profile</b></a>
+                                      @endif
+                                        <div role="separator" class="divider"></div>
+                                        <a href="/pass/request">Change Pass</a>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        <form id="logout-form" action="{{route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
@@ -77,11 +137,10 @@
                 </div>
             </div>
         </nav>
-
         @yield('content')
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <!--<script src="{{ asset('js/app.js') }}"></script>-->
 </body>
 </html>
