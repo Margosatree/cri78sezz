@@ -57,8 +57,8 @@ class Bowler extends Authenticatable
         $Bowler->order_id = $BowlerTick->order_id; //find
         $Bowler->innings = $BowlerTick->innings;
         $Bowler->bowler_id = $BowlerTick->bowler_id;
-        $Bowler->bolwer_name = $BowlerTick->bolwer_name;
-        $Bowler->bolwer_type = $BowlerTick->bolwer_type;
+        $Bowler->bowler_name = $BowlerTick->bowler_name;
+        $Bowler->bowler_type = $BowlerTick->bowler_type;
         $Bowler->balls = $BowlerTick->balls;
         $Bowler->overs = $BowlerTick->overs;
         $Bowler->maiden = $BowlerTick->maiden;

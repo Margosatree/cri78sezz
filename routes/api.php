@@ -88,3 +88,11 @@ Route::post('/changefielder', 'PostsController@changeFielder');
 
 Route::post('/toursquad', 'PostsController@tourSquad');
 Route::post('/matchsquad', 'PostsController@matchSquad');
+
+Route::post('/direct_batsman', 'PostsController@directBatsman');
+Route::post('/direct_bowler', 'PostsController@directBowler');
+Route::post('/direct_fielder', 'PostsController@directFielder');
+Route::post('/direct_partnership', 'PostsController@directPartnership');
+Route::post('/direct_score', 'PostsController@directScore');
+
+Route::post('/history', 'PostsController@ballDataHistory');

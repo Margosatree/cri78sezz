@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use DB;
 use App\Model\BaseModel\CoreValidation;
+use App\Model\BaseModel\MatchSquad;
 class Balldata extends Authenticatable
 {
     use Notifiable;
@@ -30,7 +31,69 @@ class Balldata extends Authenticatable
     public function isFielderRecordExists($where_array){
         return Balldata::where($where_array)->value('trans_id');
     }
+    public function checkBowlerOversCount($request){
 
+        $over_count = Balldata::where('bowler_id',$request->new_id)
+                     ->where('match_id',$request->match_id)
+                     ->where('innings',$request->innings)
+                     ->select(DB::raw('COUNT(DISTINCT CEIL(over_no)) as over_count'))
+                     ->get()
+                     ->first()
+                     ->over_count;
+
+        return $over_count;
+    }
+    public function checkUp($request)
+    {   $lower = $request->over_no - 2;
+        $upper = $request->over_no - 1;
+        $bowler_id = Balldata::select('bowler_id')
+                 ->where('over_no','>',$lower )
+                 ->where('over_no','<=',$upper)
+                 ->where('match_id',$request->match_id)
+                 ->where('innings',$request->innings)
+                 ->distinct()
+                 ->get();
+
+        if(count($bowler_id) > 0 && ($bowler_id->first()->bowler_id == $request->new_id))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public function checkDown($request)
+    {   $lower = $request->over_no;
+        $upper = $request->over_no + 1;
+        $bowler_id = Balldata::select('bowler_id')
+                 ->where('over_no','>',$lower )
+                 ->where('over_no','<=',$upper)
+                 ->where('match_id',$request->match_id)
+                 ->where('innings',$request->innings)
+                 ->distinct()
+                 ->get();
+
+        if(count($bowler_id) > 0 && ($bowler_id->first()->bowler_id == $request->new_id))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public function checkInPlayers($request)
+    {
+        $playing = MatchSquad::select('playing')
+                   ->where('match_id',$request->match_id)
+                   ->where('player_id',$request->new_id)
+                   ->get();
+
+        return $playing;  
+    }
     public function getBatsmanSummery($where_data){
         return Balldata::selectRaw(" 
             SUM(IF(batsman_score = 1,1,0)) AS run1,
@@ -242,6 +305,14 @@ class Balldata extends Authenticatable
                return 0;           
                
             }*/
+    public function strikeChange($request)
+    {
+        $temp = $request->batsman_id;
+        $request->batsman_id = $request->batsman_id2;
+        $request->batsman_id2 = $temp;
+        return $request;
+    }
+
     public function saveBalldata($request){ 
         $validate = new CoreValidation(); 
         $m_trans_id = 0;
@@ -270,7 +341,7 @@ class Balldata extends Authenticatable
             dd('Update Balldata');
         }else{
             //Add 
-
+    $over = (int)($request->ball_no / 6) + .1 * ( $request->ball_no % 6);
             $Balldata = new Balldata();
             $Balldata->m_trans_id = $m_trans_id;
             $Balldata->match_id = $request->match_id;
@@ -289,19 +360,58 @@ class Balldata extends Authenticatable
             $Balldata->ball_no = $request->ball_no;
             $Balldata->ball_type_id = $request->ball_type_id;
             $Balldata->ball_type = $request->ball_type;
-            $Balldata->over_no = $request->over_no;
+            $Balldata->over_no = $over;
             $Balldata->maiden = $maiden;
             $Balldata->wicket_id = $request->wicket_id;
             $Balldata->wicket_type = $request->wicket_type;
-            $Balldata->wicket_desc = $request->wicket_desc;
+           // $Balldata->wicket_desc = $request->wicket_desc;
             $Balldata->ball_length_id = $request->ball_length_id;
             $Balldata->ball_area_id = $request->ball_area_id;
             //$Balldata->insidecircle = $request->insidecircle;
             $Balldata->field_type_id = $request->field_type_id;
             $Balldata->power_play = $request->power_play;
             $Balldata->remark = $request->remark;
-            $Balldata->commentry = $request->commentry;
+            $Balldata->commentry = $request->commentry;            
             $Balldata->save();
+            $strike_cng = $request;
+            //dd($strike_cng);
+            if($request->ball_type == "NORM" || $request->ball_type == "LB" || $request->ball_type == "B")
+            {   
+                if($request->total_runs % 2 != 0)
+                {
+                    $strike_cng = $this->strikeChange($request);
+                }
+            }
+            elseif($request->ball_type == "NB" || $request->ball_type == "WD" || $request->ball_type == "NB+WD")
+            {   
+                $runs = $request->total_runs - 1;
+                if($runs % 2 != 0)
+                {
+                    $strike_cng = $this->strikeChange($request);
+                }
+            }
+           // dd($over);
+            if($request->ball_no % 6 == 0 && $over <= 8)
+            {
+                $strike_cng = $this->strikeChange($request);
+            }
+
+            if($request->for_wicket == 10)
+            {
+                return response()->json(['status'=>400, 'message'=>'Inning Break', 'batsman_id'=>$strike_cng->batsman_id, 'batsman_id2'=>$strike_cng->batsman_id2]);
+            }
+            elseif($request->ball_no % 6 == 0)
+            {
+                if($over >= 8)
+                {
+                return response()->json(['status'=>400, 'message'=>'Inning Break', 'batsman_id'=>$strike_cng->batsman_id, 'batsman_id2'=>$strike_cng->batsman_id2]);
+                }
+                return response()->json(['status'=>200, 'message'=>'Change Bowler', 'batsman_id'=>$strike_cng->batsman_id, 'batsman_id2'=>$strike_cng->batsman_id2]);
+            }
+            else{
+                return response()->json(['status'=>200, 'message'=>'Inning is going on', 'batsman_id'=>$strike_cng->batsman_id, 'batsman_id2'=>$strike_cng->batsman_id2]);
+            }
+
         }
     }
     

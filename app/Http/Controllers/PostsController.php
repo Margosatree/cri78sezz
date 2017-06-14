@@ -20,6 +20,12 @@ use App\Model\BaseModel\MatchSquad;
 use App\Model\BaseModel\BatsmanPowerplay;
 use App\Model\BaseModel\BowlerPowerplay;
 use App\Model\BaseModel\FielderPowerplay;
+use App\Model\BaseModel\DirectScore;
+use App\Model\BaseModel\DirectBatsman;
+use App\Model\BaseModel\DirectBowler;
+use App\Model\BaseModel\DirectFielder;
+use App\Model\BaseModel\DirectPartnership;
+use App\Model\BaseModel\Balldatahistory;
 use DB;
 class PostsController extends Controller{
     
@@ -40,6 +46,12 @@ class PostsController extends Controller{
     protected $BatsmanPowerplay_model;
     protected $BowlerPowerplay_model;
     protected $FilderPowerplay_model;
+    protected $DirectBatsman_model;
+    protected $DirectBowler_model;
+    protected $DirectFielder_model;
+    protected $DirectPartnership_model;
+    protected $DirectScore_model;
+    protected $Balldatahistory_model;
     public function __construct() {
         
     }
@@ -99,17 +111,26 @@ class PostsController extends Controller{
     }
 
     public function changeBowler(Request $request){ 
-
+        //dd($request);
         $this->UpdateBowler_model = new UpdateBowler();
-        $data_change = $this->UpdateBowler_model->bowlerChangeMaker($request);
-        if($data_change == true)
+        $chkConstraint = $this->UpdateBowler_model->checkConstraint($request,2,10);
+       // dd($chkConstraint['status']);           
+        if($chkConstraint['status'] == 200)
         {
-            $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
-            return response()->json($response);
+            $data_change = $this->UpdateBowler_model->bowlerChangeMaker($request);
+            if($data_change == true)
+            {
+                $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
+                return response()->json($response);
+            }
+            else{
+                $response = ['status'=>400, 'Message'=>'There was an error in updating the record'];
+                return response()->json($response);
+            }
         }
-        else{
-            $response = ['status'=>400, 'Message'=>'There was an error in updating the record'];
-            return response()->json($response);
+        else
+        {
+            return response()->json($chkConstraint);
         }
     }
 
@@ -117,7 +138,8 @@ class PostsController extends Controller{
         // DB::beginTransaction();
         
         // try {
-            $this->calScore($request);
+            $data = $this->calScore($request);
+            //dd($data);
             $this->calBatsman($request);
             $this->calBowler($request);
             $this->calFilder($request);
@@ -134,8 +156,8 @@ class PostsController extends Controller{
                 $this->calBowlerPowerplay($request);
                 $this->calFilderPowerplay($request);
             }
-           
-
+            
+            return $data;
             // DB::commit();
             $output['status'] = 200;
             $output['msg'] = "Entry Added Successfuly";
@@ -182,7 +204,7 @@ class PostsController extends Controller{
 
     public function calScore($request){
        $this->Balldata_model = new Balldata();
-       $this->Balldata_model->saveBalldata($request);
+      return $this->Balldata_model->saveBalldata($request);
     }
     public function calBatsman($request){
         $this->BatsmanMaster_model = new Batsman();
@@ -205,6 +227,74 @@ class PostsController extends Controller{
        $this->Balldata_model = new ScoreMaster();
        $this->Balldata_model->saveTeamdata($request);
     }
+
+    public function directBatsman(Request $request){
+        $this->DirectBatsman_model = new DirectBatsman();
+        $status = $this->DirectBatsman_model->storeDirectBatsman($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        } 
+    }
     
-    
+    public function directBowler(Request $request){
+        $this->DirectBowler_model = new DirectBowler();
+        $status = $this->DirectBowler_model->storeDirectBowler($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        } 
+    }
+
+    public function directFielder(Request $request){
+       $this->DirectFielder_model = new DirectFielder();
+        $status = $this->DirectFielder_model->storeDirectFielder($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        } 
+    }
+
+    public function directPartnership(Request $request){
+        $this->DirectPartnership_model = new DirectPartnership();
+        $status = $this->DirectPartnership_model->storeDirectPartnership($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        }
+    }
+
+    public function directScore(Request $request){
+        $this->DirectScore_model = new DirectScore();
+        $status = $this->DirectScore_model->storeDirectScore($request);
+        if($status = true)
+        {
+            return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
+        }
+        else{
+            return response()->json(['status'=>400, 'Message'=>'There occured some error in data submission']);  
+        }
+    }
+
+    public function ballDataHistory(Request $request){
+        //return response()->json($request);
+        //dd("Heelo");
+        $this->Balldatahistory_model = new Balldatahistory();
+        $data = $this->Balldatahistory_model->saveBalldata($request);
+        return response()->json($data);
+    }
+     
+                 
 }

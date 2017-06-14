@@ -63,7 +63,7 @@ class Partnership extends Authenticatable
             $this->savePartnershipMaster($both_exists,$Bat_Summery);
             $this->dummyPartnership($request);
         }
-        echo json_encode($Bat_Summery->userinfo->first_name);
+       // echo json_encode($Bat_Summery->userinfo->first_name);
         // echo json_encode($Bat_Summery->userCrickinfo->player_type);
         
     }

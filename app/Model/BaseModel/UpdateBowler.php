@@ -34,6 +34,47 @@ class UpdateBowler extends Model
         return 'No data exist for the given Match Inning';        
     }
 
+    public function checkConstraint($request, $max_over, $max_match_overs)
+    {   
+        $checkPlaying = $this->Balldata_Model->checkInPlayers($request);
+        //dd($checkPlaying);
+        if(count($checkPlaying) > 0 && $checkPlaying->first()->playing == 'yes')
+        { //dd("Hi");
+            $over_count = $this->Balldata_Model->checkBowlerOversCount($request);
+
+            if($over_count < $max_over)
+            { 
+                if($request->over_no > 1)
+                {
+                    $up = $this->Balldata_Model->checkUp($request);
+                    if($up == false)
+                    {
+                      return ['status'=>400,'message'=>'Bowler have already bowled the previous over'];              
+                    }      
+                }
+
+                if($request->over_no < $max_match_overs)
+                {
+                    $down = $this->Balldata_Model->checkDown($request);
+                    if($down == false)
+                    {
+                        return ['status'=>400,'message'=>'Bowler have already bowled the next over'];
+                    }
+                }
+              return ['status'=>200,'message'=>'OK'];    
+            }
+            else
+            {
+               return ['status'=>400,'message'=>'Bowler have already bowled for his maximum overs']; 
+            }
+        }
+        else
+        {
+            return ['status'=>400,'message'=>'The new bowler_id does not belong to playing 11'];
+        }
+        
+    }
+
     public function bowlerChangeMaker($request){
     	$where_array = [
             'match_id' => $request->match_id,            
@@ -44,8 +85,6 @@ class UpdateBowler extends Model
         ]; 
 
         $Bowler_Summery = $this->Balldata_Model->updateBallerInfo($where_array);
-        //$bowler_obj = new Bowler();
-       // dd($Bowler_Summery);
         if($Bowler_Summery > 0)
         {	
         	$where_data1 = [
