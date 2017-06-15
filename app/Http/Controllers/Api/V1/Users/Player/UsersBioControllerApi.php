@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Validator;
 use App\Model\UserMaster_model;
 
-class UsersBioController extends Controller
+class UsersBioControllerApi extends Controller
 {
 
     protected $UserMaster_model;

@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Add Tournament</div>
+                <div class="panel-heading">Add Team</div>
                 <div class="panel-body">
                     <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/team">
                         {{ csrf_field() }}
@@ -34,7 +34,15 @@
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Owner</label>
-                                <input id="owner_id" type="number" class="form-control" name="owner_id" value="" autofocus required="" >
+                                <!--<input id="owner_id" type="number" class="form-control" name="owner_id" value="" autofocus required="" >-->
+                                <select id="owner_id" name="owner_id" class="form-control">
+                                    <option  value="0" selected="" disabled="">Select Owner</option>
+                                    @foreach($Owners as $Owner)
+                                        @if($Owner->id == Auth::user()->user_master_id)
+                                            <option  value="{{$Owner->id}}">{{$Owner->Owner_Name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <button id="Save" type="button" style="width: 100%"  class="btn btn-primary">
@@ -51,10 +59,10 @@
                             </div>
                             <div class="form-group  col-md-12 col-sm-12 col-xs-12">
                                 <button type="button" class="btn btn-default btn-file" style="margin-top: 20px">
-                                        <span>Add Logo</span>
-                                        <input type="file"  name="image" id="upload" required="">
-                                        <input type="hidden"  name="imagedata" id="imagedata" required="">
-                                    </button>
+                                    <span>Add Logo</span>
+                                    <input type="file"  name="image" id="upload" required="">
+                                    <input type="hidden"  name="imagedata" id="imagedata" required="">
+                                </button>
                             </div>
 
                         </div>

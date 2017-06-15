@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Edit Organization Info</div>
+                <div class="panel-heading">Edit Team Info</div>
                 <div class="panel-body">
                     @if($Team->id > 0 )
                         <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/team/{{$Team->id}}">
@@ -36,7 +36,15 @@
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <label>Owner</label>
-                                <input id="owner_id" type="number" class="form-control" name="owner_id" value="{{$Team->owner_id}}" autofocus required="" >
+                                <!--<input id="owner_id" type="number" class="form-control" name="owner_id" value="{{$Team->owner_id}}" autofocus required="" >-->
+                                <select id="owner_id" name="owner_id" class="form-control">
+                                    <!--<option  value="0" selected="" disabled="">Select Owner</option>-->
+                                    @foreach($Owners as $Owner)
+                                        @if($Owner->id == Auth::user()->user_master_id)
+                                            <option selected value="{{$Owner->id}}">{{$Owner->Owner_Name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                 <button id="Save" type="button" style="width: 100%"  class="btn btn-primary">
@@ -94,11 +102,10 @@
 
     $uploadCrop = $('#upload-demo').croppie({
         enableExif: true,
-        enforceBoundary : false,
         viewport: {
             width: 200,
             height: 200,
-            type: 'circle'
+            type: 'square'
         },
         boundary: {
             width: 250,

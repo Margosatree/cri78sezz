@@ -47,4 +47,5 @@ class User_Organisation extends Authenticatable
     public function org(){
         return $this->belongsTo(Organisation_Master::class,'organization_master_id','id');
     }
+    
 }

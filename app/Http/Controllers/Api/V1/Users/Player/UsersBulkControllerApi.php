@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Input;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 
-class UsersBulkController extends Controller
+class UsersBulkControllerApi extends Controller
 {
     
     //call model class via object 

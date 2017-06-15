@@ -22,7 +22,7 @@ class TeamMasterController extends Controller
     protected $UserMaster_model;
     protected $UserOrganisation_model;
 
-    public function __constructor(){
+    public function __construct(){
         $this->_initModel();
     }
 
@@ -69,13 +69,12 @@ class TeamMasterController extends Controller
 
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-
-            $this->TeamMaster_model->insert($request,$filename);
+            $request->request->add(['team_logo' => $filename]);
         }
-        
+        $this->TeamMaster_model->SaveTeam($request);
         return redirect()->route('team.index');
     }
 
@@ -98,10 +97,13 @@ class TeamMasterController extends Controller
      */
     public function edit($id)
     {
-        $id = Auth::user()->organization_master_id;
-        $Users = $this->UserOrganisation_model->getOrgById($id);
+//        dd($id);
+//        dd(Auth::user()->organization_master_id);
+        $org_id = Auth::user()->organization_master_id;
+        $Users = $this->UserOrganisation_model->getOrgById($org_id);
         $Owners = $this->UserMaster_model->checkUserId($Users);
-        $Team = $this->TeamMaster_model->getAll($id);;
+        $Team = $this->TeamMaster_model->getById($id);
+//        dd($Team);
         return view('user.teammst.edit',compact('Team','Owners'));
     }
 
@@ -130,11 +132,13 @@ class TeamMasterController extends Controller
 
             list($type, $data) = explode(';', $data);
             list(, $data)      = explode(',', $data);
-            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
+            $filename = time().'.'.$image->getClientOriginalExtension();
             $data = base64_decode($data);
             file_put_contents(public_path('images/'. $filename), $data);
-            $this->TeamMaster_model->insert($request,$filename,$id);
+            $request->request->add(['team_logo' => $filename]);
         }
+        $request->request->add(['update' => 1,'id' => $id]);
+        $this->TeamMaster_model->SaveTeam($request);
         return redirect()->route('team.index');
     }
 
@@ -146,7 +150,12 @@ class TeamMasterController extends Controller
      */
     public function destroy($id)
     {
-        $this->TeamMaster_model->deleteById($id);
+        $Team = $this->TeamMaster_model->deleteById($id);
+        if($Team){
+            $Team->delete();
+        }else{
+            dd('Team Not Exists');
+        }
         return redirect()->route('team.index');
     }
 }

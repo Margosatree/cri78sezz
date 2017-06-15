@@ -14,7 +14,7 @@
                         <div class="form-group">
                             <label for="shiftid" class="col-md-4 control-label">Select Rule</label>
                             <div class="col-md-6">
-                                <select name="rule" class="form-control">
+                                <select name="rule_id" class="form-control">
                                     <option  value="0" selected disabled>Select Rule</option>
                                     @foreach($Rules as $Rule)
                                         <option @if($Rule->id == $Tour_Det->rule_id) selected @endif value="{{$Rule->id}}">{{$Rule->name}}</option>
@@ -86,10 +86,10 @@
                 alert('Please Enter valid Rule');
                 return;
             }
-            if(!$.isNumeric($("#rule option:selected").val())){
-                alert('Invalid Rule');
-                return;
-            }
+//            if(!$.isNumeric($("#rule option:selected").val())){
+//                alert('Invalid Rule');
+//                return;
+//            }
         }
         if($('#value').val() == "" || $('#value').val() == "undefined" || $('#value').val() == "NaN"){
             alert('Please Enter Value');

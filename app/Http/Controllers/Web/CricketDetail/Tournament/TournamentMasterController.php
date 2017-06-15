@@ -78,28 +78,23 @@ class TournamentMasterController extends Controller
                 $request->tournament_name);
         if($Tournament_Exist){
             dd('Tournament Name Already Exist');
+            return redirect()->back();
+        }else{
+            if($request->hasFile('image')){
+                $image = $request->file('image');
+                $data = $_POST['imagedata'];
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
+                $filename = time().'.'.$image->getClientOriginalExtension();
+                $data = base64_decode($data);
+                file_put_contents(public_path('images/'. $filename), $data);
+                $request->request->add(['tournament_logo' => $filename]);
+            }
+            $request->request->add(['organization_master_id' => Auth::user()->organization_master_id]);
+            $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
+
+            return redirect()->route('tourmst.index');
         }
-        $params = array();
-        $params['tournament_name'] = $request->tournament_name;
-        $params['tournament_location'] = $request->tournament_location;
-        $params['organization_master_id'] = Auth::user()->organization_master_id;
-        $params['start_date'] = $request->start_date;
-        $params['end_date'] = $request->end_date;
-        $params['reg_start_date'] = $request->reg_start_date;
-        $params['reg_end_date'] = $request->reg_end_date;
-        if($request->hasFile('image')){
-            $image = $request->file('image');
-            $data = $_POST['imagedata'];
-            list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
-            $filename = time().'.'.$image->getClientOriginalExtension();
-            $data = base64_decode($data);
-            file_put_contents(public_path('images/'. $filename), $data);
-            $params['tournament_logo'] = $filename;
-        }
-        $Tournament = $this->TournamentMaster_model->SaveUserBio($params);
-        
-        return redirect()->route('tourmst.index');
     }
 
     /**
@@ -145,34 +140,28 @@ class TournamentMasterController extends Controller
         ]);
         
         
-        $Tournament_Exist = $this->TournamentMaster_model->TournamentExists(
+        $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
                 Auth::user()->organization_master_id,
                 $request->tournament_name);
         if($Tournament_Exist){
             dd('Tournament Name Already Exist');
+            return redirect()->back();
+        }else{
+            if($request->hasFile('image')){
+                $image = $request->file('image');
+                $data = $_POST['imagedata'];
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
+                $filename = time().'.'.$image->getClientOriginalExtension();
+                $data = base64_decode($data);
+                file_put_contents(public_path('images/'. $filename), $data);
+                $request->request->add(['tournament_logo' => $filename]);
+            }
+            $request->request->add(['update' => 1,'id' => $id,'organization_master_id' => Auth::user()->organization_master_id]);
+            $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
+            return redirect()->route('tourmst.index');
         }
         
-        $params = array();
-        $params['id'] = $id;
-        $params['tournament_name'] = $request->tournament_name;
-        $params['tournament_location'] = $request->tournament_location;
-        $params['organization_master_id'] = Auth::user()->organization_master_id;
-        $params['start_date'] = $request->start_date;
-        $params['end_date'] = $request->end_date;
-        $params['reg_start_date'] = $request->reg_start_date;
-        $params['reg_end_date'] = $request->reg_end_date;
-        if($request->hasFile('image')){
-            $image = $request->file('image');
-            $data = $_POST['imagedata'];
-            list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
-            $filename = time().'.'.$image->getClientOriginalExtension();
-            $data = base64_decode($data);
-            file_put_contents(public_path('images/'. $filename), $data);
-            $params['tournament_logo'] = $filename;
-        }
-       $Tournament = $this->TournamentMaster_model->SaveUserBio($params);
-        return redirect()->route('tourmst.index');
     }
 
     /**

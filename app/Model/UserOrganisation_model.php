@@ -62,9 +62,9 @@ class UserOrganisation_model {
         
         public function SaveUserOrg($request) {
             if(isset($request->update) && $request->update == 1){
-                $User_Org = Organisation_Master::find($request->id);
+                $User_Org = User_Organisation::find($request->id);
             }else{
-                $User_Org = new Organisation_Master;
+                $User_Org = new User_Organisation;
             }
             if(isset($request->user_master_id) && $request->user_master_id){
                 $User_Org->user_master_id = $request->user_master_id;

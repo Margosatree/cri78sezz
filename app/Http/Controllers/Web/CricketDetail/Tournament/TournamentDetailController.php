@@ -62,13 +62,13 @@ class TournamentDetailController extends Controller
     public function store(Request $request,$Tournament)
     {
         $this->validate($request,[
-            'rule' => 'required|numeric|max:190',
+            'rule_id' => 'required|numeric|max:190',
             'specification' => 'max:190',
             'value' => 'required|max:190',
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        $request->request->add(['user_master_id' => $Tournament]);
+        $request->request->add(['tournament_id' => $Tournament]);
         $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
         
         return redirect()->route('tourdet.index',$Tournament);
@@ -109,24 +109,15 @@ class TournamentDetailController extends Controller
      */
     public function update(Request $request, $Tournament, $id)
     {
-//        dd(request()->all());
         $this->validate($request,[
-            'rule' => 'required|numeric|max:190',
+            'rule_id' => 'required|numeric|max:190',
             'specification' => 'max:190',
             'value' => 'required|max:190',
             'range_from' => 'date|before:end_date',
             'range_to' => 'date|after:start_date',
         ]);
-        $params = array();
-        $params['id'] = $id;
-        $params['tournament_id'] = $Tournament;
-        $params['rule_id'] = $request->rule;
-        $params['specification'] = null;
-        $params['value'] = $request->value;
-        $params['range_from'] = null;
-        $params['range_to'] = null;
-//        dd($params);
-        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($params);
+        $request->request->add(['update' => 1,'tournament_id' => $Tournament]);
+        $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
         
         return redirect()->route('tourdet.index',$Tournament);
     }

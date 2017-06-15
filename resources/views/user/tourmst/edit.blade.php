@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Edit Organization Info</div>
+                <div class="panel-heading">Edit Tournament Info</div>
                 <div class="panel-body">
                     @if($Tournament->id > 0 )
                         <form id="frm" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="/tourmst/{{$Tournament->id}}">
