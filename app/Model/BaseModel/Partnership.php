@@ -40,11 +40,11 @@ class Partnership extends Authenticatable
             
             $both_exists = true;
             $where_array['batsman_id'] = $request->batsman_id;
-    $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
+            $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
             
             $Bat_Summery->bowler_id = $request->bowler_id;
             $Bat_Summery->fielder_id = $request->fielder_id;
-            $Bat_Summery->for_wicket = $request->wicket_count;
+            $Bat_Summery->for_wicket = $request->for_wicket;
             $Bat_Summery->batsman_name = $Bat_Summery->userinfo->first_name.' '.$Bat_Summery->userinfo->last_name;
             // $Bat_Summery->batsman_type = $Bat_Summery->userCrickinfo->player_type;
             $this->savePartnershipMaster($batsman1_exists,$Bat_Summery);
@@ -57,7 +57,7 @@ class Partnership extends Authenticatable
             // dd($this->Balldata_Model->getPartnershipSummery($where_array));
             $Bat_Summery->bowler_id = $request->bowler_id;
             $Bat_Summery->fielder_id = $request->fielder_id;
-            $Bat_Summery->for_wicket = $request->wicket_count;
+            $Bat_Summery->for_wicket = $request->for_wicket;
             $Bat_Summery->batsman_name = $Bat_Summery->userinfo->first_name.' '.$Bat_Summery->userinfo->last_name;
             
             $this->savePartnershipMaster($both_exists,$Bat_Summery);
@@ -106,7 +106,7 @@ class Partnership extends Authenticatable
         $dummyData->match_id = $request->match_id;
         $dummyData->order_id = $request->order_id; //find
         $dummyData->innings = $request->innings;
-        $dummyData->for_wicket = $request->wicket_count; //find
+        $dummyData->for_wicket = $request->for_wicket; //find
         $dummyData->batsman_id = $request->batsman_id2;
         $dummyData->batsman_name = $request->batsman_name;
         $dummyData->batsman_type = $request->batsman_type;

@@ -134,10 +134,18 @@ class PostsController extends Controller{
         }
     }
 
+    public function ballDataUndo(Request $request)
+    {   
+        $this->Balldata_model = new Balldata();
+        $data = $this->Balldata_model->undoRecord($request);
+        return $this->undoTick($data->first());
+    }
     public function saveTick(Request $request){
         // DB::beginTransaction();
-        
+           // dd($request);
         // try {
+            
+               // dd($request);
             $data = $this->calScore($request);
             //dd($data);
             $this->calBatsman($request);
@@ -156,16 +164,47 @@ class PostsController extends Controller{
                 $this->calBowlerPowerplay($request);
                 $this->calFilderPowerplay($request);
             }
-            
+           // dd($request->trans_id);
+            /*if(isset($request->trans_id))
+            {
+                return response()->json(['status'=>200, 'message'=>'Undo Done Sucessfully']);
+            }*/
             return $data;
             // DB::commit();
-            $output['status'] = 200;
-            $output['msg'] = "Entry Added Successfuly";
-            return response()->json($output);
+            // $data['status'] = 200;
+            // $data['msg'] = "Entry Added Successfuly";
+            return response()->json($data);
             $output['status'] = 400;
             $output['msg'] = "Transection Fail";
             $output['error'] = $e;
             return response()->json($output);
+        // }
+    }
+
+    public function undoTick($request){
+        // DB::beginTransaction();
+        // try {
+            //dd($data);
+            $this->calBatsman($request);
+            $this->calBowler($request);
+            $this->calFilder($request);
+            $this->calPartnership($request);
+            $this->calScoreMaster($request);
+            $this->calBatsmanDetail($request);
+            $this->calBowlerDetail($request);
+            $this->calPartnershipDetail($request);
+            $this->calFielderDetail($request);
+
+            if($request->power_play == 1)
+            {
+                $this->calBatsmanPowerplay($request);
+                $this->calBowlerPowerplay($request);
+                $this->calFilderPowerplay($request);
+            }
+           // dd($request->trans_id);
+            return response()->json(['status'=>200, 'message'=>'Undo Done Sucessfully']);
+            
+            
         // }
     }
 

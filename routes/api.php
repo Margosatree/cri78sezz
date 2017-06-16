@@ -96,3 +96,5 @@ Route::post('/direct_partnership', 'PostsController@directPartnership');
 Route::post('/direct_score', 'PostsController@directScore');
 
 Route::post('/history', 'PostsController@ballDataHistory');
+
+Route::post('/undo', 'PostsController@ballDataUndo');

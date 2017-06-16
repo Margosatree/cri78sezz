@@ -139,6 +139,22 @@ class Balldata extends Authenticatable
         return Balldata::where('match_id',$where_array['match_id'])->where('innings',$where_array['innings'])->where('ball_no',$where_array['ball_no'])->where('fielder_id',$where_array['old_fielder_id'])->update(['fielder_id'=>$where_array['new_fielder_id']]);
     }
 
+    public function undoRecord($request)
+    {   
+        $data = Balldata::where('match_id',$request->match_id)
+                ->where('innings',$request->innings)
+                ->orderBy('trans_id','DESC')
+                ->take(1)
+                ->get();
+        
+        $delete_count = Balldata::where('match_id',$request->match_id)
+                        ->where('innings',$request->innings)
+                        ->orderBy('trans_id','DESC')
+                        ->take(1)
+                        ->delete(); 
+
+        return $data;       
+    }
     public function getBatsmanDetails($where_data){
 
         return Balldata::selectRaw("
@@ -267,7 +283,7 @@ class Balldata extends Authenticatable
             SUM(IF(ball_type IN('WD'),extra_runs,0)) AS total_wd,
             SUM(IF(ball_type IN('LB'),extra_runs,0)) AS total_leg_byes,
             SUM(IF(ball_type IN('B'),extra_runs,0)) AS total_byes,
-        SUM(total_runs)/(ROUND((MAX(ball_no)-MOD(MAX(ball_no),6))/6,0)+ROUND(MOD(MAX(ball_no),6)/10,1)) AS run_rate,
+            SUM(total_runs)/(ROUND((MAX(ball_no)-MOD(MAX(ball_no),6))/6,0)+ROUND(MOD(MAX(ball_no),6)/10,1)) AS run_rate,
             ROUND((MAX(ball_no)-MOD(MAX(ball_no),6))/6,0)+ROUND(MOD(MAX(ball_no),6)/10,1) AS over, 
             MAX(ball_no) AS total_balls,
             match_id,innings")
