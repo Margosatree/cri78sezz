@@ -41,6 +41,7 @@ class TournamentMaster_model {
     }
         
         public function SaveTourMaster($request) {
+//            dd($request->all());
             if(isset($request->update) && $request->update == 1){
                 $Tour_Master = Tournament_Master::find($request->id);
             }else{

@@ -29,6 +29,7 @@ class TeamMaster_model {
 	}
 
 	public function SaveTeam($request){
+//            dd($request->all());
             if(isset($request->update) && $request->update == 1){
                 $Team = Team_Master::find($request->id);
             }else{

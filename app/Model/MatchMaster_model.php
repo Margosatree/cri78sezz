@@ -22,6 +22,7 @@ class MatchMaster_model {
 	}
 
 	public function SaveMatch($request){
+//            dd($request->all());
             if(isset($request->update) && $request->update == 1){
                 $Match = Match_Master::where('tournament_id', $request->tournament_id)->where('match_id', $request->id);
                 $arr = array();

@@ -25,9 +25,9 @@
                                 @foreach($Matches as $Matche)
                                     <tr>
                                         <td>
-                                            <img src ="{{asset('images/'.$Matche->Team1Name->team_logo)}}" style="width: 30%;height: 30%" class="img-rounded"/>
+                                            <img src="{{asset('images/'.$Matche->Team1Name)}}" style="width: 30%;height: 30%" class="img-rounded"/>
                                             Vs
-                                            <img src ="{{asset('images/'.$Matche->Team2Name->team_logo)}}" style="width: 30%;height: 30%" class="img-rounded"/>
+                                            <img src="{{asset('images/'.$Matche->Team2Name)}}" style="width: 30%;height: 30%" class="img-rounded"/>
                                         </td>
                                         <td>{{ $Matche->ground_name .'/'.$Matche->match_type}}</td>
                                         <td>{{ $Matche->overs .'/'.$Matche->innings}}</td>

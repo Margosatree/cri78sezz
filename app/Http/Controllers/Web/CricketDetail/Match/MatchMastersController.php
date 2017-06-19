@@ -45,6 +45,10 @@ class MatchMastersController extends Controller
         $org_id = Auth::user()->organization_master_id;
         $Tour_id = $this->TournamentMaster_model->getId($org_id,$Tournament);
         $Matches = $this->MatchMaster_model->checkTourId($Tour_id);
+//        dd($Matches);
+//        foreach ($Matches as $value) {
+//            echo json_encode($value->match_name);
+//        }
         return view('user.matchmst.index',compact('Matches','Tournament'));
     }
 
@@ -59,6 +63,7 @@ class MatchMastersController extends Controller
         
         $usermaster_id = Auth::user()->user_master_id;
         $Teams = $this->TeamMaster_model->getTeamDetail($usermaster_id);
+        dd($Teams);
         return view('user.matchmst.add',compact('Tournament','Teams','Owners'));
     }
 
@@ -85,8 +90,8 @@ class MatchMastersController extends Controller
         if($request->team1 == $request->team2){
             dd('Please Select Another Team');
         }
-
-        $this->MatchMaster_model->insert($request);
+        $request->request->add(['tournament_id' => $Tournament]);
+        $this->MatchMaster_model->SaveMatch($request);
         
         return redirect()->route('match.index',$Tournament);
     }

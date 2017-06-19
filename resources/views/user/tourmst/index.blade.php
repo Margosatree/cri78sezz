@@ -52,7 +52,7 @@
                         </table>
                     @else
                         <div class="alert alert-info">
-                            <b>No Post Found</b>
+                            <b>No Tournament Found</b>
                         </div> 
                     @endif
                 </div>
