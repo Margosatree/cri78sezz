@@ -19,6 +19,9 @@ class CreateVerifyUsersTable extends Migration {
 			$table->integer('mobile_otp')->nullable();
 			$table->integer('email_otp')->nullable();
 			$table->string('token', 191)->nullable();
+                        $table->integer('deleted_by')->nullable();
+			$table->integer('updated_by')->nullable();
+                        $table->softDeletes();
 			$table->timestamps();
 		});
 	}

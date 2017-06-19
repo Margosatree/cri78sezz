@@ -3,13 +3,14 @@
 namespace App\Model\BaseModel;
 use App\Model\BaseModel\Team_Master;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Match_Master extends Model
 {
+    use SoftDeletingTrait;
     protected $table = 'match_master';
 
-     public $timestamps = false;
-     protected $primaryKey = 'match_id';
+    public $timestamps = false;
+    protected $primaryKey = 'match_id';
     
     protected $fillable = [
         'tournament_id','match_name', 'ground_name', 'match_type','overs', 'innings',

@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Model\BaseModel;
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Tournament_Master extends Model
 {
+    use SoftDeletingTrait;
     protected $table = 'tournament_master';
     
     protected $fillable = [

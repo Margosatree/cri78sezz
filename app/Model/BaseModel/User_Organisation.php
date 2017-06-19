@@ -3,10 +3,10 @@
 namespace App\Model\BaseModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User_Organisation extends Authenticatable
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+class User_Organisation extends Model
 {
-    use Notifiable;
+    use Notifiable,SoftDeletingTrait;
     protected $table = 'user_organizations';
 
     public function roles(){
