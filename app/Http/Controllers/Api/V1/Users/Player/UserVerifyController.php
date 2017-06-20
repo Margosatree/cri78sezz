@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Web\Users\Player;
+namespace App\Http\Controllers\Api\V1\Users\Player;
 
 use Auth;
 use Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Validator;
 use App\Model\User_Master;
 use App\Model\verify_user;
 

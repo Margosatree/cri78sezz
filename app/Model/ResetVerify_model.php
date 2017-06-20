@@ -17,15 +17,12 @@ class ResetVerify_model {
 		}
 	}
 
-	public function createData($data){
+	public function insertData($data){
 		return Reset_verify::create($data);
 	}
 
-	public function updateByEmail($data){
-		return Reset_verify::where(['email'=>$data['email'],
-							'is_password_reset'=>$data['is_password_reset']])
-                        ->update(['token' => $data['token'],
-                            'email_otp'=>$data['email_otp']]);
+	public function updateByEmailOrMobile($check_data=array(),$update_data=array()){
+		return Reset_verify::where($check_data)->update($update_data);
 	}
 
 }

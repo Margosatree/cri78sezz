@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Web\Users\Player;
+namespace App\Http\Controllers\Api\V1\Users\Player;
 
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Validator;
 use App\Model\OrganisationMaster_model;
 use App\Model\UserCricketProfile_model;
 use App\Model\UserMaster_model;

@@ -3,14 +3,14 @@
 namespace App\Model\BaseModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User_Organisation extends Authenticatable
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+class User_Organisation extends Model
 {
-    use Notifiable;
+    use Notifiable,SoftDeletingTrait;
     protected $table = 'user_organizations';
 
     public function roles(){
-        return $this->belongsToMany('PHPZen\LaravelRbac\Model\Role','role_user','user_id','role_id');
+        return $this->belongsToMany('App\Model\BaseModel\Role','role_user','user_id','role_id');
     }
     /**
      * The attributes that are mass assignable.
@@ -47,4 +47,5 @@ class User_Organisation extends Authenticatable
     public function org(){
         return $this->belongsTo(Organisation_Master::class,'organization_master_id','id');
     }
+    
 }

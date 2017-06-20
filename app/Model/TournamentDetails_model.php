@@ -27,12 +27,19 @@ class TournamentDetails_model {
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
             return Tournament_Details::selectRaw('*')->where('tournament_id',$tour_id)->where('rule_id',$rule_id)->get()->first();
         }
+        
         public function getRulesByTourId($tour_id) {
             return Tournament_Details::selectRaw('rule_id')
                     ->where('tournament_id',$tour_id)->get();
         }
         
+        public function RulsExists($tour_id,$rule_id) {
+            return Tournament_Details::where('tournament_id',$tour_id)
+                    ->where('rule_id',$rule_id)->value('rule_id');
+        }
+        
         public function SaveTourDetail($request) {
+//            dd(request()->all());
             if(isset($request->update) && $request->update == 1){
                 $Tour_Detail = Tournament_Details::where('tournament_id', $request->tournament_id)->where('rule_id', $request->rule_id);
                 $Tour_Detail->update([
@@ -44,12 +51,24 @@ class TournamentDetails_model {
                 ]);
             }else{
                 $Tour_Detail = new Tournament_Details;
-                $Tour_Detail->tournament_id = $request->tournament_id;
-                $Tour_Detail->rule_id = $request->rule_id;
-                $Tour_Detail->specification = $request->specification;
-                $Tour_Detail->value = $request->value;
-                $Tour_Detail->range_from = $request->range_from;
-                $Tour_Detail->range_to = $request->range_to;
+                if(isset($request->tournament_id) && $request->tournament_id){
+                    $Tour_Detail->tournament_id = $request->tournament_id;
+                }
+                if(isset($request->rule_id) && $request->rule_id){
+                    $Tour_Detail->rule_id = $request->rule_id;
+                }
+                if(isset($request->specification) && $request->specification){
+                    $Tour_Detail->specification = $request->specification;
+                }
+                if(isset($request->value) && $request->value){
+                    $Tour_Detail->value = $request->value;
+                }
+                if(isset($request->range_from) && $request->range_from){
+                    $Tour_Detail->range_from = $request->range_from;
+                }
+                if(isset($request->range_to) && $request->range_to){
+                    $Tour_Detail->range_to = $request->range_to;
+                }
                 $Tour_Detail->save();
             }
             return $Tour_Detail;

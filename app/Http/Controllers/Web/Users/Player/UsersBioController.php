@@ -63,7 +63,8 @@ class UsersBioController extends Controller
             'gender' => 'in:female,male',
             'physically_challenged' => 'in:no,yes',
         ]);
-        
+        $id = Auth::user()->user_master_id;
+        $request->request->add(['update' => 1,'id' => $id]);
         $User_Bio = $this->UserMaster_model->SaveUserBio($request);
         return redirect()->route('userBio.create');
     }
@@ -79,7 +80,8 @@ class UsersBioController extends Controller
             'pin' => 'required|digits:6|numeric',
         ]);
         
-        
+        $id = Auth::user()->user_master_id;
+        $request->request->add(['update' => 1,'id' => $id]);
         $User_Address = $this->UserMaster_model->SaveUserAddress($request);
         return redirect()->route('orgcriProfile.create');
     }

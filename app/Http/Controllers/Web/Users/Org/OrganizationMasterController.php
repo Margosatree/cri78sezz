@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web\Users\Org;
+
+use App\Http\Controllers\Controller;
 use App\Model\OrganisationMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
 use Auth;
-use \App\User_Organisation;
 class OrganizationMasterController extends Controller
 {
     protected $UserMaster_model;

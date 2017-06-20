@@ -1,6 +1,7 @@
 <?php
 
 // Composer: "fzaninotto/faker": "v1.4.0"
+// namespace database\seeds;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use App\Model\BaseModel\Role;

@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Model\BaseModel;
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Team_Master extends Model
 {
+    use SoftDeletingTrait;
     protected $table = 'team_master';
     
     protected $fillable = [
@@ -13,6 +14,6 @@ class Team_Master extends Model
     ];
     
     public function owner(){
-        return $this->belongsTo(Tournament_Rules::class,'rule_id','id');
+        return $this->belongsTo(User_Master::class,'team_owner_id','id');
     }
 }

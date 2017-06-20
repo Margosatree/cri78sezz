@@ -19,9 +19,11 @@ class SendMail
      *
      * @return void
      */
-    public function __construct()
+
+    public $user_data = array();
+    public function __construct($userdata = array())
     {
-        //
+        $this->user_data = $userdata;
     }
 
     /**
@@ -31,6 +33,6 @@ class SendMail
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return [];
     }
 }

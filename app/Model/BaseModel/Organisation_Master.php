@@ -2,9 +2,10 @@
 
 namespace App\Model\BaseModel;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Organisation_Master extends Model
 {
+    use SoftDeletingTrait;
     protected $table = 'organization_masters';
     
     protected $fillable = [

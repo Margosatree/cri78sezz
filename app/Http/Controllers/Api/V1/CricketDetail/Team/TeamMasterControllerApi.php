@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Web\CricketDetail\Team;
+namespace App\Http\Controllers\Api\V1\CricketDetail\Team;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
-
+use Validator;
 use App\Model\TeamMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
@@ -22,7 +22,7 @@ class TeamMasterControllerApi extends Controller
     protected $UserMaster_model;
     protected $UserOrganisation_model;
 
-    public function __constructor(){
+    public function __construct(){
         $this->_initModel();
     }
 
@@ -33,8 +33,8 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function listTeam(Request $request){
-        $user_master_id = 1;//have to find user id from login
-        $Teams = $this->TeamMaster_model->getTeamDetail($user_master_id);
+        $organization_master_id = 1;//have to find user id from login
+        $Teams = $this->TeamMaster_model->getTeamDetail($organization_master_id);
         if($Teams){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Teams);
         }else{
@@ -44,61 +44,77 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function addTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'team_name' => 'required|max:190',
-            'team_owner_id' => 'required|numeric',
-            'team_logo' => 'max:190',
+            'team_owner_id' => 'required|numeric|min:1',
             'team_type' => 'required|max:190',
-            'order_id' => 'required|numeric',
-            'owner_id' => 'required|numeric',
+            'order_id' => 'required|numeric|min:1',
+            'owner_id' => 'required|numeric|min:1',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
-
-//        if($request->hasFile('image')){
-//            $image = $request->file('image');
-//            $data = $_POST['imagedata'];
-//
-//            list($type, $data) = explode(';', $data);
-//            list(, $data)      = explode(',', $data);
-//            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
-//            $data = base64_decode($data);
-//            $request->request->add(['team_logo' => $filename]);
-//            file_put_contents(public_path('images/'. $filename), $data);
-//        }
-        $Team = $this->TeamMaster_model->SaveTeam($request);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+        
+        if(!$validator->fails()){
+            $Team_name = $this->TeamMaster_model->TeamNameExistsByOwner($request->owner_id,$request->team_name);
+            if(!$Team_name){
+                $data = $request->image;
+                $mime_data = $request->mime;
+                $rand_str = str_random(40);
+                $filename = "$rand_str.$mime_data";
+                $data = base64_decode($data);
+                file_put_contents(public_path('images/'. $filename), $data);
+                $request->request->add(['team_logo' => $filename]);
+                $Team = $this->TeamMaster_model->SaveTeam($request);
+                if($Team){
+                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                }else{
+                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                }
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
 
     public function updateTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
             'team_name' => 'required|max:190',
             'team_owner_id' => 'required|numeric',
-            'team_logo' => 'max:190',
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
+            'image'=>'required',
+            'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
-//        if($request->hasFile('image')){
-//            $image = $request->file('image');
-//            $data = $_POST['imagedata'];
-//
-//            list($type, $data) = explode(';', $data);
-//            list(, $data)      = explode(',', $data);
-//            $filename = time().base64_encode($Team->id).'.'.$image->getClientOriginalExtension();
-//            $data = base64_decode($data);
-//            file_put_contents(public_path('images/'. $filename), $data);
-//        }
-        $request->request->add(['update' => 1,'id' => $request->id]);
-        $Team = $this->TeamMaster_model->SaveTeam($request);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+
+        if(!$validator->fails()){
+            $Team_name = $this->TeamMaster_model->TeamNameExistsByOwner($request->owner_id,$request->team_name);
+            if(!$Team_name){
+                $data = $request->image;
+                $mime_data = $request->mime;
+                $rand_str = str_random(40);
+                $filename = "$rand_str.$mime_data";
+                $data = base64_decode($data);
+                file_put_contents(public_path('images/'. $filename), $data);
+                $params['team_logo'] = $filename;
+                $request->request->add(['team_logo' => $filename]);
+
+                $request->request->add(['update' => 1,'id' => $request->id]);
+                $Team = $this->TeamMaster_model->SaveTeam($request);
+                if($Team){
+                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                }else{
+                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                }
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }
@@ -110,14 +126,19 @@ class TeamMasterControllerApi extends Controller
      * @return \Illuminate\Http\Response
      */
     public function deleteTeam(Request $request){
-        $this->validate($request,[
+        $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
         ]);
-        $Team = $this->TeamMaster_model->deleteById($request->id);
-        if($Team){
-            $output = array('status' => 200 ,'msg' => 'Sucess');
+        if(!$validator->fails()){
+            $Team = $this->TeamMaster_model->deleteById($request->id);
+            if($Team){
+                $Team->delete();
+                $output = array('status' => 200 ,'msg' => 'Sucess');
+            }else{
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Web\Other;
+namespace App\Http\Controllers\Api\V1\Other;
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Http\Request;
 use DB;
-
+use Validator;
 class HomeControllerApi extends Controller
 {
     /**

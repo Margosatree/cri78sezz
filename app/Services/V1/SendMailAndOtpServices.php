@@ -4,8 +4,11 @@ namespace App\Services\V1;
 
 use Illuminate\Support\Str;
 use App\Model\ResetVerify_model;
-use App\Services\V1\SendOtpServices;
-use Illuminate\Support\Facades\Mail;
+use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
+
+use Event;
+use App\Events\SendMail;
 
 class SendMailAndOtpServices{
 
@@ -14,47 +17,56 @@ class SendMailAndOtpServices{
      *
      * @var \App\Model\BaseModel\reset_verif
      */
+    protected $UserMaster_model;
     protected $ResetVerify_model;
+    protected $UserOrganisation_model;
 
 	public function __construct(){
+        $this->UserMaster_model=new UserMaster_model();
 		$this->ResetVerify_model = new ResetVerify_model();
+        $this->UserOrganisation_model=new UserOrganisation_model();
 	}
 
-    /**
-     * During ForgetPassword it detect whether request is mobile no. or Email
-     *
-     * @param  $data
-     * @return 
-     */
-    public function forgetPassword($data){
-
-        if(is_numeric($data)){
-            return $this->sendOtpForForgetPass($data);
-        }else{
-            return $this->sendEmailForForgetPass($data);
-        }
-    }
-
-     /**
-     * For ForgetPassword it use for sending Reset Password Link via Email
-     *
-     * @param  $email
-     * @return 
-     */
+    
 	public function sendEmailForForgetPass($email){
-        //event is fire with token
-        //save Token in Reset_Verify Table with Flag=1
-        //$this->saveToken();
+        //genrateToken --done
+        $forgetpass_token = $this->generateToken();
+
+        //event is fire with token --remaining
+
+
+        $check_email = $this->UserMaster_model->getValueByEmail($email);
+
+        //save Token in Reset_Verify Table with Flag=1 --done
+        if(count($check_email)){
+            $data = array(
+                        'user_email'=>$email,
+                        'token_data'=>$forgetpass_token
+                    );
+            Event::fire(new SendMail($data));
+            return $this->saveToken($email,$forgetpass_token);
+        }else{
+            return $check_email;
+        }
 	}
 
     /**
      * For ForgetPassword it use for Storing Token in Reset_Verif Table
-     *
+     *  Here Flag 1 means its comes for reset Password not for verify
      * @param  $token and $flag
      * @return 
      */
-	public function saveToken($token,$flag){
-
+	public function saveToken($email,$forgetpass_token){
+        //--done
+        $insert_data = array();
+        $check_data =['email'=>$email,'is_password_reset'=>1];
+        $update_data =array('token'=>$forgetpass_token);
+        $check_by_email = $this->ResetVerify_model->getValueByEmailOrMobile($check_data);
+        if(count($check_by_email)){
+            return $this->ResetVerify_model->updateByEmailOrMobile($check_data,$update_data);
+        }
+        $insert_data = array_merge($check_data,$update_data);
+        return $this->ResetVerify_model->insertData($insert_data);
 	}
 
     /**
@@ -64,10 +76,18 @@ class SendMailAndOtpServices{
      * @return 
      */
     public function sendOtpForForgetPass($mobile_no){
-        //generate Otp
-        //Fire Event 
+        //generate Otp --done
+        $forgetpass_otp = $this->generateOtp();
+
+        //Fire Event  --remaing
+
+        $check_mobile = $this->UserMaster_model->getValueByEmail($mobile_no);
         //Store Otp in reset_Verify table with flag=1;
-        //$this->saveOtp();
+        if(count($check_mobile)){
+            return $this->saveOtp($mobile_no,$forgetpass_otp);
+        }else{
+           return $check_mobile;
+        }
     }
 
      /**
@@ -76,33 +96,186 @@ class SendMailAndOtpServices{
      * @param  $mobile_no
      * @return 
      */
-    public function saveOtp(){
-        //save otp in reset_verify table with flag=0;
+    public function saveOtp($mobile_no,$forgetpass_otp){
+
+        //save otp in reset_verify table with flag=1; --done
+        $insert_data = array();
+        $check_data =['mobile'=>$mobile_no,'is_password_reset'=>1];
+        $update_data =array('mobile_otp'=>$forgetpass_otp);
+        $check_by_email = $this->ResetVerify_model->getValueByEmailOrMobile($check_data);
+        if(count($check_by_email)){
+            return $this->ResetVerify_model->updateByEmailOrMobile($check_data,$update_data);
+        }
+        $insert_data = array_merge($check_data,$update_data);
+        return $this->ResetVerify_model->insertData($insert_data);
     }
 
 
-
+    /**
+     * For VerifyUser it use for Sending and Storing Email and otp
+     *
+     * @param  $email and $mobile
+     * @return array
+     */
 
     public function sendVerifyNotify($email,$mobile){
-        $email_data = $this->sendEmailForVerify($email);
-        $mobile_data = $this->sendMobileOtpForVerify($mobile);
+
+        //genrate Otp for Email --done
+        $verify_email_otp = $this->generateOtp();
+
+        //generate Token For Email --done
+        $verify_token = $this->generateToken();
+
+        //genrate Otp for Mobile --done
+        $verify_mobile_otp = $this->generateOtp();
+
+        $email_mobile_data = array(
+                                     'email'=>$email
+                                    ,'mobile'=>$mobile
+                                    ,'mobile_otp'=>$verify_mobile_otp
+                                    ,'email_otp'=>$verify_email_otp
+                                    ,'token'=>$verify_token
+                                );
+        $data = array(
+                        'user_email'=>$email,
+                        'random_num'=>$verify_email_otp,
+                        'token_data'=>$verify_token
+                    );
+        Event::fire(new SendMail($data));
+        // var_dump($email_mobile_data);exit;
+
+        $this->saveVerifyEmailMobileData($email_mobile_data);
+        return $verify_token;
+
     }
 
 
-	public function sendEmailForVerify($email){
-        //genrate Otp for Email
-        //generate Token For Email
-        //Fire Event for Email
-        //Store Email data with flag=0;
+    /**
+     * For VerifyUser it use for Sending and Storing Email otp ,Token and Mobile Otp
+     *
+     * @param  $email 
+     * @return array
+     */
 
-	}
 
-    public function sendMobileOtpForVerify($mobile){
-        //genrate Otp for Email
-        //Fire Event for mobile Otp
-        //Store Email data with flag=0;
+    public function saveVerifyEmailMobileData($email_mobile_data){
+
+        $insert_data = array();
+        $check_data =array(
+                             'email'=>$email_mobile_data['email']
+                            ,'mobile'=>$email_mobile_data['mobile']
+                            ,'is_password_reset'=>0
+                        );
+        
+        $update_data =array(
+                             'mobile_otp'=>$email_mobile_data['mobile_otp']
+                            ,'email_otp'=>$email_mobile_data['email_otp']
+                            ,'token'=>$email_mobile_data['token']
+                            );
+        // var_dump($update_data);exit;
+        // var_dump($email_mobile_data);exit;
+        $check_by_email = $this->ResetVerify_model->getValueByEmailOrMobile($check_data);
+        
+        if(count($check_by_email)){
+            return $this->ResetVerify_model->updateByEmailOrMobile($check_data,$update_data);
+        }
+        $insert_data = array_merge($check_data,$update_data);
+        return $this->ResetVerify_model->insertData($insert_data);
     }
+
 	
+    /*
+     * @generateToken - Generate Token For Email
+     * @return Encrypted unique string as Token
+     */
+
+    protected function generateToken(){
+        return hash_hmac('sha256',str::random(40),config('app.key'));
+    }
+
+    /*
+     * @generateToken - Generate Otp For Verify and ForgetPassword
+     * @return unique random number for sending otp
+     */
+
+    public function generateOtp(){
+        $randomOtp = mt_rand(100000,999999);
+        return $randomOtp;
+    }
+
+
+    public function verifyEmailMobileUser($verify_data){
+        $verify_data['is_password_reset'] =0;
+    $check_verify = $this->ResetVerify_model->getValueByEmailOrMobile($verify_data);
+        if(count($check_verify)){
+            $check_data = array('email'=>$check_verify->first()->email);
+            $update_data = array(
+                                    'is_verify_phone'=>1,
+                                    'is_verify_email'=>1
+                                );
+         $this->UserMaster_model->updateUserMaster($check_data,$update_data);
+        }
+        return $check_verify;
+
+
+    }
+
+    public function resetPassByEmails($email_data){
+
+        $check_mobile = $this->UserMaster_model->getValueByEmail($email_data['email']);
+
+        if(!count($check_mobile)){
+            return $check_mobile;
+        }
+        
+        $check_data = array(
+                                'email'=>$email_data['email'],
+                                'token'=>$email_data['token'],
+                                'is_password_reset'=>1,
+                            );
+
+        $check_by_email = $this->ResetVerify_model->getValueByEmailOrMobile($check_data);
+        if(!count($check_by_email)){
+            return $check_by_email;
+        }
+
+        $update_data = array('email'=>$email_data['email']
+                            ,'password'=>$email_data['password']);
+        return $this->UserOrganisation_model->updatePassByEmail($update_data);
+
+
+    }
+
+    public function resetPassByMobiles($mobile_data){
+
+        $check_mobile = $this->UserMaster_model->getValueByEmail($mobile_data['mobile']);
+        if(!count($check_mobile)){
+            return $check_mobile;
+        }
+
+        $check_data = array(
+                                'mobile'=>$mobile_data['mobile'],
+                                'mobile_otp'=>$mobile_data['mobile_otp'],
+                                'is_password_reset'=>1,
+                            );
+
+        $check_by_email = $this->ResetVerify_model->getValueByEmailOrMobile($check_data);
+        if(!count($check_by_email)){
+            return $check_by_email;
+        }
+
+        $update_data = array('email'=>$check_mobile->first()->email
+                            ,'password'=>$mobile_data['password']);
+        return $this->UserOrganisation_model->updatePassByEmail($update_data);
+    }
+
+
+
+
+
+
+
+    //-----------------The End -----------------------//
 
 	/**
      * Generate and save a verification token for the given user.
@@ -120,14 +293,7 @@ class SendMailAndOtpServices{
         return $this->saveToken($user, $this->generateToken(),$flag);
     }
 
-	/*
-	 * @generateToken - Generate Token For Email
-	 * @return Encrypted unique string as Token
-	 */
-
-	protected function generateToken(){
-		return hash_hmac('sha256',str::random(40),config('app.key'));
-	}
+	
 
 
 	/**
@@ -202,11 +368,6 @@ class SendMailAndOtpServices{
                   ->send(new VerifyUser($random_num,$token_data));
     }
 
-
-    public function generateOtp(){
-        $randomOtp = mt_rand(100000,999999);
-        return $randomOtp;
-    }
 
 }
 

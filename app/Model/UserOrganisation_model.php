@@ -12,6 +12,9 @@ class UserOrganisation_model {
         public function getAll() {
             return User_Organisation::all();
         }
+        public function getById($id) {
+            return User_Organisation::find($id);
+        }
         public function getAllByGet(){
             return User_Organisation::get();
         }
@@ -22,8 +25,10 @@ class UserOrganisation_model {
         }
         
         public function getIdByUserId($id) {
-            return User_Organisation::selectRaw('*')->where('user_master_id',$id)->get();
+            return User_Organisation::selectRaw('*')->where('user_master_id',$id)->first();
         }
+        
+        
         
         public function getOrgById($id) {
             return User_Organisation::selectRaw('user_master_id')->where('organization_master_id',$id)->get();
@@ -57,9 +62,9 @@ class UserOrganisation_model {
         
         public function SaveUserOrg($request) {
             if(isset($request->update) && $request->update == 1){
-                $User_Org = Organisation_Master::find($request->id);
+                $User_Org = User_Organisation::find($request->id);
             }else{
-                $User_Org = new Organisation_Master;
+                $User_Org = new User_Organisation;
             }
             if(isset($request->user_master_id) && $request->user_master_id){
                 $User_Org->user_master_id = $request->user_master_id;
