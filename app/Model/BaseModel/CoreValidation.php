@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Model\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use App\Model\BaseModel\Balldata;
 class CoreValidation
 {
-    use SoftDeletingTrait;
+    use SoftDeletes;
     public function checkMaiden($maiden_parameters){
         if($maiden_parameters['ball_no']%6 == 0){
             $start_ball = $maiden_parameters['ball_no'] - 6;       

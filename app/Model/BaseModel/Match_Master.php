@@ -3,10 +3,10 @@
 namespace App\Model\BaseModel;
 use App\Model\BaseModel\Team_Master;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Match_Master extends Model
 {
-    use SoftDeletingTrait;
+    use SoftDeletes;
     protected $table = 'match_master';
 
     public $timestamps = false;

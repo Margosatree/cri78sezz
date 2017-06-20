@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Model\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class BatsmanDetail extends Model
 {
-    use SoftDeletingTrait;
+    use SoftDeletes;
     protected $table = 'batsman_details';
   //protected $primaryKey = 'trans_id';
      protected $primaryKey ='match_id';

@@ -1,33 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\CricketDetail;
 //use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
-use App\Model\BaseModel\ScoreMaster;
-use App\Model\BaseModel\Balldata;
-use App\Model\BaseModel\Batsman;
-use App\Model\BaseModel\Bowler;
-use App\Model\BaseModel\Fielder;
-use App\Model\BaseModel\Partnership;
-use App\Model\BaseModel\BatsmanDetail;
-use App\Model\BaseModel\BowlerDetail;
-use App\Model\BaseModel\PartnershipDetail;
-use App\Model\BaseModel\FielderDetail;
-use App\Model\BaseModel\UpdateBowler;
-use App\Model\BaseModel\UpdateFielder;
-use App\Model\BaseModel\TourSquad;
-use App\Model\BaseModel\MatchSquad;
-use App\Model\BaseModel\BatsmanPowerplay;
-use App\Model\BaseModel\BowlerPowerplay;
-use App\Model\BaseModel\FielderPowerplay;
-use App\Model\BaseModel\DirectScore;
-use App\Model\BaseModel\DirectBatsman;
-use App\Model\BaseModel\DirectBowler;
-use App\Model\BaseModel\DirectFielder;
-use App\Model\BaseModel\DirectPartnership;
-use App\Model\BaseModel\Balldatahistory;
+use App\Http\Controllers\Controller;
+
+use App\Model\ScoreMaster_model;
+use App\Model\Balldata_model;
+use App\Model\Batsman_model;
+use App\Model\Bowler_model;
+use App\Model\Fielder_model;
+use App\Model\Partnership_model;
+use App\Model\BatsmanDetail_model;
+use App\Model\BowlerDetail_model;
+use App\Model\PartnershipDetail_model;
+use App\Model\FielderDetail_model;
+use App\Model\UpdateBowler_model;
+use App\Model\UpdateFielder_model;
+use App\Model\TourSquad_model;
+use App\Model\MatchSquad_model;
+use App\Model\BatsmanPowerplay_model;
+use App\Model\BowlerPowerplay_model;
+use App\Model\FielderPowerplay_model;
+use App\Model\DirectScore_model;
+use App\Model\DirectBatsman_model;
+use App\Model\DirectBowler_model;
+use App\Model\DirectFielder_model;
+use App\Model\DirectPartnership_model;
+use App\Model\Balldatahistory_model;
 use DB;
-class PostsController extends Controller{
+class ScoreMaster extends Controller{
     
     /**
      * Display a listing of the resource.
@@ -52,12 +54,33 @@ class PostsController extends Controller{
     protected $DirectPartnership_model;
     protected $DirectScore_model;
     protected $Balldatahistory_model;
+
     public function __construct() {
-        
+       $this->_initModel(); 
+    }
+
+    protected function _initModel(){
+        $this->Balldata_model = new Balldata_model();
+        $this->ScoreMaster_model = new ScoreMaster_model();
+        $this->BatsmanDetail_model = new BatsmanDetail_model();
+        $this->BowlerDetail_model = new BowlerDetail_model();
+        $this->PartnershipDetail_model = new PartnershipDetail_model();
+        $this->UpdateBowler_model = new UpdateBowler_model();
+        $this->UpdateFielder_model = new UpdateFielder_model();
+        $this->TourSquad_model = new TourSquad_model();
+        $this->MatchSquad_model = new MatchSquad_model();
+        $this->BatsmanPowerplay_model = new BatsmanPowerplay_model();
+        $this->BowlerPowerplay_model = new BowlerPowerplay_model();
+        $this->FilderPowerplay_model = new FielderPowerplay_model();
+        $this->DirectBatsman_model = new DirectBatsman_model();
+        $this->DirectBowler_model = new DirectBowler_model();
+        $this->DirectFielder_model = new DirectFielder_model();
+        $this->DirectPartnership_model = new DirectPartnership_model();
+        $this->DirectScore_model = new DirectScore_model();
+        $this->Balldatahistory_model = new Balldatahistory_model();
     }
     
     public function tourSquad(Request $request){
-        $this->TourSquad_model = new TourSquad();
         $status = $this->TourSquad_model->storeTourSquad($request);
         if($status = true)
         {
@@ -71,7 +94,7 @@ class PostsController extends Controller{
     public function matchSquad(Request $request){
         /*$output = array();
         $output['data'] = "Hello World";*/
-        $this->MatchSquad_model = new MatchSquad();
+        
         $status = $this->MatchSquad_model->storeMatchSquad($request);
         if($status = true)
         {
@@ -83,21 +106,18 @@ class PostsController extends Controller{
     }
 
     public function getBowler(Request $request){              
-        $this->UpdateBowler_model = new UpdateBowler();
         $data_change = $this->UpdateBowler_model->calBowlerChanger($request);
         return $data_change;
     }
 
     public function getFielder(Request $request){
-        $this->UpdateFielder_model = new UpdateFielder();
         $data_change = $this->UpdateFielder_model->calFielderChanger($request);
         return $data_change;        
     }
 
     public function changeFielder(Request $request){
         //return response()->json($request);
-        $this->UpdateFielder_model = new UpdateFielder();
-        $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
+    $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
         if($data_change == true)
         {
             $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
@@ -112,7 +132,6 @@ class PostsController extends Controller{
 
     public function changeBowler(Request $request){ 
         //dd($request);
-        $this->UpdateBowler_model = new UpdateBowler();
         $chkConstraint = $this->UpdateBowler_model->checkConstraint($request,2,10);
        // dd($chkConstraint['status']);           
         if($chkConstraint['status'] == 200)
@@ -136,7 +155,7 @@ class PostsController extends Controller{
 
     public function ballDataUndo(Request $request)
     {   
-        $this->Balldata_model = new Balldata();
+        
         $data = $this->Balldata_model->undoRecord($request);
         return $this->undoTick($data->first());
     }
@@ -209,15 +228,12 @@ class PostsController extends Controller{
     }
 
     public function calBatsmanPowerplay($request){
-        $this->BatsmanPowerplay_model = new BatsmanPowerplay();
         $this->BatsmanPowerplay_model->saveBatsmanTickData($request);
     }
     public function calBowlerPowerplay($request){
-        $this->BowlerPowerplay_model = new BowlerPowerplay();
         $this->BowlerPowerplay_model->saveBowlerTickData($request);
     }
     public function calFilderPowerplay($request){
-        $this->FilderPowerplay_model = new FielderPowerplay();
         $this->FilderPowerplay_model->saveFielderTickData($request);
     }
     
@@ -227,23 +243,20 @@ class PostsController extends Controller{
     }
     
     public function calPartnershipDetail($request){
-        $this->PartnershipDetail_model = new PartnershipDetail();
         $this->PartnershipDetail_model->savePartnershipDetail($request);
     }
     
     public function calBatsmanDetail($request){
-        $this->BatsmanDetail_model = new BatsmanDetail();
+        
         $this->BatsmanDetail_model->saveBatsmanDetail($request);
     }
 
     public function calBowlerDetail($request){
-        $this->BowlerDetail_model = new BowlerDetail();
         $this->BowlerDetail_model->saveBowlerDetail($request);
     }
 
     public function calScore($request){
-       $this->Balldata_model = new Balldata();
-      return $this->Balldata_model->saveBalldata($request);
+       return $this->Balldata_model->saveBalldata($request);
     }
     public function calBatsman($request){
         $this->BatsmanMaster_model = new Batsman();
@@ -263,12 +276,10 @@ class PostsController extends Controller{
     }
 
     public function calScoreMaster($request){
-       $this->Balldata_model = new ScoreMaster();
-       $this->Balldata_model->saveTeamdata($request);
+       $this->ScoreMaster_model->saveTeamdata($request);
     }
 
     public function directBatsman(Request $request){
-        $this->DirectBatsman_model = new DirectBatsman();
         $status = $this->DirectBatsman_model->storeDirectBatsman($request);
         if($status = true)
         {
@@ -280,7 +291,6 @@ class PostsController extends Controller{
     }
     
     public function directBowler(Request $request){
-        $this->DirectBowler_model = new DirectBowler();
         $status = $this->DirectBowler_model->storeDirectBowler($request);
         if($status = true)
         {
@@ -292,7 +302,6 @@ class PostsController extends Controller{
     }
 
     public function directFielder(Request $request){
-       $this->DirectFielder_model = new DirectFielder();
         $status = $this->DirectFielder_model->storeDirectFielder($request);
         if($status = true)
         {
@@ -304,8 +313,7 @@ class PostsController extends Controller{
     }
 
     public function directPartnership(Request $request){
-        $this->DirectPartnership_model = new DirectPartnership();
-        $status = $this->DirectPartnership_model->storeDirectPartnership($request);
+    $status = $this->DirectPartnership_model->storeDirectPartnership($request);
         if($status = true)
         {
             return response()->json(['status'=>200, 'Message'=>'Data sucessfully submitted']);
@@ -316,7 +324,6 @@ class PostsController extends Controller{
     }
 
     public function directScore(Request $request){
-        $this->DirectScore_model = new DirectScore();
         $status = $this->DirectScore_model->storeDirectScore($request);
         if($status = true)
         {
@@ -330,7 +337,6 @@ class PostsController extends Controller{
     public function ballDataHistory(Request $request){
         //return response()->json($request);
         //dd("Heelo");
-        $this->Balldatahistory_model = new Balldatahistory();
         $data = $this->Balldatahistory_model->saveBalldata($request);
         return response()->json($data);
     }

@@ -7,7 +7,7 @@ use DB;
 class Balldata_model {
 
     public function __construct(){
-        parent::__construct();
+        //parent::__construct();
     }
 	
     public function isBowlerRecordExists($where_array){

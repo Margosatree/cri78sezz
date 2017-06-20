@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Model\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Partnership extends Model
 {
-    use SoftDeletingTrait;
+    use SoftDeletes;
     protected $table = 'partnership_master';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];

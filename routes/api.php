@@ -101,22 +101,22 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 });
 Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
 
-Route::post('/tickdata', 'PostsController@saveTick');
-Route::post('/getbowler', 'PostsController@getBowler');
-Route::post('/changebowler', 'PostsController@changeBowler');
+Route::post('/tickdata', 'Api\V1\CricketDetail\ScoreMaster@saveTick');
+Route::post('/getbowler', 'Api\V1\CricketDetail\ScoreMaster@getBowler');
+Route::post('/changebowler', 'Api\V1\CricketDetail\ScoreMaster@changeBowler');
 
-Route::post('/getfielder', 'PostsController@getFielder');
-Route::post('/changefielder', 'PostsController@changeFielder');
+Route::post('/getfielder', 'Api\V1\CricketDetail\ScoreMaster@getFielder');
+Route::post('/changefielder', 'Api\V1\CricketDetail\ScoreMaster@changeFielder');
 
-Route::post('/toursquad', 'PostsController@tourSquad');
-Route::post('/matchsquad', 'PostsController@matchSquad');
+Route::post('/toursquad', 'Api\V1\CricketDetail\ScoreMaster@tourSquad');
+Route::post('/matchsquad', 'Api\V1\CricketDetail\ScoreMaster@matchSquad');
 
-Route::post('/direct_batsman', 'PostsController@directBatsman');
-Route::post('/direct_bowler', 'PostsController@directBowler');
-Route::post('/direct_fielder', 'PostsController@directFielder');
-Route::post('/direct_partnership', 'PostsController@directPartnership');
-Route::post('/direct_score', 'PostsController@directScore');
+Route::post('/direct_batsman', 'Api\V1\CricketDetail\ScoreMaster@directBatsman');
+Route::post('/direct_bowler', 'Api\V1\CricketDetail\ScoreMaster@directBowler');
+Route::post('/direct_fielder', 'Api\V1\CricketDetail\ScoreMaster@directFielder');
+Route::post('/direct_partnership', 'Api\V1\CricketDetail\ScoreMaster@directPartnership');
+Route::post('/direct_score', 'Api\V1\CricketDetail\ScoreMaster@directScore');
 
-Route::post('/history', 'PostsController@ballDataHistory');
+Route::post('/history', 'Api\V1\CricketDetail\ScoreMaster@ballDataHistory');
 
-Route::post('/undo', 'PostsController@ballDataUndo');
+Route::post('/undo', 'Api\V1\CricketDetail\ScoreMaster@ballDataUndo');
