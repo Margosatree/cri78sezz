@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Model\BaseModel;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class User_Organisation extends Model
 {
-    use Notifiable,SoftDeletingTrait;
+    use SoftDeletes;
     protected $table = 'user_organizations';
 
     public function roles(){

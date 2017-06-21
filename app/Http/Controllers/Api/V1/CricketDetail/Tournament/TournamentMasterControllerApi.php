@@ -39,8 +39,9 @@ class TournamentMasterControllerApi extends Controller {
     }
     
     public function listTournament(){
-        $organization_master_id = 1;//have to find Org id from login
-        $Tournaments = $this->TournamentMaster_model->getTourByOrgId($organization_master_id);
+        $user = JWTAuth::parseToken()->authenticate();
+        // $organization_master_id = 1;//have to find Org id from login
+        $Tournaments = $this->TournamentMaster_model->getTourByOrgId($user->organization_master_id);
         if($Tournaments){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tournaments);
         }else{
@@ -62,9 +63,10 @@ class TournamentMasterControllerApi extends Controller {
         ]);
         
         if(!$validator->fails()){
-            $organization_master_id = 1;//have to find Org id from login
+            $user = JWTAuth::parseToken()->authenticate();
+            // $organization_master_id = 1;//have to find Org id from login
             $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
-                    $organization_master_id,$request->tournament_name);
+                    $user->organization_master_id,$request->tournament_name);
             if(!$Tournament_Exist){
                 $data = $request->image;
                 $mime_data = $request->mime;
@@ -104,9 +106,10 @@ class TournamentMasterControllerApi extends Controller {
             'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
         if(!$validator->fails()){
-            $organization_master_id = 1;//have to find Org id from login
+            $user = JWTAuth::parseToken()->authenticate();
+            // $organization_master_id = 1;//have to find Org id from login
             $Tournament_Exist = $this->TournamentMaster_model->TourNameExists(
-                    $organization_master_id,
+                    $user->organization_master_id,
                     $request->tournament_name);
             if(!$Tournament_Exist){
                 $data = $request->image;

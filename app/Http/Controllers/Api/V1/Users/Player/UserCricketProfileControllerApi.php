@@ -72,8 +72,9 @@ class UserCricketProfileControllerApi extends Controller
             file_put_contents(public_path('images/'. $filename), $data);
             $request->request->add(['display_img' => $filename]);
             
-            $user_master_id = 1;
-            $request->request->add(['user_master_id' => $user_master_id]);
+            $user = JWTAuth::parseToken()->authenticate();
+            // $user_master_id = 1;
+            $request->request->add(['user_master_id' => $user->user_master_id]);
             $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
             if($User_Cri_Profile){
                 $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
@@ -109,10 +110,11 @@ class UserCricketProfileControllerApi extends Controller
                 file_put_contents(public_path('images/'. $filename), $data);
                 $request->request->add(['display_img' => $filename]);
             }
-            $user_master_id = 1;
+            $userdata = JWTAuth::parseToken()->authenticate();
+            // $user_master_id = 1;
             $user = $this->UserCricketProfile_model->getCriProfileByUserMasterId($request->user_master_id);
             if($user){
-                $request->request->add(['user_master_id' => $user_master_id,'update' => 1,'id' => $user->id]);
+                $request->request->add(['user_master_id' => $userdata->user_master_id,'update' => 1,'id' => $user->id]);
                 $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
                 if($User_Cri_Profile){
                     $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);

@@ -33,8 +33,9 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function listTeam(Request $request){
-        $organization_master_id = 1;//have to find user id from login
-        $Teams = $this->TeamMaster_model->getTeamDetail($organization_master_id);
+        $user = JWTAuth::parseToken()->authenticate();
+        // $organization_master_id = 1;//have to find user id from login
+        $Teams = $this->TeamMaster_model->getTeamDetail($user->organization_master_id);
         if($Teams){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Teams);
         }else{

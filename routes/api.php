@@ -43,6 +43,8 @@ Route::post('/output', function(){
 // Route::post('/matchsquad', 'PostsController@matchSquad');
 //Vrajeshbhai
 //Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
+Route::get('auth/test', 'Api\V1\UserController@getUserProfile');
+
 Route::post('auth/register', 'Api\V1\UserController@register');
 Route::post('auth/login', 'Api\V1\UserController@login');
 Route::post('verifyuser', 'Api\V1\UserController@verifyUser');

@@ -90,5 +90,12 @@ class UserOrganisation_model {
             $User_Org->save();
             return $User_Org;
         }
+
+
+        function displayUserProfile(){
+           return User_Organisation::leftJoin('user_masters','user_organizations.user_master_id','=','user_masters.id')
+                             ->leftJoin('organization_masters','user_organizations.organization_master_id','=','organization_masters.id')->get();
+                             // ->where()
+        }
         
 }

@@ -45,8 +45,9 @@ class MatchMastersControllerApi extends Controller
             'tournament_id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
-            $organization_master_id = 1; //have to find Org id from login
-            $Tour_id = $this->TournamentMaster_model->getId($organization_master_id,$request->tournament_id);
+            $user = JWTAuth::parseToken()->authenticate();
+            // $organization_master_id = 1; //have to find Org id from login
+            $Tour_id = $this->TournamentMaster_model->getId($user->organization_master_id,$request->tournament_id);
             $Matches = $this->MatchMaster_model->checkTourId($Tour_id);
             if($Matches){
                 $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Matches);

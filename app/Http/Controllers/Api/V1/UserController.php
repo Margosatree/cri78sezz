@@ -117,6 +117,12 @@ class UserController extends Controller
         return response()->json(['result' => $user]);
     }
 
+    public function getUserProfile(){
+        // $user = JWTAuth::parseToken()->authenticate();
+        $data = $this->UserOrganisation_model->displayUserProfile();
+        return response()->json(['result' => $data]);
+    }
+
     public function verifyUser(Request $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',

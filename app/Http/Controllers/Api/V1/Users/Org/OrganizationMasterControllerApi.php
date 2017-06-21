@@ -116,7 +116,7 @@ class OrganizationMasterControllerApi extends Controller
             'id' => 'required|min:1'
         ]);
         if(!$validator->fails()){
-            $organization_master_id = 1;
+            // $organization_master_id = 1;
             $Org = $this->OrganisationMaster_model->getById($request->id);
             if($Org){
                 $Org->delete();
