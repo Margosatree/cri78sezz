@@ -9,5 +9,5 @@ class BowlerDetail extends Model
     protected $table = 'bowler_details';
     protected $primaryKey = 'match_id';
     protected $guarded = [];
-
+    protected $dates = ['deleted_at'];
 }

@@ -9,5 +9,5 @@ class FielderDetail extends Model
     protected $table = 'fielder_details';
     protected $primaryKey = 'match_id';
     protected $guarded = [];
-    
+    protected $dates = ['deleted_at'];
 }

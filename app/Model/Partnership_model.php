@@ -3,12 +3,14 @@
 namespace App\Model;
 use App\Model\BaseModel\Partnership;
 use App\Model\Balldata_model;
+
 class Partnership_model {
 
     protected $Balldata_Model;
     
     public function __construct() {
         $this->Balldata_Model = new Balldata_model();
+      
     }
     
     private function isBastsmanExists($where_array){
@@ -31,11 +33,11 @@ class Partnership_model {
             
             $both_exists = true;
             $where_array['batsman_id'] = $request->batsman_id;
-    $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
+            $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
             
             $Bat_Summery->bowler_id = $request->bowler_id;
             $Bat_Summery->fielder_id = $request->fielder_id;
-            $Bat_Summery->for_wicket = $request->wicket_count;
+            $Bat_Summery->for_wicket = $request->for_wicket;
             $Bat_Summery->batsman_name = $Bat_Summery->userinfo->first_name.' '.$Bat_Summery->userinfo->last_name;
             // $Bat_Summery->batsman_type = $Bat_Summery->userCrickinfo->player_type;
             $this->savePartnershipMaster($batsman1_exists,$Bat_Summery);
@@ -44,17 +46,19 @@ class Partnership_model {
             $where_array['batsman_id'] = $request->batsman_id;
             $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
 
-            // dd($Bat_Summery);
+            //dd($Bat_Summery);
             // dd($this->Balldata_Model->getPartnershipSummery($where_array));
+            // var_dump($Bat_Summery);exit;
             $Bat_Summery->bowler_id = $request->bowler_id;
             $Bat_Summery->fielder_id = $request->fielder_id;
-            $Bat_Summery->for_wicket = $request->wicket_count;
+            $Bat_Summery->for_wicket = $request->for_wicket;
+
             $Bat_Summery->batsman_name = $Bat_Summery->userinfo->first_name.' '.$Bat_Summery->userinfo->last_name;
             
             $this->savePartnershipMaster($both_exists,$Bat_Summery);
             $this->dummyPartnership($request);
         }
-        echo json_encode($Bat_Summery->userinfo->first_name);
+       // echo json_encode($Bat_Summery->userinfo->first_name);
         // echo json_encode($Bat_Summery->userCrickinfo->player_type);
         
     }
@@ -97,7 +101,7 @@ class Partnership_model {
         $dummyData->match_id = $request->match_id;
         $dummyData->order_id = $request->order_id; //find
         $dummyData->innings = $request->innings;
-        $dummyData->for_wicket = $request->wicket_count; //find
+        $dummyData->for_wicket = $request->for_wicket; //find
         $dummyData->batsman_id = $request->batsman_id2;
         $dummyData->batsman_name = $request->batsman_name;
         $dummyData->batsman_type = $request->batsman_type;

@@ -10,5 +10,5 @@ class Batsmanmaster extends Model
     protected $primaryKey = 'TransId';
     protected $table = 'batsmanmaster';
     protected $guarded = [];
-    public $timestamps = False;
+    protected $dates = ['deleted_at'];
 }

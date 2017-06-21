@@ -8,5 +8,5 @@ class TourSquad extends Model
     use SoftDeletes;
     protected $table = 'tour_squad';
     protected $guarded = [];
-
+    protected $dates = ['deleted_at'];
 }

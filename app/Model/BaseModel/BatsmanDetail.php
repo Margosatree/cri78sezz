@@ -9,8 +9,8 @@ class BatsmanDetail extends Model
     use SoftDeletes;
     protected $table = 'batsman_details';
   //protected $primaryKey = 'trans_id';
-     protected $primaryKey ='match_id';
+    protected $primaryKey ='match_id';
 
     protected $guarded = [];
-    public $timestamps = false;
+    protected $dates = ['deleted_at'];
 }

@@ -10,5 +10,5 @@ class PartnershipDetail extends Model
     protected $table = 'partnership_details';
     protected $primaryKey ='match_id';
     protected $guarded = [];
-
+    protected $dates = ['deleted_at'];
 }

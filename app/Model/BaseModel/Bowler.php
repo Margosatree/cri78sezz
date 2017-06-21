@@ -10,5 +10,5 @@ class Bowler extends Model {
     protected $table = 'bowler_master';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
-    
+    protected $dates = ['deleted_at'];
 }

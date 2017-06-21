@@ -8,7 +8,7 @@ class Tournament_Details extends Model
 {
     use SoftDeletes;
     protected $table = 'tournament_details';
-    
+    protected $dates = ['deleted_at'];
     protected $fillable = [
         'specification','value', 'range_from', 'range_to'
         

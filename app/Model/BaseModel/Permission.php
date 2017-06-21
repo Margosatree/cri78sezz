@@ -8,7 +8,7 @@ class Permission extends Model
 {
     use SoftDeletes;
     protected $fillable = ['name', 'slug', 'description'];
-
+    protected $dates = ['deleted_at'];
     public function roles()
     {
         return $this->belongsToMany('App\Role');

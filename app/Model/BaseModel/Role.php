@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use SoftDeletes;
+    protected $dates = ['deleted_at'];
     protected $fillable = ['name', 'slug', 'description'];
 
     public function users()

@@ -9,4 +9,5 @@ class Scoreboard extends Model
     use SoftDeletes;
     protected $table = 'scoremaster';
     protected $guarded = [];
+    protected $dates = ['deleted_at'];
 }

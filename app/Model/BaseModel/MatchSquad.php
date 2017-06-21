@@ -8,5 +8,5 @@ class MatchSquad extends Model
     use SoftDeletes;
     protected $table = 'match_squad';
     protected $guarded = [];
-
+    protected $dates = ['deleted_at'];
 }

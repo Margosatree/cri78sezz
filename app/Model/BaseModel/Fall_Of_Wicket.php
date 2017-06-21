@@ -9,4 +9,5 @@ class Fall_Of_Wicket extends Model
     use SoftDeletes;
     protected $table = 'fall_of_wickets';
     protected $guarded = [];
+    protected $dates = ['deleted_at'];
 }

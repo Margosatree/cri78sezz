@@ -10,5 +10,6 @@ class ScoreMaster extends Model
     protected $table = 'score_master';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
+    protected $dates = ['deleted_at'];
 
 }

@@ -8,4 +8,5 @@ class role_user extends Model
 {
     use SoftDeletes;
     protected $table = 'role_user';
+    protected $dates = ['deleted_at'];
 }

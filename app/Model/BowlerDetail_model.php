@@ -41,7 +41,7 @@ class BowlerDetail_model {
         }else{
             $BowlerDetail = new BowlerDetail();//Add
         }
-        $ball_area = BallArea::where('id',$request->ball_area_id)->value('name');        
+        $ball_area = $this->BallArea_Model->getBallArea($request->ball_area_id);
         $BowlerDetail->match_id = $request->match_id;
         $BowlerDetail->innings = $request->innings;
         $BowlerDetail->bowler_id = $request->bowler_id;

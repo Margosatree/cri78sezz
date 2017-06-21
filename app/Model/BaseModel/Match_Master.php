@@ -20,7 +20,7 @@ class Match_Master extends Model
         
     ];
     protected $guarded = ['match_id'];
-    
+    protected $dates = ['deleted_at'];
     public function Team1Name(){
         return $this->belongsTo(Team_Master::class,'team1_id','id');
     }

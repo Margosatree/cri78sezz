@@ -78,6 +78,11 @@ class ScoreMaster extends Controller{
         $this->DirectPartnership_model = new DirectPartnership_model();
         $this->DirectScore_model = new DirectScore_model();
         $this->Balldatahistory_model = new Balldatahistory_model();
+        $this->BatsmanMaster_model = new Batsman_model();
+        $this->FielderDetail_model = new FielderDetail_model();
+        $this->BowlerMaster_model = new Bowler_model();
+        $this->FilderMaster_model = new Fielder_model();
+        $this->PartnershipMaster_model = new Partnership_model();
     }
     
     public function tourSquad(Request $request){
@@ -188,7 +193,8 @@ class ScoreMaster extends Controller{
             {
                 return response()->json(['status'=>200, 'message'=>'Undo Done Sucessfully']);
             }*/
-            return $data;
+
+            //return $data;
             // DB::commit();
             // $data['status'] = 200;
             // $data['msg'] = "Entry Added Successfuly";
@@ -238,7 +244,7 @@ class ScoreMaster extends Controller{
     }
     
     public function calFielderDetail($request){
-        $this->FielderDetail_model = new FielderDetail();
+        
         $this->FielderDetail_model->saveFielderDetail($request);
     }
     
@@ -259,19 +265,16 @@ class ScoreMaster extends Controller{
        return $this->Balldata_model->saveBalldata($request);
     }
     public function calBatsman($request){
-        $this->BatsmanMaster_model = new Batsman();
+        
         $this->BatsmanMaster_model->saveBatsmanTickData($request);
     }
-    public function calBowler($request){
-        $this->BowlerMaster_model = new Bowler();
+    public function calBowler($request){        
         $this->BowlerMaster_model->saveBowlerTickData($request);
     }
     public function calFilder($request){
-        $this->FilderMaster_model = new Fielder();
         $this->FilderMaster_model->saveFielderTickData($request);
     }
-    public function calPartnership($request){
-        $this->PartnershipMaster_model = new Partnership();
+    public function calPartnership($request){        
         $this->PartnershipMaster_model->savePartnershipTickData($request);
     }
 

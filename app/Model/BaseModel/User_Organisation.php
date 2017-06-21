@@ -8,7 +8,7 @@ class User_Organisation extends Model
 {
     use Notifiable,SoftDeletes;
     protected $table = 'user_organizations';
-
+    protected $dates = ['deleted_at'];
     public function roles(){
         return $this->belongsToMany('App\Model\BaseModel\Role','role_user','user_id','role_id');
     }

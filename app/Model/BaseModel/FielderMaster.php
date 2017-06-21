@@ -10,5 +10,5 @@ class FielderMaster extends Model
     protected $primaryKey = 'TransId';
     protected $table = 'fieldermaster';
     protected $guarded = [];
-    public $timestamps = False;
+    protected $dates = ['deleted_at'];
 }

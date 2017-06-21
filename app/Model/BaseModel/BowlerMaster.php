@@ -10,5 +10,5 @@ class BowlerMaster extends Model
     protected $primaryKey = 'TransId';
     protected $table = 'bowllermaster';
     protected $guarded = [];
-    public $timestamps = False;
+    protected $dates = ['deleted_at'];
 }

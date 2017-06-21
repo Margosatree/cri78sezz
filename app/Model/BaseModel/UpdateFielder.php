@@ -10,4 +10,5 @@ class UpdateFielder extends Model
     protected $table = 'fielder_master';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
+    protected $dates = ['deleted_at'];
 }
