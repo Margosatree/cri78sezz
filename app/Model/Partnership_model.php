@@ -34,7 +34,7 @@ class Partnership_model {
             $both_exists = true;
             $where_array['batsman_id'] = $request->batsman_id;
             $Bat_Summery = $this->Balldata_Model->getPartnershipSummery($where_array);
-            
+            //dd($Bat_Summery);
             $Bat_Summery->bowler_id = $request->bowler_id;
             $Bat_Summery->fielder_id = $request->fielder_id;
             $Bat_Summery->for_wicket = $request->for_wicket;

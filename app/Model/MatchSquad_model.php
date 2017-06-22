@@ -18,10 +18,20 @@ class MatchSquad_model {
                 'tournament_id'=>$request->tournament_id,
                 'team_id'=>$request->team_id,
                 'match_id'=>$request->match_id,
-                'player_id'=>$data['player'],
+                'player_id'=>$data['player_id'],
                 'playing'=>$data['playing']
             ]);        
         }
         return $status;
+    }
+
+    public function checkInPlayers($request)
+    {
+        $playing = MatchSquad::select('playing')
+                   ->where('match_id',$request->match_id)
+                   ->where('player_id',$request->new_id)
+                   ->get();
+
+        return $playing;  
     }
 }

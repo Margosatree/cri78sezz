@@ -71,7 +71,7 @@ class Balldata_model {
         }
     }
 
-    public function checkInPlayers($request)
+    /*public function checkInPlayers($request)
     {
         $playing = MatchSquad::select('playing')
                    ->where('match_id',$request->match_id)
@@ -79,7 +79,7 @@ class Balldata_model {
                    ->get();
 
         return $playing;  
-    }
+    }*/
     public function getBatsmanSummery($where_data){
         return Balldata::selectRaw(" 
             SUM(IF(batsman_score = 1,1,0)) AS run1,
@@ -125,6 +125,16 @@ class Balldata_model {
         return Balldata::where('match_id',$where_array['match_id'])->where('innings',$where_array['innings'])->where('ball_no',$where_array['ball_no'])->where('fielder_id',$where_array['old_fielder_id'])->update(['fielder_id'=>$where_array['new_fielder_id']]);
     }
 
+    public function matchInfo($request)
+    {
+        return Balldata::where('match_id',$request->match_id)->get()->toArray();
+    }
+
+    public function deleteMatchInfo($request)
+    {
+        Balldata::where('match_id',$request->match_id)->delete();
+    }
+
     public function undoRecord($request)
     {   
         $data = Balldata::where('match_id',$request->match_id)
@@ -132,7 +142,7 @@ class Balldata_model {
                 ->orderBy('trans_id','DESC')
                 ->take(1)
                 ->get();
-        
+       // dd($data);
         $delete_count = Balldata::where('match_id',$request->match_id)
                         ->where('innings',$request->innings)
                         ->orderBy('trans_id','DESC')

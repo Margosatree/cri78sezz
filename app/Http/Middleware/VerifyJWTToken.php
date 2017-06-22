@@ -6,7 +6,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Illuminate\Support\Facades\Response;
 
-use App\Model\RoleUser_model;
+//use App\Model\RoleUser_model;
 class VerifyJWTToken
 {
     /**
@@ -18,22 +18,22 @@ class VerifyJWTToken
      */
     public function handle($request, Closure $next)
     {
-        $this->RoleUser_model = new RoleUser_model;
-        $controllerAction = class_basename($request->route()->getActionName());
-        //$routeArray = $request->route()->getAction();
-        list($controller, $action) = explode('@', $controllerAction);
+        // $this->RoleUser_model = new RoleUser_model;
+        // $controllerAction = class_basename($request->route()->getActionName());
+        // //$routeArray = $request->route()->getAction();
+        // list($controller, $action) = explode('@', $controllerAction);
         try{
             $user = JWTAuth::parseToken()->authenticate();
-            if($user){
-                $get_perms = $this->RoleUser_model->getPermissionsByUserIdAPI($user->id);
-                    if(!in_array("$controller.$action", $get_perms)) {
-                        return Response::json(
-                            ['error'=>[
-                                        'message'=>'UnauthorizedHttpException',
-                                        'status_code'=>403
-                                ]],403);
-                    }
-            }
+            // if($user){
+            //     $get_perms = $this->RoleUser_model->getPermissionsByUserIdAPI($user->id);
+            //         if(!in_array("$controller.$action", $get_perms)) {
+            //             return Response::json(
+            //                 ['error'=>[
+            //                             'message'=>'UnauthorizedHttpException',
+            //                             'status_code'=>403
+            //                     ]],403);
+            //         }
+            // }
 
         }catch (JWTException $e) {
             if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {

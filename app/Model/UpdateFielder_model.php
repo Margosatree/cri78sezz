@@ -51,7 +51,7 @@ class UpdateFielder_model {
         	if($fielder_exists != null){
         	$flag =$this->Balldata_Model->isFielderRecordExists($where_data1);
         	if($flag != null){
-        	$Fielder_Summery = $this->Balldata_Model->getFielderSummery($where_data1);
+        	$Fielder_Summery = $this->Balldata_Model->getFilderSummery($where_data1);
         	$this->Fielder_Model->saveFielderMaster(true,$Fielder_Summery);
         	}
         	else{
@@ -65,8 +65,9 @@ class UpdateFielder_model {
         	]; 
 
         	$fielder_exists = $this->Fielder_Model->isFielderExists($where_data2);
-        	$Fielder_Summery = $this->Balldata_Model->getFielderSummery($where_data2);
-        	$this->Fielder_Model->saveFielderMaster($fielder_exists,$Fielder_Summery);
+        	$Fielder_Summery = $this->Balldata_Model->getFilderSummery($where_data2);
+        	$result = $this->Fielder_Model->saveFielderMaster($fielder_exists,$Fielder_Summery);
+            return $result;
         }
     	
     }

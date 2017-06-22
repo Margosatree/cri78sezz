@@ -10,8 +10,8 @@ class TourSquad_model {
     
     public function storeTourSquad($request){
         $status = false;
-        $players = explode(",",$request->players);
-        foreach($players as $player){
+        //$players = explode(",",$request->players);
+        foreach($request->players as $player){
             $status = TourSquad::create([
                 'tournament_id'=>$request->tournament_id,
                 'team_id'=>$request->team_id,

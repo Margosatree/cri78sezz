@@ -123,6 +123,7 @@ class ScoreMaster extends Controller{
     public function changeFielder(Request $request){
         //return response()->json($request);
     $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
+    //dd($data_change);
         if($data_change == true)
         {
             $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
@@ -138,12 +139,14 @@ class ScoreMaster extends Controller{
     public function changeBowler(Request $request){ 
         //dd($request);
         $chkConstraint = $this->UpdateBowler_model->checkConstraint($request,2,10);
-       // dd($chkConstraint['status']);           
+       // dd($chkConstraint['status']);  
+
         if($chkConstraint['status'] == 200)
         {
             $data_change = $this->UpdateBowler_model->bowlerChangeMaker($request);
+            //dd($data_change);
             if($data_change == true)
-            {
+            {   
                 $response = ['status'=>200, 'Message'=>'Record updated sucessfuly'];
                 return response()->json($response);
             }

@@ -13,36 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/output', function(){
-//    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tournament);
-    $output = array('status' => 400 ,'msg' => 'Transection Fail');
-//    $output = array('status' => 400 ,'msg' => 'Tournament Name Already Exist');
-//    $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
-    return response()->json($output);
-});
-
-
-//Route::post('/bio/addBio', 'Api\V1\Users\UsersBioControllerApi@addUserBio');
-
-
-
-
-
-//Vrajeshbhai
-// Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
-
-// Route::post('/tickdata', 'PostsController@saveTick');
-
-// Route::post('/getbowler', 'PostsController@getBowler');
-// Route::post('/changebowler', 'PostsController@changeBowler');
-
-// Route::post('/getfielder', 'PostsController@getFielder');
-// Route::post('/changefielder', 'PostsController@changeFielder');
-
-// Route::post('/toursquad', 'PostsController@tourSquad');
-// Route::post('/matchsquad', 'PostsController@matchSquad');
-//Vrajeshbhai
-//Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 Route::post('auth/register', 'Api\V1\UserController@register');
 Route::post('auth/login', 'Api\V1\UserController@login');
 Route::post('verifyuser', 'Api\V1\UserController@verifyUser');
@@ -98,25 +68,30 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioController@addUsersBio');
 	Route::post('/UserBio/addInfo','Api\V1\Users\Player\UsersBioController@addUsersBioInfo');
 	Route::post('/UserBio/update','Api\V1\Users\Player\UsersBioController@updateUsersBio');
+
+	//Vrajesh API start
+
+	Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
+
+	Route::post('/tickdata', 'Api\V1\CricketDetail\ScoreMaster@saveTick');
+	Route::post('/getbowler', 'Api\V1\CricketDetail\ScoreMaster@getBowler');
+	Route::post('/changebowler', 'Api\V1\CricketDetail\ScoreMaster@changeBowler');
+
+	Route::post('/getfielder', 'Api\V1\CricketDetail\ScoreMaster@getFielder');
+	Route::post('/changefielder', 'Api\V1\CricketDetail\ScoreMaster@changeFielder');
+
+	Route::post('/toursquad', 'Api\V1\CricketDetail\ScoreMaster@tourSquad');
+	Route::post('/matchsquad', 'Api\V1\CricketDetail\ScoreMaster@matchSquad');
+
+	Route::post('/direct_batsman', 'Api\V1\CricketDetail\ScoreMaster@directBatsman');
+	Route::post('/direct_bowler', 'Api\V1\CricketDetail\ScoreMaster@directBowler');
+	Route::post('/direct_fielder', 'Api\V1\CricketDetail\ScoreMaster@directFielder');
+	Route::post('/direct_partnership', 'Api\V1\CricketDetail\ScoreMaster@directPartnership');
+	Route::post('/direct_score', 'Api\V1\CricketDetail\ScoreMaster@directScore');
+
+	Route::post('/history', 'Api\V1\CricketDetail\ScoreMaster@ballDataHistory');
+
+	Route::post('/undo', 'Api\V1\CricketDetail\ScoreMaster@ballDataUndo');
+
+	//Vrajesh Api End
 });
-Route::post('/store_scoreboard', 'ScoreboardController@store')->name('store_scoreboard');
-
-Route::post('/tickdata', 'Api\V1\CricketDetail\ScoreMaster@saveTick');
-Route::post('/getbowler', 'Api\V1\CricketDetail\ScoreMaster@getBowler');
-Route::post('/changebowler', 'Api\V1\CricketDetail\ScoreMaster@changeBowler');
-
-Route::post('/getfielder', 'Api\V1\CricketDetail\ScoreMaster@getFielder');
-Route::post('/changefielder', 'Api\V1\CricketDetail\ScoreMaster@changeFielder');
-
-Route::post('/toursquad', 'Api\V1\CricketDetail\ScoreMaster@tourSquad');
-Route::post('/matchsquad', 'Api\V1\CricketDetail\ScoreMaster@matchSquad');
-
-Route::post('/direct_batsman', 'Api\V1\CricketDetail\ScoreMaster@directBatsman');
-Route::post('/direct_bowler', 'Api\V1\CricketDetail\ScoreMaster@directBowler');
-Route::post('/direct_fielder', 'Api\V1\CricketDetail\ScoreMaster@directFielder');
-Route::post('/direct_partnership', 'Api\V1\CricketDetail\ScoreMaster@directPartnership');
-Route::post('/direct_score', 'Api\V1\CricketDetail\ScoreMaster@directScore');
-
-Route::post('/history', 'Api\V1\CricketDetail\ScoreMaster@ballDataHistory');
-
-Route::post('/undo', 'Api\V1\CricketDetail\ScoreMaster@ballDataUndo');

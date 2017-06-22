@@ -2,11 +2,12 @@
 
 namespace App\Model;
 use App\Model\BaseModel\Balldatahistory;
+use App\Model\Balldata_model;
 use DB;
 class Balldatahistory_model {
-
+	protected $Balldata_Model;
     public function __construct() {
-        
+        $this->Balldata_Model = new Balldata_model();
     }
 
     public function saveBalldata($request)
@@ -19,7 +20,7 @@ class Balldatahistory_model {
 	    	{
 	    		try
 	    		{
-		    		$datas = Balldata::where('match_id',$request->match_id)->get()->toArray();
+		    		$datas = $this->Balldata_Model->matchInfo($request);
 
 			    	if(count($datas) > 0)
 			    	{
@@ -30,8 +31,8 @@ class Balldatahistory_model {
 
 				    	if($status == true)
 				    	{
-			            	$delete_status = Balldata::where('match_id',$request->match_id)->delete();
-				          	return response()->json(['status'=>200,'message'=>'Records inserted Sucessfully']);	
+			            	$delete_status = $this->Balldata_Model->deleteMatchInfo($request);
+				          	return response()->json(['status'=>200,'message'=>'Records archived Sucessfully']);	
 				    	}
 				    	else
 				    	{
@@ -50,7 +51,7 @@ class Balldatahistory_model {
 	    	}	    
 	    	else
 	    	{
-	        	return response()->json(['status'=>$status,'message'=>'Records not inserted Sucessfully as match is not complete']);	 
+	        	return response()->json(['status'=>$status,'message'=>'Records not Archived Sucessfully as match is not complete']);	 
 	    	} 
   		}
   		else
