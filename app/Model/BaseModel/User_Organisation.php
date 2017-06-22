@@ -4,7 +4,7 @@ namespace App\Model\BaseModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class User_Organisation extends Model
+class User_Organisation extends Authenticatable
 {
     use Notifiable,SoftDeletes;
     protected $table = 'user_organizations';
