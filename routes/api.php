@@ -75,7 +75,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 	Route::post('/tickdata', 'Api\V1\CricketDetail\ScoreMaster@saveTick');
 	Route::post('/getbowler', 'Api\V1\CricketDetail\ScoreMaster@getBowler');
-	Route::post('/changebowler', 'Api\V1\CricketDetail\ScoreMaster@changeBowler');
+	Route::post('/changebowler', 'Api\V1\CricketDetail\ScoreMaster@changeBowler');//wait
 
 	Route::post('/getfielder', 'Api\V1\CricketDetail\ScoreMaster@getFielder');
 	Route::post('/changefielder', 'Api\V1\CricketDetail\ScoreMaster@changeFielder');
@@ -83,8 +83,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/toursquad', 'Api\V1\CricketDetail\ScoreMaster@tourSquad');
 	Route::post('/matchsquad', 'Api\V1\CricketDetail\ScoreMaster@matchSquad');
 
-	Route::post('/direct_batsman', 'Api\V1\CricketDetail\ScoreMaster@directBatsman');
-	Route::post('/direct_bowler', 'Api\V1\CricketDetail\ScoreMaster@directBowler');
+	Route::post('/direct_batsman', 'Api\V1\CricketDetail\ScoreMaster@directBatsman'); 
+	Route::post('/direct_bowler', 'Api\V1\CricketDetail\ScoreMaster@directBowler'); 
 	Route::post('/direct_fielder', 'Api\V1\CricketDetail\ScoreMaster@directFielder');
 	Route::post('/direct_partnership', 'Api\V1\CricketDetail\ScoreMaster@directPartnership');
 	Route::post('/direct_score', 'Api\V1\CricketDetail\ScoreMaster@directScore');

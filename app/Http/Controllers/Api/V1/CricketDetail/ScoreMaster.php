@@ -87,6 +87,19 @@ class ScoreMaster extends Controller{
     }
     
     public function tourSquad(Request $request){
+        $validator = Validator::make($request->all(), [
+                'tournament_id' => 'required|numeric',
+                'match_id' => 'required|numeric',
+                'players' => 'required|array|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }    
         $status = $this->TourSquad_model->storeTourSquad($request);
         if($status = true)
         {
@@ -100,6 +113,21 @@ class ScoreMaster extends Controller{
     public function matchSquad(Request $request){
         /*$output = array();
         $output['data'] = "Hello World";*/
+        $validator = Validator::make($request->all(), [
+                'tournament_id' => 'required|numeric',
+                'team_id' => 'required|numeric',
+                'match_id' => 'required|numeric',
+                'players.*.player_id' => 'required|numeric',
+                'players.*.playing' => 'required|in:yes,no',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
         
         $status = $this->MatchSquad_model->storeMatchSquad($request);
         if($status = true)
@@ -111,18 +139,57 @@ class ScoreMaster extends Controller{
         }
     }
 
-    public function getBowler(Request $request){              
+    public function getBowler(Request $request){
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }              
         $data_change = $this->UpdateBowler_model->calBowlerChanger($request);
         return $data_change;
     }
 
     public function getFielder(Request $request){
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }     
         $data_change = $this->UpdateFielder_model->calFielderChanger($request);
         return $data_change;        
     }
 
     public function changeFielder(Request $request){
         //return response()->json($request);
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'old_fielder_id' => 'required|numeric',
+                'new_fielder_id' => 'required|numeric',
+                'ball_no' => 'required|numeric'
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }     
     $data_change = $this->UpdateFielder_model->fielderChangeMaker($request);
     //dd($data_change);
         if($data_change == true)
@@ -138,6 +205,24 @@ class ScoreMaster extends Controller{
     }
 
     public function changeBowler(Request $request){ 
+
+         $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'old_id' => 'required|numeric',
+                'new_id' => 'required|numeric',
+                'over_no' => 'required|numeric',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
+        
         //dd($request);
         $chkConstraint = $this->UpdateBowler_model->checkConstraint($request,2,10);
        // dd($chkConstraint['status']);  
@@ -164,7 +249,20 @@ class ScoreMaster extends Controller{
 
     public function ballDataUndo(Request $request)
     {   
-        
+         $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
+
         $data = $this->Balldata_model->undoRecord($request);
         return $this->undoTick($data->first());
     }
@@ -206,34 +304,6 @@ class ScoreMaster extends Controller{
                                         'status_code'=>403
                                 ]],403);
         }
-               // dd($request);
-            $this->validate($request, [
-                'match_id' => 'required|numeric',
-                'team_id1' => 'required|numeric',
-                'team_id2' => 'required|numeric',
-                'innings' => 'required|numeric',
-                'batsman_id' => 'required|numeric',
-                'batsman_id2' => 'required|numeric',
-                'bowler_id' => 'required|numeric',
-                'fielder_id' => 'required|numeric',
-                'batsman_score' => 'required|numeric',
-                'bowler_given' => 'required|numeric',
-                'extra_runs' => 'required|numeric',
-                'total_runs' => 'required|numeric',
-                'team_runs' => 'required|numeric',
-                'for_wicket' => 'required|numeric',
-                'ball_no' => 'required|numeric',
-                'ball_type_id' => 'required|numeric',
-                'ball_type' => 'required|string',
-                'ball_area_id' => 'required|numeric',
-                'wicket_id' => 'required|',
-                'wicket_type' => 'nullable',
-                'field_type_id' => 'required',
-                'power_play' => 'required',
-                'remark' => 'nullable',
-                'commentry' => 'nullable'
-            ]);
-
 
             $data = $this->calScore($request);
             //dd($data);
@@ -348,6 +418,42 @@ class ScoreMaster extends Controller{
     }
 
     public function directBatsman(Request $request){
+
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'order_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'batsman_id' => 'required|numeric',
+                'batsman_name' => 'required|alpha',
+                'batsman_type' => 'required|alpha_dash',
+                'balls' => 'required|numeric',
+                'runs' => 'required|numeric',
+                'run0' => 'required|numeric',
+                'run1' => 'required|numeric',
+                'run2' => 'required|numeric',
+                'run3' => 'required|numeric',
+                'run4' => 'required|numeric',
+                'run6' => 'required|numeric',
+                'run_ext' => 'required|numeric',
+                'strike_rate' => 'required|numeric',
+                'bowler_id' => 'required|numeric',
+                'fielder_id' => 'required|numeric',
+                'wicket_type' => 'nullable|in:CAUGHT,LBW,BOWLED,RUN OUT,HIT WICKET,STUMPING',
+                'area_id' => 'required|numeric',
+                'ball_length_id' => 'required|numeric',
+                'out' => 'required|in:yes,no',
+                'index' => 'nullable',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
+
         $status = $this->DirectBatsman_model->storeDirectBatsman($request);
         if($status = true)
         {
@@ -359,6 +465,44 @@ class ScoreMaster extends Controller{
     }
     
     public function directBowler(Request $request){
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'order_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'bowler_id' => 'required|numeric',
+                'bowler_name' => 'required|alpha_num',
+                'bowler_type' => 'required',
+                'balls' => 'required|numeric',
+                'maiden' => 'required|numeric',
+                'overs' => 'required|numeric',
+                'runs' => 'required|numeric',
+                'run0' => 'required|numeric',
+                'run1' => 'required|numeric',
+                'run2' => 'required|numeric',
+                'run3' => 'required|numeric',
+                'run4' => 'required|numeric',
+                'run6' => 'required|numeric',
+                'run_ext' => 'required|numeric',
+                'run_ext_wd' => 'required|numeric',
+                'run_ext_nb' => 'required|numeric',
+                'caught' => 'required|numeric',
+                'bowled' => 'required|numeric',
+                'hitwicket' => 'required|numeric',
+                'stumping' => 'required|numeric',
+                'lbw' => 'required|numeric',
+                'econ' => 'required|numeric',
+                'wicket' => 'required|in:yes,no',
+                'index' => 'nullable',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
         $status = $this->DirectBowler_model->storeDirectBowler($request);
         if($status = true)
         {
@@ -370,6 +514,28 @@ class ScoreMaster extends Controller{
     }
 
     public function directFielder(Request $request){
+
+        $validator = Validator::make($request->all(), [
+                'fielder_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'fielder_name' => 'required|alpha',
+                'match_id' => 'required|numeric',
+                'team_id' => 'required|numeric',
+                'caught' => 'required|numeric',
+                'stumping' => 'required|numeric',
+                'run_out' => 'required|numeric',
+                'drop_catch' => 'required|numeric',
+                'misfield' => 'required|numeric',
+                'over_throw' => 'required|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
         $status = $this->DirectFielder_model->storeDirectFielder($request);
         if($status = true)
         {
@@ -381,6 +547,43 @@ class ScoreMaster extends Controller{
     }
 
     public function directPartnership(Request $request){
+
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'order_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'for_wicket' => 'required|numeric',
+                'batsman_id' => 'required|numeric',
+                'batsman_name' => 'required|alpha',
+                'batsman_type' => 'required|alpha_dash',
+                'balls' => 'required|numeric',
+                'runs' => 'required|numeric',
+                'run0' => 'required|numeric',
+                'run1' => 'required|numeric',
+                'run2' => 'required|numeric',
+                'run3' => 'required|numeric',
+                'run4' => 'required|numeric',
+                'run6' => 'required|numeric',
+                'run_ext' => 'required|numeric',
+                'strike_rate' => 'required|numeric',
+                'bowler_id' => 'required|numeric',
+                'fielder_id' => 'required|numeric',
+                'wicket_type' => 'nullable|in:CAUGHT,LBW,BOWLED,RUN OUT,HIT WICKET,STUMPING',
+                'area_id' => 'required|numeric',
+                'ball_length_id' => 'required|numeric',
+                'out' => 'required|in:yes,no',
+                'index' => 'nullable',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
+
     $status = $this->DirectPartnership_model->storeDirectPartnership($request);
         if($status = true)
         {
@@ -392,6 +595,31 @@ class ScoreMaster extends Controller{
     }
 
     public function directScore(Request $request){
+
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'team_id' => 'required|numeric',
+                'team_score' => 'required|numeric',
+                'total_extras' => 'required|numeric',
+                'total_nb' => 'required|numeric',
+                'total_wd' => 'required|numeric',
+                'total_leg_byes' => 'required|numeric',
+                'total_byes' => 'required|numeric',
+                'toss_won' => 'required|numeric',
+                'status' => 'required|alpha',
+                'run_rate' => 'required|numeric',
+                'total_balls' => 'required|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
+
         $status = $this->DirectScore_model->storeDirectScore($request);
         if($status = true)
         {
@@ -405,6 +633,19 @@ class ScoreMaster extends Controller{
     public function ballDataHistory(Request $request){
         //return response()->json($request);
         //dd("Heelo");
+        $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'complete' => 'required|in:yes,no',
+                
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        } 
         $data = $this->Balldatahistory_model->saveBalldata($request);
         return response()->json($data);
     }
