@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api\V1\CricketDetail;
 //use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Response;
+use Validator;
 use App\Model\ScoreMaster_model;
 use App\Model\Balldata_model;
 use App\Model\Batsman_model;
@@ -171,8 +172,69 @@ class ScoreMaster extends Controller{
         // DB::beginTransaction();
            // dd($request);
         // try {
-            
+            $validator = Validator::make($request->all(), [
+                'match_id' => 'required|numeric',
+                'team_id1' => 'required|numeric',
+                'team_id2' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'batsman_id' => 'required|numeric',
+                'batsman_id2' => 'required|numeric',
+                'bowler_id' => 'required|numeric',
+                'fielder_id' => 'required|numeric',
+                'batsman_score' => 'required|numeric',
+                'bowler_given' => 'required|numeric',
+                'extra_runs' => 'required|numeric',
+                'total_runs' => 'required|numeric',
+                'team_runs' => 'required|numeric',
+                'for_wicket' => 'required|numeric',
+                'ball_no' => 'required|numeric',
+                'ball_type_id' => 'required|numeric',
+                'ball_type' => 'required|string',
+                'ball_area_id' => 'required|numeric',
+                'wicket_id' => 'required|numeric',
+                'wicket_type' => 'nullable|in:CAUGHT,LBW,BOWLED,RUN OUT,HIT WICKET,STUMPING',
+                'field_type_id' => 'required',
+                'power_play' => 'required|in:1,0',
+                'remark' => 'nullable',
+                'commentry' => 'nullable'            
+        ]);
+
+        if($validator->fails()){
+            return Response::json(
+                            ['error'=>[
+                                        'error_message'=>$validator->errors()->all(),
+                                        'status_code'=>403
+                                ]],403);
+        }
                // dd($request);
+            $this->validate($request, [
+                'match_id' => 'required|numeric',
+                'team_id1' => 'required|numeric',
+                'team_id2' => 'required|numeric',
+                'innings' => 'required|numeric',
+                'batsman_id' => 'required|numeric',
+                'batsman_id2' => 'required|numeric',
+                'bowler_id' => 'required|numeric',
+                'fielder_id' => 'required|numeric',
+                'batsman_score' => 'required|numeric',
+                'bowler_given' => 'required|numeric',
+                'extra_runs' => 'required|numeric',
+                'total_runs' => 'required|numeric',
+                'team_runs' => 'required|numeric',
+                'for_wicket' => 'required|numeric',
+                'ball_no' => 'required|numeric',
+                'ball_type_id' => 'required|numeric',
+                'ball_type' => 'required|string',
+                'ball_area_id' => 'required|numeric',
+                'wicket_id' => 'required|',
+                'wicket_type' => 'nullable',
+                'field_type_id' => 'required',
+                'power_play' => 'required',
+                'remark' => 'nullable',
+                'commentry' => 'nullable'
+            ]);
+
+
             $data = $this->calScore($request);
             //dd($data);
             $this->calBatsman($request);
@@ -197,11 +259,11 @@ class ScoreMaster extends Controller{
                 return response()->json(['status'=>200, 'message'=>'Undo Done Sucessfully']);
             }*/
 
-            //return $data;
+            return $data;
             // DB::commit();
             // $data['status'] = 200;
             // $data['msg'] = "Entry Added Successfuly";
-            return response()->json($data);
+           // return response()->json($data);
             $output['status'] = 400;
             $output['msg'] = "Transection Fail";
             $output['error'] = $e;
