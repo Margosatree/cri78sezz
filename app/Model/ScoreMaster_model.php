@@ -25,12 +25,25 @@ class ScoreMaster_model {
         ];
         $record_exists = $this->isRecordExists($where_array);
         $Score_Summery = $this->Balldata_Model->getScoreMasterSummery($where_array);
+        //dd($request);
         if($request->wicket_type != NULL){
             $this->Fall_Of_Wicket_model->saveFallOfWickets($Score_Summery,$request);
         }
         $this->saveScoreMaster($record_exists,$Score_Summery,$request);
     }
-    
+    public function saveTeamdataUndo($request){
+        $where_array = [
+            'match_id' => $request->match_id,
+            'innings' => $request->innings,
+        ];
+        $record_exists = $this->isRecordExists($where_array);
+        $Score_Summery = $this->Balldata_Model->getScoreMasterSummery($where_array);
+        //dd($request);
+        if($request->wicket_type != NULL){
+            $this->Fall_Of_Wicket_model->saveFallOfWicketsUndo($Score_Summery,$request);
+        }
+        $this->saveScoreMaster($record_exists,$Score_Summery,$request);
+    }
     
     public function saveScoreMaster($update,$Score_Summery,$request){
        // dd($Score_Summery);
