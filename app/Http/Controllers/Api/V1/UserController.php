@@ -84,33 +84,59 @@ class UserController extends Controller
 
         $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
 
-        return response()->json(['status'=>true,'message'=>'User created successfully','data'=>$user_orgId]);
+        $display_data = ['status_code'=>200
+                        ,'message'=>'user_created_successfully'
+                        ,'data'=>$user_orgId];
+        return response()->json($display_data,200);
     }
     
     public function login(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => [
+                'required',
+                'email',
+                'regex:/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/',
+            ],
+            'password' => [
+                'required',
+                'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
+            ]
         ]);
 
         if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
-                                        'status_code'=>403
-                                ]],403);
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
         }
         $credentials = $request->only('email', 'password');
         $token = null;
         try {
            if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['invalid_email_or_password'], 422);
+            return response()->json([
+                                    'message'=>'invalid_email_or_password',
+                                    'status_code'=>403
+                                ], 422);
            }
         } catch (JWTAuthException $e) {
-            return response()->json(['failed_to_create_token'], 500);
+            return response()->json([
+                                    'message'=>'failed_to_create_token',
+                                    'status_code'=>403
+                                ], 404);
         }
-        return response()->json(compact('token','controller'));
+        $currentUser = JWTAuth::toUser($token);
+        $data = ['user_org_id'=>$currentUser['id']
+                ,'user_id'=>$currentUser['user_master_id']
+                ,'org_id'=>$currentUser['organization_master_id']
+                ,'user_email'=>$currentUser['email']
+                ,'access_role'=>$currentUser['role']
+                ,'user_token'=>$token];
+        return response()->json([
+                                    'message'=>'success',
+                                    'status_code'=>200,
+                                    'data'=>$data
+                                ],200);
     }
     public function getAuthUser(){
         $user = JWTAuth::parseToken()->authenticate();
@@ -124,11 +150,10 @@ class UserController extends Controller
             'mobile_otp' => 'required|numeric|digits:6'
         ]);
         if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
-                                        'status_code'=>403
-                                ]],403);
+            return Response::json([
+                                'message'=>$validator->errors()->all(),
+                                'status_code'=>403
+                                ],403);
         }
         $data = array(
                         'token' => $request->token,
@@ -138,17 +163,15 @@ class UserController extends Controller
 
         $check_if_exists = $this->SendMailAndOtpServices->verifyEmailMobileUser($data);
         if(count($check_if_exists)){
-            return Response::json(
-                            ['success'=>[
-                                        'message'=>'successfuly verified.',
-                                        'status_code'=>200
-                                ]],200);
+            return Response::json([
+                                    'message'=>'successfuly_verified.',
+                                    'status_code'=>200
+                                ],200);
         }else{
-            return Response::json(
-                            ['error'=>[
-                                    'message'=>'Email and Mobile Otp is Invalid',
+            return Response::json([
+                                    'message'=>'email_or_mobile_otp_invalid',
                                     'status_code'=>403
-                                ]],403);
+                                ],403);
         }
     }
 
