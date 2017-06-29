@@ -349,7 +349,7 @@ class ScoreMaster extends Controller{
             $this->calBowler($request);
             $this->calFilder($request);
             $this->calPartnership($request);
-            $this->calScoreMaster($request);
+            $this->calScoreMasterUndo($request);
             $this->calBatsmanDetail($request);
             $this->calBowlerDetail($request);
             $this->calPartnershipDetail($request);
@@ -417,6 +417,10 @@ class ScoreMaster extends Controller{
        $this->ScoreMaster_model->saveTeamdata($request);
     }
 
+    public function calScoreMasterUndo($request){
+       $this->ScoreMaster_model->saveTeamdataUndo($request);
+    }
+    
     public function directBatsman(Request $request){
 
         $validator = Validator::make($request->all(), [
