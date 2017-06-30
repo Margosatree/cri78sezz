@@ -121,6 +121,7 @@ class TournamentDetailControllerApi extends Controller
     }
 
     public function getTourPendRules(Request $request){
+
          $validator = Validator::make($request->all(),[
             'tournament_id' => 'required|numeric|min:1',
         ]);
@@ -136,7 +137,7 @@ class TournamentDetailControllerApi extends Controller
         $Rules = $this->TournamentRules_model->getAllNotIn($Rule_id);
         
         $display_data = ['status_code'=>200
-                        ,'message'=>'user_created_successfully'
+                        ,'message'=>'success'
                         ,'data'=>$Rules];
         return response()->json($display_data,200);
     }
