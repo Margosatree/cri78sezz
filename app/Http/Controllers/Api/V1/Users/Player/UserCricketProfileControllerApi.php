@@ -59,21 +59,21 @@ class UserCricketProfileControllerApi extends Controller
             'bowler_style' => 'required|in:Lefthand,Righthand',
             'player_type' => 'required|max:255',
             'description' => 'required|max:255',
-            'image'=>'required',
-            'mime'=>'required|in:png,jpg,gif,jpeg'
+            // 'image'=>'required',
+            // 'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
         if(!$validator->fails()){
 
-            $data = $request->image;
-            $mime_data = $request->mime;
-            $rand_str = str_random(40);
-            $filename = "$rand_str.$mime_data";
-            $data = base64_decode($data);
-            file_put_contents(public_path('images/'. $filename), $data);
-            $request->request->add(['display_img' => $filename]);
-            
-            $user_master_id = 1;
-            $request->request->add(['user_master_id' => $user_master_id]);
+            // $data = $request->image;
+            // $mime_data = $request->mime;
+            // $rand_str = str_random(40);
+            // $filename = "$rand_str.$mime_data";
+            // $data = base64_decode($data);
+            // file_put_contents(public_path('images/'. $filename), $data);
+            // $request->request->add(['display_img' => $filename]);
+
+            $user = JWTAuth::parseToken()->authenticate();
+            $request->request->add(['user_master_id' => $user->user_master_id]);
             $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
             if($User_Cri_Profile){
                 $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
@@ -95,8 +95,8 @@ class UserCricketProfileControllerApi extends Controller
             'bowler_style' => 'required|in:Lefthand,Righthand',
             'player_type' => 'required|max:255',
             'description' => 'required|max:255',
-            'image'=>'required',
-            'mime'=>'required|in:png,jpg,gif,jpeg'
+            // 'image'=>'required',
+            // 'mime'=>'required|in:png,jpg,gif,jpeg'
         ]);
         if(!$validator->fails()){
 
@@ -109,10 +109,10 @@ class UserCricketProfileControllerApi extends Controller
                 file_put_contents(public_path('images/'. $filename), $data);
                 $request->request->add(['display_img' => $filename]);
             }
-            $user_master_id = 1;
+            $user = JWTAuth::parseToken()->authenticate();
             $user = $this->UserCricketProfile_model->getCriProfileByUserMasterId($request->user_master_id);
             if($user){
-                $request->request->add(['user_master_id' => $user_master_id,'update' => 1,'id' => $user->id]);
+                $request->request->add(['user_master_id' => $user->user_master_id,'update' => 1,'id' => $user->id]);
                 $User_Cri_Profile = $this->UserCricketProfile_model->SaveCriProfile($request);
                 if($User_Cri_Profile){
                     $output = array('status' => 200 ,'msg' => 'Sucess','data' => $User_Cri_Profile);
