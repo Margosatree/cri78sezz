@@ -183,7 +183,7 @@ class UserController extends Controller
             ]);
 
             if($validator->fails()){
-            return Response::json(
+            return Response::json([
                                     'message'=>$validator->errors()->all(),
                                     'status_code'=>403
                                 ],403);
@@ -301,6 +301,35 @@ class UserController extends Controller
                                     'status_code'=>200,
                                     'data'=>$user_details
                                 ],200);
+    }
+
+    public function verifyUserToken(){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+        ]);
+        if($validator->fails()){
+            return Response::json([
+                                'message'=>$validator->errors()->all(),
+                                'status_code'=>403
+                                ],403);
+        }
+
+        $user = JWTAuth::toUser($token);
+        if(is_null($user)){
+               $display_data = [
+                                'message'=>'token_is_invalid',
+                                'status_code'=>403
+                                ];
+        }else{
+            $display_data = [
+                                'message'=>'token_is_valid',
+                                'status_code'=>200,
+                                'data'=>$user
+                                ];
+        }
+
+        return Response::json($display_data,$display_data['status_code']);
+
     }
 
 } 
