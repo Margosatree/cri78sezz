@@ -126,7 +126,7 @@ class TournamentDetailControllerApi extends Controller
         ]);
 
         if($validator->fails()){
-            return Response::json([
+            return response()->json([
                                     'message'=>$validator->errors()->all(),
                                     'status_code'=>403
                                 ],403);

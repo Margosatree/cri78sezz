@@ -25,7 +25,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user', 'Api\V1\UserController@getAuthUser');
     //end
 
-    Route::get('userinfo','Api\V1\UserController@getUserDetails');
+    Route::get('userinfo','Api\V1\UserController@getUserInfo');
 
 	Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');

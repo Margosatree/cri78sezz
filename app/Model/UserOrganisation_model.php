@@ -94,7 +94,7 @@ class UserOrganisation_model {
         public function getUserDetail($user_id){
             return User_Organisation::leftJoin('user_masters'
                                                 ,'user_organizations.user_master_id'
-                                                , '=', 'user_masters.user_id')
+                                                , '=', 'user_masters.id')
                                     ->leftJoin('organization_masters'
                                             ,'user_organizations.organization_master_id'
                                             , '=', 'organization_masters.id')

@@ -293,7 +293,7 @@ class UserController extends Controller
     }
 
 
-    public function getUserDetails(){
+    public function getUserInfo(){
         $user = JWTAuth::parseToken()->authenticate();
         $user_details = $this->UserOrganisation_model->getUserDetail($user->user_master_id);
         return response()->json([
