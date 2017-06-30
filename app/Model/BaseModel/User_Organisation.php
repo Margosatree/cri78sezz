@@ -10,10 +10,6 @@ class User_Organisation extends Authenticatable
     protected $table = 'user_organizations';
     protected $dates = ['deleted_at'];
     
-    protected $hidden = [
-        'created_at','updated_at','deleted_by','updated_by','deleted_at'
-    ];
-
     public function roles(){
         return $this->belongsToMany('App\Model\BaseModel\Role','role_user','user_id','role_id');
     }
@@ -27,15 +23,11 @@ class User_Organisation extends Authenticatable
         'registration_date','email', 'password','role', 'remember_token','current_password'
     ];
 
-    
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+
     protected $hidden = [
-        'password', 'remember_token',
+        'created_at','updated_at','deleted_by','updated_by','deleted_at','password', 'remember_token'
     ];
+
     
     public function user(){
         return $this->belongsTo(User_Master::class,'user_master_id','id');
