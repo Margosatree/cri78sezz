@@ -10,4 +10,8 @@ class Fall_Of_Wicket extends Model
     protected $table = 'fall_of_wickets';
     protected $guarded = [];
     protected $dates = ['deleted_at'];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 }

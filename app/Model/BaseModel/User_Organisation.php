@@ -9,6 +9,11 @@ class User_Organisation extends Authenticatable
     use Notifiable,SoftDeletes;
     protected $table = 'user_organizations';
     protected $dates = ['deleted_at'];
+    
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
+
     public function roles(){
         return $this->belongsToMany('App\Model\BaseModel\Role','role_user','user_id','role_id');
     }

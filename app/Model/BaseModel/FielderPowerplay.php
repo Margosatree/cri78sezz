@@ -11,8 +11,11 @@ class FielderPowerplay extends Model
     protected $table = 'fielder_master_powerplay';
     protected $primaryKey = 'trans_id';
     protected $guarded = [];
-    protected $dates = ['deleted_at'];    
-    protected $Balldata_Model;
+    protected $dates = ['deleted_at']; 
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 
     /*public function __construct() {
         $this->Balldata_Model = new Balldata();

@@ -10,4 +10,8 @@ class BowlerDetail extends Model
     protected $primaryKey = 'match_id';
     protected $guarded = [];
     protected $dates = ['deleted_at'];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 }

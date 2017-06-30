@@ -13,6 +13,9 @@ class User_Master extends Model
         'first_name','middle_name', 'last_name','date_of_birth','gender',
         'physically_challenged','phone','email', 'username'
     ];
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
     public function user_master(){
         return $this->belongsTo(User::class);
     }

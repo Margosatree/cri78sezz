@@ -13,4 +13,8 @@ class User_Cricket_Profile extends Model
         'your_role','batsman_style', 'batsman_order', 'bowler_style',
         'player_type','description','display_img'
     ];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 }

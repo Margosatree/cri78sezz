@@ -119,4 +119,25 @@ class TournamentDetailControllerApi extends Controller
         }
         return response()->json($output);
     }
+
+    public function getTourPendRules(){
+         $validator = Validator::make($request->all(),[
+            'tournament_id' => 'required|numeric|min:1',
+        ]);
+
+        if($validator->fails()){
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
+        }
+
+        $Rule_id = $this->TournamentDetails_model->getRulesByTourId($Tournament);
+        $Rules = $this->TournamentRules_model->getAllNotIn($Rule_id);
+        
+        $display_data = ['status_code'=>200
+                        ,'message'=>'user_created_successfully'
+                        ,'data'=>$Rules];
+        return response()->json($display_data,200);
+    }
 }

@@ -13,6 +13,10 @@ class Balldata extends Model
     //public $timestamps = false;
     
     protected $dates = ['deleted_at'];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
     
     public function userinfo(){
         return $this->belongsTo(User_Master::class,'batsman_id','id');

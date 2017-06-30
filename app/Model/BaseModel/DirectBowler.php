@@ -16,6 +16,9 @@ class DirectBowler extends Model
     
    // protected $Balldata_Model;
 
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
     public function __construct() {
        // $this->Balldata_Model = new Balldata();
     }

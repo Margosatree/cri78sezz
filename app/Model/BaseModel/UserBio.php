@@ -14,4 +14,8 @@ class UserBio extends Model
         'phone','email', 'username','address','suburb', 'city', 'state','country', 'pin'
         
     ];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 }

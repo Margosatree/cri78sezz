@@ -21,8 +21,12 @@ Route::post('resetpass/email', 'Api\V1\UserController@resetPassByEmail');
 Route::post('resetpass/mobile', 'Api\V1\UserController@resetPassByMobile');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
+	//use for just retrive value via token
     Route::get('user', 'Api\V1\UserController@getAuthUser');
-    
+    //end
+
+    Route::get('userinfo','Api\V1\UserController@getUserDetails');
+
 	Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');
 	Route::post('/Match/update',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@updateMatch');
@@ -42,6 +46,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/TourDet/add','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@addTourDet');
 	Route::post('/TourDet/update','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@updateTourDet');
 	Route::post('/TourDet/delete','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@deleteTourDet');
+	Route::get('/TourDet/pendrules','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@getTourPendRules');
 
 	Route::post('/TourRule/list','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@listRules');
 	Route::post('/TourRule/add','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@addRules');

@@ -90,5 +90,19 @@ class UserOrganisation_model {
             $User_Org->save();
             return $User_Org;
         }
+
+        public function getUserDetail($user_id){
+            return User_Organisation::leftJoin('user_masters'
+                                                ,'user_organizations.user_master_id'
+                                                , '=', 'user_masters.user_id')
+                                    ->leftJoin('organization_masters'
+                                            ,'user_organizations.organization_master_id'
+                                            , '=', 'organization_masters.id')
+                                    ->leftJoin('cricket_profiles'
+                                                ,'user_masters.id'
+                                                , '=', 'cricket_profiles.user_master_id')
+                                    ->where('user_masters.id','=',$user_id)
+                                    ->get();
+        }
         
 }

@@ -57,11 +57,10 @@ class UserController extends Controller
         ]);
 
         if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
-                                        'status_code'=>403
-                                ]],403);
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
         }
 
         $data = array(
@@ -117,12 +116,12 @@ class UserController extends Controller
             return response()->json([
                                     'message'=>'invalid_email_or_password',
                                     'status_code'=>403
-                                ], 422);
+                                ], 403);
            }
         } catch (JWTAuthException $e) {
             return response()->json([
                                     'message'=>'failed_to_create_token',
-                                    'status_code'=>403
+                                    'status_code'=>404
                                 ], 404);
         }
         $currentUser = JWTAuth::toUser($token);
@@ -185,10 +184,9 @@ class UserController extends Controller
 
             if($validator->fails()){
             return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
-                                        'status_code'=>403
-                                ]],403);
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
             }
             // dd('number');
             $status = $this->SendMailAndOtpServices
@@ -200,11 +198,10 @@ class UserController extends Controller
             ]);
             
             if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
+            return Response::json([
                                         'error_message'=>$validator->errors()->all(),
                                         'status_code'=>403
-                                ]],403);
+                                ],403);
             }
 
             $status = $this->SendMailAndOtpServices
@@ -212,17 +209,15 @@ class UserController extends Controller
         }
 
         if(count($status)){
-            return Response::json(
-                            ['success'=>[
-                                        'message'=>'successfuly Send.',
+            return Response::json([
+                                        'message'=>'successfuly_send.',
                                         'status_code'=>200
-                                ]],200);
+                                ],200);
         }else{
-            return Response::json(
-                            ['error'=>[
-                                    'message'=>'Email OR Mobile Invalid',
+            return Response::json([
+                                    'message'=>'email_OR_mobile_invalid',
                                     'status_code'=>403
-                                ]],403);
+                                ],403);
         }
     }
 
@@ -234,11 +229,10 @@ class UserController extends Controller
             'conf_pass' => 'required|same:password'
         ]);
         if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
+            return Response::json([
+                                        'message'=>$validator->errors()->all(),
                                         'status_code'=>403
-                                ]],403);
+                                ],403);
         }
 
         $data = array('token'=>$request->token,
@@ -252,15 +246,14 @@ class UserController extends Controller
         if(count($status)){
             return Response::json(
                             ['success'=>[
-                                        'message'=>'successfuly Changed Password.',
+                                        'message'=>'successfuly_changed_password.',
                                         'status_code'=>200
                                 ]],200);
         }else{
-            return Response::json(
-                            ['error'=>[
-                                    'message'=>'Email OR Mobile Invalid',
+            return Response::json([
+                                    'message'=>'email_OR_mobile_invalid',
                                     'status_code'=>403
-                                ]],403);
+                                ],403);
         }
 
     }
@@ -273,11 +266,10 @@ class UserController extends Controller
             'conf_pass' => 'required|same:password'
         ]);
         if($validator->fails()){
-            return Response::json(
-                            ['error'=>[
-                                        'error_message'=>$validator->errors()->all(),
-                                        'status_code'=>403
-                                ]],403);
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
         }
 
         $data = array('mobile'=>$request->mobile,
@@ -288,18 +280,27 @@ class UserController extends Controller
         $status = $this->SendMailAndOtpServices->resetPassByMobiles($data);
 
         if(count($status)){
-            return Response::json(
-                            ['success'=>[
-                                        'message'=>'successfuly Send.',
-                                        'status_code'=>200
-                                ]],200);
+            return Response::json([
+                                    'message'=>'successfuly_send.',
+                                    'status_code'=>200
+                                ],200);
         }else{
-            return Response::json(
-                            ['error'=>[
-                                    'message'=>'Email and Mobile is not correct',
+            return Response::json([
+                                    'message'=>'email_and_mobile_is_not_correct',
                                     'status_code'=>403
-                                ]],403);
+                                ],403);
         }    
+    }
+
+
+    public function getUserDetails(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $user_details = $this->UserOrganisation_model->getUserDetail($user->user_master_id);
+        return response()->json([
+                                    'message'=>'successfu.',
+                                    'status_code'=>200,
+                                    'data'=>$user_details
+                                ],200);
     }
 
 } 

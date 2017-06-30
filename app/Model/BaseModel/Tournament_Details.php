@@ -14,7 +14,7 @@ class Tournament_Details extends Model
         
     ];
     protected $hidden = [
-        'created_at','updated_at'
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
     ];
     public function rules(){
         return $this->belongsTo(Tournament_Rules::class,'rule_id','id');

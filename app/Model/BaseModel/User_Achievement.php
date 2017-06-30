@@ -12,4 +12,8 @@ class User_Achievement extends Model
     protected $fillable = [
         'title','orgname','name','location', 'start_date', 'end_date'
     ];
+
+    protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
 }
