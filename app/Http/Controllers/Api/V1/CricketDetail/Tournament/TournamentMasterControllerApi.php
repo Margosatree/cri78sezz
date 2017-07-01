@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\CricketDetail\Tournament;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Auth;
+use JWTAuth;
 use Validator;
 
 use App\Model\UserMaster_model;
