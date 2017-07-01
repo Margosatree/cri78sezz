@@ -54,7 +54,7 @@ class ChangePasswordControllerApi extends Controller {
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return redirect()->route();
+        return response()->json($output,$output['status']);
     }
     
     public function adminUpdatePass(Request $request){
