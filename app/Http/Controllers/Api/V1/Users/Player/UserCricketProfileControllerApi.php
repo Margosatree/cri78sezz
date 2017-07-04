@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Users\Player;
-
+use JWTAuth;
+use JWTAuthException;
 use Auth;
 use Image;
 use Storage;
