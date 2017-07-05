@@ -92,17 +92,17 @@ class UserOrganisation_model {
         }
 
         public function getUserDetail($user_id){
-            return User_Organisation::leftJoin('user_masters'
+            return User_Organisation::select(['um.id AS um_id','um.first_name','um.middle_name','um.last_name','um.date_of_birth','um.gender','um.physically_challenged','um.phone','um.email','um.is_verify_phone','um.is_verify_email','um.username','um.address AS um_address','um.suburb','um.city AS um_city','um.state AS um_state','um.country AS um_country','um.pin','om.id AS om_id','om.name','om.address AS om_address','om.landmark','om.city AS om_city','om.state AS om_state','om.country AS om_country','om.pincode','om.business_type','om.business_operation','om.spoc','om.is_verified','cp.id AS cp_id','cp.user_master_id','cp.your_role','cp.batsman_style','cp.batsman_order','cp.bowler_style','cp.player_type','cp.description','cp.display_img','cp.is_completed',])
+                                    ->leftJoin('user_masters AS um'
                                                 ,'user_organizations.user_master_id'
-                                                , '=', 'user_masters.id')
-                                    ->leftJoin('organization_masters'
-                                            ,'user_organizations.organization_master_id'
-                                            , '=', 'organization_masters.id')
-                                    ->leftJoin('cricket_profiles'
-                                                ,'user_masters.id'
-                                                , '=', 'cricket_profiles.user_master_id')
-                                    ->where('user_masters.id','=',$user_id)
-                                    ->get();
+                                                , '=', 'um.id')
+                                    ->leftJoin('organization_masters AS om'
+                                        ,'user_organizations.organization_master_id'
+                                            , '=', 'om.id')
+                                    ->leftJoin('cricket_profiles AS cp'
+                                                ,'um.id', '=', 'cp.user_master_id')
+                                    ->where('um.id','=',$user_id)
+                                    ->first();
         }
         
 }

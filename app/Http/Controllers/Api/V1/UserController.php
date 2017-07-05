@@ -296,10 +296,54 @@ class UserController extends Controller
     public function getUserInfo(){
         $user = JWTAuth::parseToken()->authenticate();
         $user_details = $this->UserOrganisation_model->getUserDetail($user->user_master_id);
+        $user_data = array();
+        $user_data['bio'] =array(
+                             'id'=>$user_details->um_id
+                            ,'first_name'=>$user_details->first_name
+                            ,'middle_name'=>$user_details->middle_name
+                            ,'last_name'=>$user_details->last_name
+                            ,'date_of_birth'=>$user_details->date_of_birth
+                            ,'gender'=>$user_details->gender
+                        ,'physically_challenged'=>$user_details->physically_challenged
+                            ,'display_img'=>$user_details->display_img
+                            );
+        $user_data['address'] =array(
+                             'id'=>$user_details->um_id
+                            ,'address'=>$user_details->um_address
+                            ,'suburb'=>$user_details->suburb
+                            ,'city'=>$user_details->um_city
+                            ,'state'=>$user_details->um_state
+                            ,'country'=>$user_details->um_country
+                            ,'pin'=>$user_details->pin
+                            ,'display_img'=>$user_details->display_img
+                            );
+        $user_data['org'] =array(
+                             'id'=>$user_details->om_id
+                            ,'name'=>$user_details->name
+                            ,'address'=>$user_details->om_address
+                            ,'suburb'=>$user_details->suburb
+                            ,'city'=>$user_details->om_city
+                            ,'state'=>$user_details->om_state
+                            ,'country'=>$user_details->om_country
+                            ,'pin'=>$user_details->pincode
+                            ,'display_img'=>$user_details->display_img
+                            );
+        $user_data['cri_profile'] =array(
+                                 'id'=>$user_details->cp_id
+                                ,'user_master_id'=>$user_details->user_master_id
+                                ,'your_role'=>$user_details->your_role
+                                ,'batsman_style'=>$user_details->batsman_style
+                                ,'batsman_order'=>$user_details->batsman_order
+                                ,'bowler_style'=>$user_details->bowler_style
+                                ,'player_type'=>$user_details->player_type
+                                ,'description'=>$user_details->description
+                                ,'is_completed'=>$user_details->is_completed
+                                ,'display_img'=>$user_details->display_img
+                                );
         return response()->json([
                                     'message'=>'successfu.',
                                     'status_code'=>200,
-                                    'data'=>$user_details
+                                    'data'=>$user_data
                                 ],200);
     }
 
