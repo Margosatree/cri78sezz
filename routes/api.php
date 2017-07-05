@@ -69,10 +69,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/CriProfile/update','Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
 	Route::post('/CriProfile/delete','Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
 
-	Route::post('/UserBio/list','Api\V1\Users\Player\UsersBioController@listUsersBio');
-	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioController@addUsersBio');
-	Route::post('/UserBio/addInfo','Api\V1\Users\Player\UsersBioController@addUsersBioInfo');
-	Route::post('/UserBio/update','Api\V1\Users\Player\UsersBioController@updateUsersBio');
+	Route::post('/UserBio/list','Api\V1\Users\Player\UsersBioControllerApi@listUsersBio');
+	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioControllerApi@addUsersBio');
+	Route::post('/UserBio/addInfo','Api\V1\Users\Player\UsersBioControllerApi@addUsersBioInfo');
+	Route::post('/UserBio/update','Api\V1\Users\Player\UsersBioControllerApi@updateUsersBio');
 
 	//Vrajesh API start
 

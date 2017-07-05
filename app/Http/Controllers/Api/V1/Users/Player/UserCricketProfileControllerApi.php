@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Users\Player;
 use JWTAuth;
 use JWTAuthException;
-use Auth;
 use Image;
 use Storage;
-use Session;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -110,7 +108,7 @@ class UserCricketProfileControllerApi extends Controller
                 file_put_contents(public_path('images/'. $filename), $data);
                 $request->request->add(['display_img' => $filename]);
             }
-            $user = JWTAuth::parseToken()->authenticate();
+            //$users = JWTAuth::parseToken()->authenticate();
             $user = $this->UserCricketProfile_model->getCriProfileByUserMasterId($request->user_master_id);
             if($user){
                 $request->request->add(['user_master_id' => $user->user_master_id,'update' => 1,'id' => $user->id]);
