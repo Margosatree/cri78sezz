@@ -1,4 +1,4 @@
 Click here To Reset Your Password:<br>
 <a href="http://dev-portal.procric8.com/login.html.'?token='.$token ">
-	{{ $link }}
+	Please Click Here To Reset Password
 </a>
