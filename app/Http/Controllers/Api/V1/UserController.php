@@ -125,12 +125,15 @@ class UserController extends Controller
                                 ], 404);
         }
         $currentUser = JWTAuth::toUser($token);
+        $user_details = $this->UserOrganisation_model->getUserDetail($currentUser['user_master_id']);
+        
         $data = ['user_org_id'=>$currentUser['id']
                 ,'user_id'=>$currentUser['user_master_id']
                 ,'org_id'=>$currentUser['organization_master_id']
                 ,'user_email'=>$currentUser['email']
                 ,'access_role'=>$currentUser['role']
-                ,'user_token'=>$token];
+                ,'user_token'=>$token
+                ,'display_img'=>$user_details->display_img];
         return response()->json([
                                     'message'=>'success',
                                     'status_code'=>200,
@@ -139,6 +142,7 @@ class UserController extends Controller
     }
     public function getAuthUser(){
         $user = JWTAuth::parseToken()->authenticate();
+
         return response()->json(['result' => $user]);
     }
 
