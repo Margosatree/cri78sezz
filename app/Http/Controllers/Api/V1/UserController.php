@@ -304,6 +304,8 @@ class UserController extends Controller
                             ,'last_name'=>$user_details->last_name
                             ,'date_of_birth'=>$user_details->date_of_birth
                             ,'gender'=>$user_details->gender
+                            ,'phone'=>$user_details->phone
+                            ,'email'=>$user_details->email
                         ,'physically_challenged'=>$user_details->physically_challenged
                             ,'display_img'=>$user_details->display_img
                             );
@@ -317,17 +319,17 @@ class UserController extends Controller
                             ,'pin'=>$user_details->pin
                             ,'display_img'=>$user_details->display_img
                             );
-        $user_data['org'] =array(
-                             'id'=>$user_details->om_id
-                            ,'name'=>$user_details->name
-                            ,'address'=>$user_details->om_address
-                            ,'suburb'=>$user_details->suburb
-                            ,'city'=>$user_details->om_city
-                            ,'state'=>$user_details->om_state
-                            ,'country'=>$user_details->om_country
-                            ,'pin'=>$user_details->pincode
-                            ,'display_img'=>$user_details->display_img
-                            );
+        // $user_data['org'] =array(
+        //                      'id'=>$user_details->om_id
+        //                     ,'name'=>$user_details->name
+        //                     ,'address'=>$user_details->om_address
+        //                     ,'suburb'=>$user_details->suburb
+        //                     ,'city'=>$user_details->om_city
+        //                     ,'state'=>$user_details->om_state
+        //                     ,'country'=>$user_details->om_country
+        //                     ,'pin'=>$user_details->pincode
+        //                     ,'display_img'=>$user_details->display_img
+        //                     );
         $user_data['cri_profile'] =array(
                                  'id'=>$user_details->cp_id
                                 ,'user_master_id'=>$user_details->user_master_id
