@@ -56,4 +56,8 @@ class TeamMembers_model {
             $team_member_id = $this->getById($id);
             return $team_member_id->delete();
 	}
+
+    public function listMyTeams($user_master_id){
+        return Team_Members::leftJoin('team_master','team_members.team_id','=', 'team_master.id')->where('user_master_id','=',$user_master_id);
+    }
 }

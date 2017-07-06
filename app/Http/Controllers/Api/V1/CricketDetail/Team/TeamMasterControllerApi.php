@@ -142,4 +142,16 @@ class TeamMasterControllerApi extends Controller
         }
         return response()->json($output);
     }
+
+    public function listMyTeam(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $datas = ['id'=>$user->user_master_id];
+        $team_member = $this->TeamMembers_model->getByAny($datas);
+        if($team_member){
+            $response = array('status' => 200 ,'msg' => 'success','data' => $team_member);
+        }else{
+            $response = array('status' => 404 ,'msg' => 'transation_failed');
+        }
+        return response()->json($response,$response['status']);
+    }
 }

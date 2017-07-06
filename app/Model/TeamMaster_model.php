@@ -60,4 +60,6 @@ class TeamMaster_model {
 	public function deleteById($id){
             return Team_Master::find($id);
 	}
+
+   
 }

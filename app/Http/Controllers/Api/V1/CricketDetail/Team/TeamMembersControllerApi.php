@@ -73,7 +73,7 @@ class TeamMembersControllerApi extends Controller
 
     public function updateTeamMembers(Request $request){
         $validator = Validator::make($request->all(), [
-            'id'=>'required|numeric|min:1'
+            'id'=>'required|numeric|min:1',
             'tournament_id' => 'required|numeric',
             'team_id' => 'required|numeric',
             'user_master_id' => 'required|numeric',
@@ -152,9 +152,8 @@ class TeamMembersControllerApi extends Controller
 
     public function listMyTeamMembers(){
         $user = JWTAuth::parseToken()->authenticate();
-        $datas = ['user_master_id'=>$user->user_master_id];
-        $team_member = $this->TeamMembers_model->getByAny($datas);
-        if($team_member){
+        $team_members = $this->TeamMembers_model->listMyTeams($user->user_master_id);
+        if($team_members){
             $response = array('status' => 200 ,'msg' => 'success','data' => $team_member);
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');
