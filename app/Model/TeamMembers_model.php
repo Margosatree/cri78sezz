@@ -25,6 +25,10 @@ class TeamMembers_model {
             return Team_Members::where($where_array)->count();
 	}
 
+    public function getByAny($where_array){
+           return Team_Members::where($where_array)->get();
+    }
+
 	public function SaveTeamMembers($request){
 //            dd($request->all());
             if(isset($request->update) && $request->update == 1){
