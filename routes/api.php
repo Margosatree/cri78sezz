@@ -31,7 +31,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');
 	Route::post('/Match/update',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@updateMatch');
 	Route::post('/Match/delete',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@deleteMatch');
-	Route::post('/Match/mymatch',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMyMatch');
+	Route::get('/Match/mymatch',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMyMatch');
 
 	Route::post('/Team/listTeamMembers',           'Api\V1\CricketDetail\Team\TeamMasterControllerApi@listTeam');
 	Route::post('/Team/add',            'Api\V1\CricketDetail\Team\TeamMasterControllerApi@addTeam');
