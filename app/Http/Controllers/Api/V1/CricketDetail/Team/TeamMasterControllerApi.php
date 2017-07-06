@@ -146,17 +146,9 @@ class TeamMasterControllerApi extends Controller
     public function listMyTeam(){
         $user = JWTAuth::parseToken()->authenticate();
         $datas = ['id'=>$user->user_master_id];
-        $team_members = $this->TeamMembers_model->getByAny($datas);
-        if($team_members)
-            foreach($team_members as $team_member){
-                 $user_owner = $this->UserMaster_model->getById($team_member->team_owner_id);
-                 $data_arr = array('team_member'=>$team_member);
-                 $data_arr['team_member']['first_name']=$user_owner->first_name;
-                 $data_arr['team_member']['last_name']=$user_owner->last_name;
-            }
-        }
+        $team_member = $this->TeamMembers_model->getByAny($datas);
         if($team_member){
-            $response = array('status' => 200 ,'msg' => 'success','data' => $data_arr);
+            $response = array('status' => 200 ,'msg' => 'success','data' => $team_member);
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');
         }
