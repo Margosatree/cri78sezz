@@ -58,8 +58,7 @@ class TeamMembers_model {
 	}
 
     public function listMyTeams($user_master_id){
-        return Team_Members::leftJoin('team_master',
-                                    'team_members.team_id','=', 'team_master.id')
+        return Team_Members::leftJoin('team_master','team_members.team_id','=', 'team_master.id')
                             ->where('team_members.user_master_id','=',$user_master_id)->get();
     }
 }

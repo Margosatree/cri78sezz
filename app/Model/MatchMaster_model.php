@@ -15,7 +15,13 @@ class MatchMaster_model {
 
 	public function getDetailByTourMatch($Tournament,$id){
             return Match_Master::selectRaw('*')->where('tournament_id',$Tournament)->where('match_id',$id)->get()->first();
-        }
+    }
+
+    public function getDetailByTourTeam($Tournament,$team_id){
+            return Match_Master::where('tournament_id',$Tournament)
+                                ->orWhere('team1_id',$team_id)
+                                ->orWhere('team2_id',$team_id)->first();
+    }
 
 	public function getDetailById($id){
 		return Match_Master::find($id);
@@ -26,11 +32,11 @@ class MatchMaster_model {
             if(isset($request->update) && $request->update == 1){
                 $Match = Match_Master::where('tournament_id', $request->tournament_id)->where('match_id', $request->id);
                 $arr = array();
-                if(isset($request->team1_id) && $request->team1_id){
-                    $arr['team1_id'] = $request->team1_id;
+                if(isset($request->team1) && $request->team1){
+                    $arr['team1_id'] = $request->team1;
                 }
-                if(isset($request->team2_id) && $request->team2_id){
-                    $arr['team2_id'] = $request->team2_id;
+                if(isset($request->team2) && $request->team2){
+                    $arr['team2_id'] = $request->team2;
                 }
                 if(isset($request->match_name) && $request->match_name){
                     $arr['match_name'] = $request->match_name;

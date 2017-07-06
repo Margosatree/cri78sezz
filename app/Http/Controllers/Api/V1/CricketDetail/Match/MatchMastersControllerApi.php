@@ -10,6 +10,7 @@ use App\Model\UserOrganisation_model;
 use App\Model\UserMaster_model;
 use App\Model\TournamentMaster_model;
 use App\Model\TeamMaster_model;
+use App\Model\TeamMembers_model;
 use App\Http\Controllers\Controller;
 
 class MatchMastersControllerApi extends Controller
@@ -25,6 +26,7 @@ class MatchMastersControllerApi extends Controller
     protected $UserMaster_model;
     protected $TournamentMaster_model;
     protected $TeamMaster_model;
+    protected $TeamMembers_model;
 
     public function __construct(){
         $this->_initModel();
@@ -38,6 +40,7 @@ class MatchMastersControllerApi extends Controller
         $this->UserMaster_model=new UserMaster_model();
         $this->TournamentMaster_model=new TournamentMaster_model();
         $this->TeamMaster_model=new TeamMaster_model();
+        $this->TeamMembers_model=new TeamMembers_model();
     }
 
     public function listMatch(Request $request){
@@ -161,5 +164,26 @@ class MatchMastersControllerApi extends Controller
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
+    }
+
+    public function listMyMatch(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $datas = ['user_master_id'=>$user->user_master_id];
+        $data_arr =array();
+        $getTeams = $this->TeamMembers_model->getByAny($datas);
+        foreach($getTeams as $getTeam){
+            $this->MatchMaster_model->getDetailByTourMatch($getTeam->tournament_id,$getTeam->team_id);
+            $team1_detail = $this->TeamMaster_model->getById($getTeam->team1_id);
+            $team2_detail = $this->TeamMaster_model->getById($getTeam->team2_id);
+            $teams_detail =['team1'=>$team1_detail,'team1'=>$team2_detail];
+            
+            $data_arr[]=$teams_detail;
+        }                                    
+        if(!is_null($data_arr)){
+            $response = array('status' => 200 ,'msg' => 'success','data' => $data_arr);
+        }else{
+            $response = array('status' => 404 ,'msg' => 'transation_failed');
+        }
+        return response()->json($response,$response['status']);
     }
 }
