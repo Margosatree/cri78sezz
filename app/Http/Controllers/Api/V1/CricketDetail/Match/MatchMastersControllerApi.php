@@ -171,10 +171,11 @@ class MatchMastersControllerApi extends Controller
         $datas = ['user_master_id'=>$user->user_master_id];
         $data_arr =array();
         $getTeams = $this->TeamMembers_model->getByAny($datas);
+        // var_dump($getTeams);
         foreach($getTeams as $getTeam){
-            $this->MatchMaster_model->getDetailByTourTeam($getTeam->tournament_id,$getTeam->team_id);
-            $team1_detail = $this->TeamMaster_model->getById($getTeam->team1_id);
-            $team2_detail = $this->TeamMaster_model->getById($getTeam->team2_id);
+            $team_data = $this->MatchMaster_model->getDetailByTourTeam($getTeam->tournament_id,$getTeam->team_id);
+            $team1_detail = $this->TeamMaster_model->getById($team_data->team1_id);
+            $team2_detail = $this->TeamMaster_model->getById($team_data->team2_id);
             $teams_detail =['team1'=>$team1_detail,'team2'=>$team2_detail];
             
             $data_arr[]=$teams_detail;
