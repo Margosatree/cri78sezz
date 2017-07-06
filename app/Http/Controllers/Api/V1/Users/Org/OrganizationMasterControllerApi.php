@@ -6,7 +6,7 @@ use App\Model\OrganisationMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
-use Auth;
+use JWTAuth;
 use DB;
 use Validator;
 use \App\User_Organisation;
@@ -128,5 +128,17 @@ class OrganizationMasterControllerApi extends Controller
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
         return response()->json($output);
+    }
+
+    public function listOrgById(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $orgs = $this->OrganisationMaster_model->getById(
+                                                $user->organization_master_id);
+        if($orgs){
+            $response = array('status' => 200 ,'msg' => 'success','data' => $orgs);
+        }else{
+            $response = array('status' => 404 ,'msg' => 'transation_failed');
+        }
+        return response()->json($response,$response['status']);
     }
 }

@@ -32,10 +32,15 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/Match/update',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@updateMatch');
 	Route::post('/Match/delete',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@deleteMatch');
 
-	Route::post('/Team/list',           'Api\V1\CricketDetail\Team\TeamMasterControllerApi@listTeam');
+	Route::post('/Team/listTeamMembers',           'Api\V1\CricketDetail\Team\TeamMasterControllerApi@listTeam');
 	Route::post('/Team/add',            'Api\V1\CricketDetail\Team\TeamMasterControllerApi@addTeam');
 	Route::post('/Team/update',         'Api\V1\CricketDetail\Team\TeamMasterControllerApi@updateTeam');
 	Route::post('/Team/delete',         'Api\V1\CricketDetail\Team\TeamMasterControllerApi@deleteTeam');
+
+	Route::post('/teammember/list',           'Api\V1\CricketDetail\Team\TeamMembersControllerApi@listTeamMembers');
+	Route::post('/teammember/add',            'Api\V1\CricketDetail\Team\TeamMembersControllerApi@addTeamMembers');
+	Route::post('/teammember/update',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@updateTeamMembers');
+	Route::post('/teammember/delete',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@deleteTeamMembers');
 
 	Route::post('/TourMast/list',       'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listTournament');
 	Route::post('/TourMast/add',        'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addTournament');
@@ -58,6 +63,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/Org/add','Api\V1\Users\Org\OrganizationMasterControllerApi@addOrg');
 	Route::post('/Org/update','Api\V1\Users\Org\OrganizationMasterControllerApi@updateOrg');
 	Route::post('/Org/delete','Api\V1\Users\Org\OrganizationMasterControllerApi@deleteOrg');
+
+	Route::get('/Org/mylist','Api\V1\Users\Org\OrganizationMasterControllerApi@listOrgById');
 
 	Route::post('/Achievement/list','Api\V1\Users\Player\UserAchievementControllerApi@listAchievement');
 	Route::post('/Achievement/add','Api\V1\Users\Player\UserAchievementControllerApi@addAchievement');

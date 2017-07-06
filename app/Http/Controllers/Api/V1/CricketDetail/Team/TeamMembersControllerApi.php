@@ -71,7 +71,7 @@ class TeamMembersControllerApi extends Controller
         return response()->json($output);
     }
 
-    public function updateTeam(Request $request){
+    public function updateTeamMembers(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>'required|numeric|min:1'
             'tournament_id' => 'required|numeric',
@@ -117,7 +117,7 @@ class TeamMembersControllerApi extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deleteTeam(Request $request){
+    public function deleteTeamMembers(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
         ]);
