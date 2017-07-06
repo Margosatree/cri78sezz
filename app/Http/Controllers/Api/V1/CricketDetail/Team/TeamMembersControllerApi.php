@@ -30,15 +30,8 @@ class TeamMembersControllerApi extends Controller
         $this->TournamentDetails_model = new TournamentDetails_model();
     }
     
-    public function listTeam(Request $request){
-        $organization_master_id = 1;//have to find user id from login
-        $Teams = $this->TeamMaster_model->getTeamDetail($organization_master_id);
-        if($Teams){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Teams);
-        }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
-        }
-        return response()->json($output);
+    public function listTeamMembers(Request $request){
+        
     }
     
     public function addTeamMembers(Request $request){
@@ -80,42 +73,42 @@ class TeamMembersControllerApi extends Controller
 
     public function updateTeam(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|min:1',
-            'team_name' => 'required|max:190',
-            'team_owner_id' => 'required|numeric',
-            'team_type' => 'required|max:190',
-            'order_id' => 'required|numeric',
-            'owner_id' => 'required|numeric',
-            'image'=>'required',
-            'mime'=>'required|in:png,jpg,gif,jpeg'
+            'id'=>'required|numeric|min:1'
+            'tournament_id' => 'required|numeric',
+            'team_id' => 'required|numeric',
+            'user_master_id' => 'required|numeric',
         ]);
 
-        if(!$validator->fails()){
-            $Team_name = $this->TeamMaster_model->TeamNameExistsByOwner($request->owner_id,$request->team_name);
-            if(!$Team_name){
-                $data = $request->image;
-                $mime_data = $request->mime;
-                $rand_str = str_random(40);
-                $filename = "$rand_str.$mime_data";
-                $data = base64_decode($data);
-                file_put_contents(public_path('images/'. $filename), $data);
-                $params['team_logo'] = $filename;
-                $request->request->add(['team_logo' => $filename]);
-
-                $request->request->add(['update' => 1,'id' => $request->id]);
-                $Team = $this->TeamMaster_model->SaveTeam($request);
-                if($Team){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
-                }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
-                }
-            }else{
-                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
-            }
-        }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+        if($validator->fails()){
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
         }
-        return response()->json($output);
+
+        $check_team = $this->TeamMembers_model->getById($request->id);
+        if(!$check_team){
+            return Response::json([
+                                    'message'=>'team_member_id_does_not_exists',
+                                    'status_code'=>404
+                                ],404);
+        }
+
+        $request->request->add(['update' => 1]);
+
+        $team = $this->TeamMembers_model->SaveTeamMembers($request);
+        if($team){
+            $response = array('status_code' => 200 
+                            ,'message' => 'sucessfully_updated'
+                            ,'data' => $team
+                            );
+        }else{
+            $response = array('status_code' => 403 
+                            ,'message' => 'transection_fail'
+                            );
+        }
+          
+        return response()->json($response,$response['status_code']);
     }
 
     /**
@@ -128,17 +121,32 @@ class TeamMembersControllerApi extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|min:1',
         ]);
-        if(!$validator->fails()){
-            $Team = $this->TeamMaster_model->deleteById($request->id);
-            if($Team){
-                $Team->delete();
-                $output = array('status' => 200 ,'msg' => 'Sucess');
-            }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
-            }
-        }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+
+        if($validator->fails()){
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
         }
-        return response()->json($output);
+
+        $check_team = $this->TeamMembers_model->getById($request->id);
+        if(!$check_team){
+            return Response::json([
+                                    'message'=>'team_member_id_does_not_exists',
+                                    'status_code'=>404
+                                ],404);
+        }
+
+        $delete_team_member = $this->TeamMembers_model->deleteById($request->id);
+        if($delete_team_member){
+            $response = array('status_code' => 200 
+                            ,'message' => 'sucessfully_deleted'
+                            );
+        }else{
+            $response = array('status_code' => 403 
+                            ,'message' => 'transection_fail'
+                            );
+        }
+        return response()->json($response,$response['status_code']);
     }
 }

@@ -30,7 +30,7 @@ class TeamMembers_model {
             if(isset($request->update) && $request->update == 1){
                 $Team_Member = $this->getById($request->id);
             }else{
-                $Team_Member = new User_Cricket_Profile;
+                $Team_Member = new Team_Members;
             }
             if(isset($request->team_id) && $request->team_id){
                 $Team_Member->team_id = $request->team_id;
@@ -49,6 +49,7 @@ class TeamMembers_model {
 	}
 
 	public function deleteById($id){
-            return Team_Master::find($id);
+            $team_member_id = $this->getById($id);
+            return $team_member_id->delete();
 	}
 }
