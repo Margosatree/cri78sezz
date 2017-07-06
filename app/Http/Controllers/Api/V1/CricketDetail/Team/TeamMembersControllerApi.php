@@ -153,7 +153,7 @@ class TeamMembersControllerApi extends Controller
     public function listMyTeamMembers(){
         $user = JWTAuth::parseToken()->authenticate();
         $team_members = $this->TeamMembers_model->listMyTeams($user->user_master_id);
-        if($team_members)
+        if($team_members){
             foreach($team_members as $team_member){
                  $user_owner = $this->UserMaster_model->getById($team_member->team_owner_id);
                  $data_arr = array('team_member'=>$team_member);
