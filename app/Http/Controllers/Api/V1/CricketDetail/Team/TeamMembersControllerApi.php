@@ -149,4 +149,15 @@ class TeamMembersControllerApi extends Controller
         }
         return response()->json($response,$response['status_code']);
     }
+
+    public function listMyTeamMembers(Request $request){
+        $user = JWTAuth::parseToken()->authenticate();
+        $orgs = $this->TeamMembers_model->getById($user->user_master_id);
+        if($orgs){
+            $response = array('status' => 200 ,'msg' => 'success','data' => $orgs);
+        }else{
+            $response = array('status' => 404 ,'msg' => 'transation_failed');
+        }
+        return response()->json($response,$response['status']);
+    }
 }

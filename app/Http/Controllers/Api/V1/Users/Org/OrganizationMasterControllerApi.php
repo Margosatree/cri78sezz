@@ -135,7 +135,7 @@ class OrganizationMasterControllerApi extends Controller
         $orgs = $this->OrganisationMaster_model->getById(
                                                 $user->organization_master_id);
         if($orgs){
-            $response = array('status' => 200 ,'msg' => 'success','data' => $orgs);
+            $response = array('status' => 200 ,'msg' => 'success','data' => $orgs->toArray());
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');
         }
