@@ -161,7 +161,7 @@ class TeamMembersControllerApi extends Controller
                  $data_arr['team_member']['last_name']=$user_owner->last_name;
             }
         }
-        if($team_member){
+        if($team_members){
             $response = array('status' => 200 ,'msg' => 'success','data' => $data_arr);
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');
