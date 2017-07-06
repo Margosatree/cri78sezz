@@ -150,7 +150,7 @@ class TeamMembersControllerApi extends Controller
         return response()->json($response,$response['status_code']);
     }
 
-    public function listMyTeamMembers(Request $request){
+    public function listMyTeamMembers(){
         $user = JWTAuth::parseToken()->authenticate();
         $datas = ['user_master_id'=>$user->user_master_id];
         $team_member = $this->TeamMembers_model->getByAny($datas);

@@ -41,6 +41,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/teammember/add',            'Api\V1\CricketDetail\Team\TeamMembersControllerApi@addTeamMembers');
 	Route::post('/teammember/update',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@updateTeamMembers');
 	Route::post('/teammember/delete',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@deleteTeamMembers');
+	Route::get('/teammember/myteam',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@listMyTeamMembers');
 
 	Route::post('/TourMast/list',       'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listTournament');
 	Route::post('/TourMast/add',        'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addTournament');
