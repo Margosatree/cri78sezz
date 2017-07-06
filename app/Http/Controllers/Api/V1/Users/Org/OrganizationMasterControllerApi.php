@@ -132,10 +132,10 @@ class OrganizationMasterControllerApi extends Controller
 
     public function listOrgById(){
         $user = JWTAuth::parseToken()->authenticate();
-        $orgs = $this->OrganisationMaster_model->getById(
-                                                $user->organization_master_id);
+        $orgs = $this->OrganisationMaster_model->getById($user->organization_master_id);
+        $datas = [$orgs];                                      
         if($orgs){
-            $response = array('status' => 200 ,'msg' => 'success','data' => $orgs->toArray());
+            $response = array('status' => 200 ,'msg' => 'success','data' => $datas);
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');
         }
