@@ -8,6 +8,7 @@ use JWTAuth;
 use Validator;
 use App\Model\TeamMembers_model;
 use App\Model\TournamentDetails_model;
+use App\Model\UserMaster_model;
 //use App\Model\UserOrganisation_model;
 
 class TeamMembersControllerApi extends Controller
@@ -17,7 +18,7 @@ class TeamMembersControllerApi extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
+    protected $UserMaster_model;
     protected $TeamMembers_model;
     protected $TournamentDetails_model;
 
@@ -26,6 +27,7 @@ class TeamMembersControllerApi extends Controller
     }
 
     protected function _initModel(){
+         $this->UserMaster_model = new UserMaster_model();
         $this->TeamMembers_model = new TeamMembers_model();
         $this->TournamentDetails_model = new TournamentDetails_model();
     }
