@@ -73,6 +73,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioControllerApi@addUsersBio');
 	Route::post('/UserBio/addInfo','Api\V1\Users\Player\UsersBioControllerApi@addUsersBioInfo');
 	Route::post('/UserBio/update','Api\V1\Users\Player\UsersBioControllerApi@updateUsersBio');
+        
+        Route::post('/User/bulk','Api\V1\Users\Player\UsersBulkControllerApi@upload');
 
 	//Vrajesh API start
 
