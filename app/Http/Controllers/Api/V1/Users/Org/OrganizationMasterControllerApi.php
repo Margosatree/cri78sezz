@@ -134,7 +134,7 @@ class OrganizationMasterControllerApi extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $orgs = $this->OrganisationMaster_model->getById($user->organization_master_id);
         $datas = [$orgs];                                      
-        if($orgs){
+        if(!is_null($datas)){
             $response = array('status' => 200 ,'msg' => 'success','data' => $datas);
         }else{
             $response = array('status' => 404 ,'msg' => 'transation_failed');

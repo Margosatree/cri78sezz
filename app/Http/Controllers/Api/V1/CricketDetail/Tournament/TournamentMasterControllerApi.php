@@ -152,5 +152,17 @@ class TournamentMasterControllerApi extends Controller {
         }
         return response()->json($output);
     }
+
+
+    public function listMyTour(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $datas = $this->TournamentMaster_model->getMyTourDetails($user->user_master_id);
+        if($datas){
+            $response = array('status' => 200 ,'msg' => 'success','data' => $datas);
+        }else{
+            $response = array('status' => 404 ,'msg' => 'transation_failed');
+        }
+        return response()->json($response,$response['status']);
+    }
     
 }
