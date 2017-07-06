@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\CricketDetail\Match;
 
 use Illuminate\Http\Request;
-use Auth;
+use JWTAuth;
 use Validator;
 use App\Model\MatchMaster_model;
 use App\Model\UserOrganisation_model;
