@@ -78,6 +78,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/CriProfile/add','Api\V1\Users\Player\UserCricketProfileControllerApi@addCriProfile');
 	Route::post('/CriProfile/update','Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
 	Route::post('/CriProfile/delete','Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
+	Route::post('/CriProfile/addImg','Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProImg');
 
 	Route::post('/UserBio/list','Api\V1\Users\Player\UsersBioControllerApi@listUsersBio');
 	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioControllerApi@addUsersBio');
