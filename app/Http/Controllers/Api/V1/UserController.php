@@ -80,7 +80,7 @@ class UserController extends Controller
         }
         $User_Master = $this->UserMaster_model->insertViratualUser($data);
 
-        $data['verify_token'] = $verify_token
+        $data['verify_token'] = $verify_token;
         $display_data = ['status_code'=>200
                         ,'message'=>'user_created_successfully'
                         ,'data'=>$data];
