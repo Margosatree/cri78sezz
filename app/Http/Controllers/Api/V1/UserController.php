@@ -36,7 +36,7 @@ class UserController extends Controller
         $this->ResetVerify_model =new ResetVerify_model();
     }
 
-    public function register(){
+    public function register(Request $request){
         $validator = Validator::make($request->all(), [
             'username' => 'required|max:50|alpha_num|unique:user_masters',
             'phone' => [
