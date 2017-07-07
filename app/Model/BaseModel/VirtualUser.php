@@ -4,7 +4,7 @@ namespace App\Model\BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class ViratualUser extends Model
+class VirtualUser extends Model
 {
     use SoftDeletes;
     protected $table = 'virtual_users';

@@ -78,7 +78,7 @@ class UserController extends Controller
         if($vuser_data){
             $this->UserMaster_model->deleteVUser($vuser_data->id);
         }
-        $User_Master = $this->UserMaster_model->insertViratualUser($data);
+        $User_Master = $this->UserMaster_model->insertViratualUser((object)$data);
 
         $data['verify_token'] = $verify_token;
         $display_data = ['status_code'=>200
@@ -89,34 +89,6 @@ class UserController extends Controller
     }
    
     private function __register($request){
-
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|max:50|alpha_num|unique:user_masters',
-            'phone' => [
-                'required',
-                'unique:user_masters',
-                'min:10',
-                'numeric',
-                'regex:/(7|8|9)\d{9}/'
-            ],
-            'email' => [
-                'required',
-                'email',
-                'unique:user_masters',
-                'regex:/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/',
-            ],
-            'password' => [
-                'required',
-                'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
-            ]
-        ]);
-
-        if($validator->fails()){
-            return Response::json([
-                                    'message'=>$validator->errors()->all(),
-                                    'status_code'=>403
-                                ],403);
-        }
 
         $data = array(
                         'username'=>$request->username,
@@ -224,14 +196,14 @@ class UserController extends Controller
 
             $datas = ['phone'=>$check_if_exists->first()->mobile,
                       'email'=>$check_if_exists->first()->email];
+
             $user_mobile_email =$this->UserMaster_model->getVirtualUserDetail($datas);
-            $userObj = new \stdClass();
-            $userObej->username = $user_mobile_email->username;
-            $userObej->phone = $user_mobile_email->phone;
-            $userObej->email = $user_mobile_email->email;
-            $userObej->password = $user_mobile_email->password;
+            $objData['username']=$user_mobile_email->username;
+            $objData['phone']= $user_mobile_email->phone;
+            $objData['email']= $user_mobile_email->email;
+            $objData['password']= $user_mobile_email->password;
             
-            $this->__register($userObej);
+            $this->__register((object)$objData);
             return Response::json([
                                     'message'=>'successfuly_verified.',
                                     'status_code'=>200

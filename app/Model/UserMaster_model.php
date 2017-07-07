@@ -3,7 +3,7 @@
 namespace App\Model;
 use Illuminate\Http\Request;
 use App\Model\BaseModel\User_Master;
-use App\Model\BaseModel\ViratualUser;
+use App\Model\BaseModel\VirtualUser;
 
 class UserMaster_model {
 
@@ -124,15 +124,15 @@ class UserMaster_model {
 
 
     public function getVirtualUserDetail($where_array) {
-        return ViratualUser::orWhere($where_array)->first();;
+        return VirtualUser::orWhere($where_array)->first();;
     }
 
 
     public function insertViratualUser($request){
         if(isset($request->update) && $request->update == 1){
-            $User_master = ViratualUser::find($request->id);
+            $User_master = VirtualUser::find($request->id);
         }else{
-            $User_master = new ViratualUser;
+            $User_master = new VirtualUser;
         }
         if(isset($request->username) && $request->username){
             $User_master->username = $request->username;
@@ -152,7 +152,7 @@ class UserMaster_model {
     }
 
     public function deleteVUser($user_id){
-        $id = ViratualUser::find($user_id);
+        $id = VirtualUser::find($user_id);
         return $id->delete();
     }
 
