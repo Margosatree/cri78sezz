@@ -223,7 +223,7 @@ class UserController extends Controller
         if(count($check_if_exists)){
 
             $datas = ['phone'=>$check_if_exists->first()->mobile,
-                      'email'=>$check_if_exists->first()->email]
+                      'email'=>$check_if_exists->first()->email];
             $user_mobile_email =$this->$this->UserMaster_model->getVirtualUserDetail($datas);
             $userObj = new stdClass();
             $userObej->username = $user_mobile_email->username;
