@@ -53,4 +53,8 @@ class Role_model {
 		$get_id = $this->findById($id);
 		return $get_id->delete();
 	}
+
+	public function getWhereData($where_data){
+		return Role::where($where_data)->get();
+	}
 }
