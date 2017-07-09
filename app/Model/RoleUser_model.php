@@ -75,4 +75,8 @@ class RoleUser_model {
 		return $perms;
 	}
 
+	public function checkRole($where_datas){
+		return role_user::where($where_datas)->get();
+	} 
+
 }
