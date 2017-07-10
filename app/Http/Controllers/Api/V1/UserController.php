@@ -286,11 +286,10 @@ class UserController extends Controller
         $status = $this->SendMailAndOtpServices->resetPassByEmails($data);
 
         if(count($status)){
-            return Response::json(
-                            ['success'=>[
+            return Response::json([
                                         'message'=>'successfuly_changed_password.',
                                         'status_code'=>200
-                                ]],200);
+                                ],200);
         }else{
             return Response::json([
                                     'message'=>'email_OR_mobile_invalid',

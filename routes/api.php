@@ -20,6 +20,19 @@ Route::post('forgetpass', 'Api\V1\UserController@forgetPassword');
 Route::post('resetpass/email', 'Api\V1\UserController@resetPassByEmail');
 Route::post('resetpass/mobile', 'Api\V1\UserController@resetPassByMobile');
 
+
+
+Route::post('create_role','Api\V1\Users\Acl\RoleControllerApi@addRole');
+Route::post('modifiy_role','Api\V1\Users\Acl\RoleControllerApi@editRole');
+Route::post('remove_role','Api\V1\Users\Acl\RoleControllerApi@deleteRole');
+Route::get('list_role','Api\V1\Users\Acl\RoleControllerApi@listRole');
+
+
+Route::post('create_perm','Api\V1\Users\Acl\PermissionControllerApi@addPerm');
+Route::post('modifiy_perm','Api\V1\Users\Acl\PermissionControllerApi@editPerm');
+Route::post('remove_perm','Api\V1\Users\Acl\PermissionControllerApi@deletePerm');
+Route::get('list_perm','Api\V1\Users\Acl\PermissionControllerApi@listPerm');
+
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token
     Route::get('user', 'Api\V1\UserController@getAuthUser');

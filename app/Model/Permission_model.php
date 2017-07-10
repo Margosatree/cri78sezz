@@ -37,10 +37,10 @@ class Permission_model {
 
 	public function insert($request){
 		$createUser = new Permission;
-        $createUser->name = $request->name;
+        $createUser->name = $request->perm_name;
         $createUser->slug = $request->slug;
-        if(isset($request->description) && $request->description){
-        	$createUser->description = $request->description;
+        if(isset($request->desc) && $request->desc){
+        	$createUser->description = $request->desc;
         }
         $createUser->save();
         return $createUser;
