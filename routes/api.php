@@ -22,25 +22,33 @@ Route::post('resetpass/mobile', 'Api\V1\UserController@resetPassByMobile');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token
-    Route::get('user', 'Api\V1\UserController@getAuthUser');
+        Route::get('user', 'Api\V1\UserController@getAuthUser');
     //end
 
-    Route::get('userinfo','Api\V1\UserController@getUserInfo');
+        Route::get('userinfo','Api\V1\UserController@getUserInfo');
 
 	Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');
 	Route::post('/Match/update',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@updateMatch');
 	Route::post('/Match/delete',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@deleteMatch');
+	Route::get('/Match/mymatch',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMyMatch');
 
-	Route::post('/Team/list',           'Api\V1\CricketDetail\Team\TeamMasterControllerApi@listTeam');
+	Route::post('/Team/listTeamMembers',           'Api\V1\CricketDetail\Team\TeamMasterControllerApi@listTeam');
 	Route::post('/Team/add',            'Api\V1\CricketDetail\Team\TeamMasterControllerApi@addTeam');
 	Route::post('/Team/update',         'Api\V1\CricketDetail\Team\TeamMasterControllerApi@updateTeam');
 	Route::post('/Team/delete',         'Api\V1\CricketDetail\Team\TeamMasterControllerApi@deleteTeam');
+
+	Route::post('/teammember/list',           'Api\V1\CricketDetail\Team\TeamMembersControllerApi@listTeamMembers');
+	Route::post('/teammember/add',            'Api\V1\CricketDetail\Team\TeamMembersControllerApi@addTeamMembers');
+	Route::post('/teammember/update',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@updateTeamMembers');
+	Route::post('/teammember/delete',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@deleteTeamMembers');
+	Route::get('/teammember/myteam',         'Api\V1\CricketDetail\Team\TeamMembersControllerApi@listMyTeamMembers');
 
 	Route::post('/TourMast/list',       'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listTournament');
 	Route::post('/TourMast/add',        'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addTournament');
 	Route::post('/TourMast/update',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@updateTournament');
 	Route::post('/TourMast/delete',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@deleteTournament');
+	Route::get('/TourMast/mytour',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listMyTour');
 
 	Route::post('/TourDet/list','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@listTourDet');
 	Route::post('/TourDet/add','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@addTourDet');
@@ -59,15 +67,18 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/Org/update','Api\V1\Users\Org\OrganizationMasterControllerApi@updateOrg');
 	Route::post('/Org/delete','Api\V1\Users\Org\OrganizationMasterControllerApi@deleteOrg');
 
+	Route::get('/Org/mylist','Api\V1\Users\Org\OrganizationMasterControllerApi@listOrgById');
+
 	Route::post('/Achievement/list','Api\V1\Users\Player\UserAchievementControllerApi@listAchievement');
 	Route::post('/Achievement/add','Api\V1\Users\Player\UserAchievementControllerApi@addAchievement');
-	Route::post('/Achievement/update','Api\V1\Users\Player\UserAchievementControllerApi@updateAchievement');
+            Route::post('/Achievement/update','Api\V1\Users\Player\UserAchievementControllerApi@updateAchievement');
 	Route::post('/Achievement/delete','Api\V1\Users\Player\UserAchievementControllerApi@deleteAchievement');
 
 	Route::post('/CriProfile/list','Api\V1\Users\Player\UserCricketProfileControllerApi@listCriProfile');
 	Route::post('/CriProfile/add','Api\V1\Users\Player\UserCricketProfileControllerApi@addCriProfile');
 	Route::post('/CriProfile/update','Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProfile');
 	Route::post('/CriProfile/delete','Api\V1\Users\Player\UserCricketProfileControllerApi@deleteCriProfile');
+	Route::post('/CriProfile/addImg','Api\V1\Users\Player\UserCricketProfileControllerApi@updateCriProImg');
 
 	Route::post('/UserBio/list','Api\V1\Users\Player\UsersBioControllerApi@listUsersBio');
 	Route::post('/UserBio/add','Api\V1\Users\Player\UsersBioControllerApi@addUsersBio');

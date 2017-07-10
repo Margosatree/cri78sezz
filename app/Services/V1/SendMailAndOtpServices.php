@@ -207,14 +207,14 @@ class SendMailAndOtpServices{
     public function verifyEmailMobileUser($verify_data){
         $verify_data['is_password_reset'] =0;
     $check_verify = $this->ResetVerify_model->getValueByEmailOrMobile($verify_data);
-        if(count($check_verify)){
-            $check_data = array('email'=>$check_verify->first()->email);
-            $update_data = array(
-                                    'is_verify_phone'=>1,
-                                    'is_verify_email'=>1
-                                );
-         $this->UserMaster_model->updateUserMaster($check_data,$update_data);
-        }
+        // if(count($check_verify)){
+        //     $check_data = array('email'=>$check_verify->first()->email);
+        //     $update_data = array(
+        //                             'is_verify_phone'=>1,
+        //                             'is_verify_email'=>1
+        //                         );
+        //  $this->UserMaster_model->updateUserMaster($check_data,$update_data);
+        // }
         return $check_verify;
 
 

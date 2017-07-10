@@ -75,4 +75,11 @@ class TournamentMaster_model {
             
             return $Tour_Master;
         }
+
+        public function getMyTourDetails($user_master_id){
+            return Tournament_Master::leftJoin('team_members AS tm'
+                                        ,'tm.tournament_id','=','tournament_master.id')
+                                    ->where('tm.user_master_id','=',$user_master_id)
+                                    ->get();
+        }
 }

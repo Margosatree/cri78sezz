@@ -11,6 +11,7 @@ use App\Model\UserOrganisation_model;
 use App\Model\UserMaster_model;
 use App\Model\Role_model;
 use App\Model\RoleUser_model;
+use App\Model\ResetVerify_model;
 use App\Services\V1\SendMailAndOtpServices;
 
 class UserController extends Controller
@@ -23,6 +24,7 @@ class UserController extends Controller
     protected $Role_model;
     protected $RoleUser_model;
     protected $SendMailAndOtpServices;
+    protected $ResetVerify_model;
 
 
     public function __construct(){
@@ -31,10 +33,10 @@ class UserController extends Controller
         $this->Role_model=new Role_model();
         $this->RoleUser_model=new RoleUser_model();
         $this->SendMailAndOtpServices =new SendMailAndOtpServices();
+        $this->ResetVerify_model =new ResetVerify_model();
     }
-   
-    public function register(Request $request){
 
+    public function register(Request $request){
         $validator = Validator::make($request->all(), [
             'username' => 'required|max:50|alpha_num|unique:user_masters',
             'phone' => [
@@ -70,7 +72,32 @@ class UserController extends Controller
                         'password'=>$request->password,
                     );
 
-        $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+        $verify_token =$this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+
+        $vuser_data = $this->UserMaster_model->getVirtualUserDetail($data);
+        if($vuser_data){
+            $this->UserMaster_model->deleteVUser($vuser_data->id);
+        }
+        $User_Master = $this->UserMaster_model->insertViratualUser((object)$data);
+
+        $data['verify_token'] = $verify_token;
+        $display_data = ['status_code'=>200
+                        ,'message'=>'user_created_successfully'
+                        ,'data'=>$data];
+        return response()->json($display_data,200);
+
+    }
+   
+    private function __register($request){
+
+        $data = array(
+                        'username'=>$request->username,
+                        'phone'=>$request->phone,
+                        'email'=>$request->email,
+                        'password'=>$request->password,
+                    );
+
+        // $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
         
         $User_Master = $this->UserMaster_model->insert($data);
 
@@ -86,7 +113,7 @@ class UserController extends Controller
         $display_data = ['status_code'=>200
                         ,'message'=>'user_created_successfully'
                         ,'data'=>$user_orgId];
-        return response()->json($display_data,200);
+        return $display_data;
     }
     
     public function login(Request $request){
@@ -166,6 +193,17 @@ class UserController extends Controller
 
         $check_if_exists = $this->SendMailAndOtpServices->verifyEmailMobileUser($data);
         if(count($check_if_exists)){
+
+            $datas = ['phone'=>$check_if_exists->first()->mobile,
+                      'email'=>$check_if_exists->first()->email];
+
+            $user_mobile_email =$this->UserMaster_model->getVirtualUserDetail($datas);
+            $objData['username']=$user_mobile_email->username;
+            $objData['phone']= $user_mobile_email->phone;
+            $objData['email']= $user_mobile_email->email;
+            $objData['password']= $user_mobile_email->password;
+            
+            $this->__register((object)$objData);
             return Response::json([
                                     'message'=>'successfuly_verified.',
                                     'status_code'=>200

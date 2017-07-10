@@ -44,4 +44,17 @@ class Role_model {
             $adminRole->save();
             return $adminRole;
 	}
+
+	public function updateRole($where_data,$update_data){
+		return Role::where($where_data)->update($update_data);
+	}
+
+	public function deleteRole($id){
+		$get_id = $this->findById($id);
+		return $get_id->delete();
+	}
+
+	public function getWhereData($where_data){
+		return Role::where($where_data)->get();
+	}
 }

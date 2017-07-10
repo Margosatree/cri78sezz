@@ -25,12 +25,16 @@ class TeamMembers_model {
             return Team_Members::where($where_array)->count();
 	}
 
+    public function getByAny($where_array){
+           return Team_Members::where($where_array)->get();
+    }
+
 	public function SaveTeamMembers($request){
 //            dd($request->all());
             if(isset($request->update) && $request->update == 1){
                 $Team_Member = $this->getById($request->id);
             }else{
-                $Team_Member = new User_Cricket_Profile;
+                $Team_Member = new Team_Members;
             }
             if(isset($request->team_id) && $request->team_id){
                 $Team_Member->team_id = $request->team_id;
@@ -49,6 +53,12 @@ class TeamMembers_model {
 	}
 
 	public function deleteById($id){
-            return Team_Master::find($id);
+            $team_member_id = $this->getById($id);
+            return $team_member_id->delete();
 	}
+
+    public function listMyTeams($user_master_id){
+        return Team_Members::leftJoin('team_master','team_members.team_id','=', 'team_master.id')
+                            ->where('team_members.user_master_id','=',$user_master_id)->get();
+    }
 }

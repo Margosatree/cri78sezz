@@ -75,4 +75,17 @@ class RoleUser_model {
 		return $perms;
 	}
 
+	public function checkRole($where_datas){
+		return role_user::where($where_datas)->get();
+	} 
+
+	public function removeUserToRole($id){
+		$get_id = $this->findById($id);
+		return $get_id->delete();
+	}
+
+	public function getUserId(){
+		return role_user::select('user_id')->distinct()->get();
+	}
+
 }

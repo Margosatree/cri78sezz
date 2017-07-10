@@ -15,6 +15,10 @@ class Permission_model {
 		return Permission::get();
 	}
 
+	public function findById($id){
+		return Permission::find($id);
+	}
+
 	public function getPermissionByRole($role_id){
 		return DB::table('permission_role')
                         ->select('*')
@@ -35,9 +39,32 @@ class Permission_model {
 		$createUser = new Permission;
         $createUser->name = $request->name;
         $createUser->slug = $request->slug;
-        $createUser->description = $request->description;
+        if(isset($request->description) && $request->description){
+        	$createUser->description = $request->description;
+        }
         $createUser->save();
         return $createUser;
 	}
+
+	public function updatePerm($where_data,$update_data){
+		return Permission::where($where_data)->update($update_data);
+	}
+
+
+	public function deletePerm($id){
+		$get_id = $this->findById($id);
+		return $get_id->delete();
+	}
+
+
+	public function checkPerm($where_datas){
+		return DB::table('permission_role')->where($where_datas)->get();
+	} 
+
+
+	public function getUserId(){
+		return DB::table('permission_role')->select('role_id')->distinct()->get();
+	}
+
 
 }
