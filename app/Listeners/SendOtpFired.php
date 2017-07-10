@@ -6,6 +6,8 @@ use App\Events\SendOtp;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Services\V1\MobileOtpServices;
+
 class SendOtpFired
 {
     /**
@@ -13,6 +15,9 @@ class SendOtpFired
      *
      * @return void
      */
+
+    protected $MobileOtpServices;
+
     public function __construct()
     {
         //
@@ -26,6 +31,13 @@ class SendOtpFired
      */
     public function handle(SendOtp $event)
     {
-        //
+        $this->MobileOtpServices=new MobileOtpServices();
+        $sms_data = array(
+                'SMSDetail'=>array(
+                            'mobile'=>$event->user_data['mobile'],
+                            'message'=>$event->user_data['message']
+                    )
+            );
+        $this->MobileOtpServices->sendSms($sms_data);
     }
 }
