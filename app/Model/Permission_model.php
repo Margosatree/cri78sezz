@@ -37,10 +37,10 @@ class Permission_model {
 
 	public function insert($request){
 		$createUser = new Permission;
-        $createUser->name = $request->name;
+        $createUser->name = $request->perm_name;
         $createUser->slug = $request->slug;
-        if(isset($request->description) && $request->description){
-        	$createUser->description = $request->description;
+        if(isset($request->desc) && $request->desc){
+        	$createUser->description = $request->desc;
         }
         $createUser->save();
         return $createUser;
@@ -64,6 +64,10 @@ class Permission_model {
 
 	public function getUserId(){
 		return DB::table('permission_role')->select('role_id')->distinct()->get();
+	}
+
+	public function deletePermAssignRole($id){
+		return DB::table('permission_role')->where('id', $id)->delete();
 	}
 
 

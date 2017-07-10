@@ -10,6 +10,10 @@ class Role extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = ['name', 'slug', 'description'];
 
+     protected $hidden = [
+        'created_at','updated_at','deleted_by','updated_by','deleted_at'
+    ];
+
     public function users()
     {
      return $this->belongsToMany(config('auth.providers.users.model'));
@@ -17,6 +21,6 @@ class Role extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany('App\Permission')->withTimestamps();
+        return $this->belongsToMany('App\Model\BaseModel\Permission')->withTimestamps();
     }
 }

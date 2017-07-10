@@ -15,16 +15,20 @@ class RoleControllerApi extends Controller
 {
 
     protected $Role_model;
+    protected $RoleUser_model;
+    protected $UserOrganisation_model;
 
     public function __construct(){
         $this->Role_model = new Role_model();
+        $this->RoleUser_model = new RoleUser_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
     }
 
     public function addRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_name'=>'required|alpha_dash|min:5|max:15|unique:roles,name',
+            'role_name'=>'required|alpha_dash|min:5|max:30|unique:roles,name',
             'is_admin'=>'digits:1|in:0,1',
-            'desc'=>'alpha_numeric|min:5|max:100'
+            'desc'=>'alpha_num|min:5|max:100'
             ]);
 
         if($validates->fails()){
@@ -49,7 +53,7 @@ class RoleControllerApi extends Controller
 
     public function addRoleBulk(Request $request){
         $validates = Validator::make($request->all(),[
-            ''=>
+            ''=>''
             ]);
 
         if($validates->fails()){
@@ -63,10 +67,10 @@ class RoleControllerApi extends Controller
 
     public function editRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_id'=>'required|exists:roles.id|numeric|min:1|max:7',
-            'role_name'=>'required|alpha_dash|min:5|max:15|unique:roles,name',
+            'role_id'=>'required|exists:roles,id|numeric|digits_between: 1,7',
+            'role_name'=>'alpha_dash|min:5|max:30|unique:roles,name',
             'is_admin'=>'digits:1|in:0,1',
-            'desc'=>'alpha_numeric|min:5|max:100'
+            'desc'=>'alpha_num|min:5|max:100'
             ]);
 
         if($validates->fails()){
@@ -77,17 +81,9 @@ class RoleControllerApi extends Controller
             return Response::json($response,$response['status_code']);
         }
 
-        $role_data = array('role_id'=>$request->role_id);
-        $check_role_assign = $this->RoleUser_model->checkRole($role_data);
-        if(count($check_role_assign)){
-            $response = [
-                        'message'=>'Please_Remove_role_assign_to_user_from_RoleUser_table',
-                        'status_code'=>403
-                        ];
-            return Response::json($response,$response['status_code']);
-        }
+
         $update_data = array();
-        if(isset($request->role_id) && $request->role_id){
+        if(isset($request->role_name) && $request->role_name){
             $update_data['name'] = $request->role_name;
             $update_data['slug'] = strtolower($request->role_name);
         }
@@ -98,9 +94,19 @@ class RoleControllerApi extends Controller
             $update_data['description'] = $request->desc;
         }
 
-        if(is_null($update_data)){
+        if(!count($update_data)){
             $response = [
                         'message'=>'please_provide_atleast_one_data_to_update',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $role_data = array('role_id'=>$request->role_id);
+        $check_role_assign = $this->RoleUser_model->checkRole($role_data);
+        if(count($check_role_assign)){
+            $response = [
+                        'message'=>'Please_Remove_role_assign_to_user_from_RoleUser_table',
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -119,18 +125,18 @@ class RoleControllerApi extends Controller
 
     public function deleteRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_id'=>'required|exists:roles.id|numeric|min:1|max:7'
+            'role_id'=>'required|exists:roles,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
         }
 
-        $role_data = array('id'=>$request->role_id);
+        $role_data = array('role_id'=>$request->role_id);
         $check_role_assign = $this->RoleUser_model->checkRole($role_data);
         if(count($check_role_assign)){
             $response = [
@@ -154,12 +160,12 @@ class RoleControllerApi extends Controller
 
     public function listRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_id'=>'exists:roles.id|numeric|min:1|max:7'
+            'role_id'=>'exists:roles,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -169,7 +175,7 @@ class RoleControllerApi extends Controller
         if($list){
             $response = [
                         'message'=>'success',
-                        'status_code'=>200
+                        'status_code'=>200,
                         'data'=>$list
                         ];
             return Response::json($response,$response['status_code']);
@@ -179,13 +185,13 @@ class RoleControllerApi extends Controller
 
     public function addRoleToUser(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_id'=>'required|exists:roles.id|numeric|min:1|max:7',
-            'user_id'=>'required|exists:user_organizations.id|numeric|min:1|max:7'
+            'role_id'=>'required|exists:roles,id|numeric|digits_between: 1,7',
+            'user_id'=>'required|exists:user_organizations,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -198,13 +204,13 @@ class RoleControllerApi extends Controller
 
         if(count($is_exists)){
             $response = [
-                        'message'=>'already_exists_data_in_table'
+                        'message'=>'already_exists_data_in_table',
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
         }
 
-        $inserted_data = $this->RoleUser_model->insert($request);
+        $inserted_data = $this->RoleUser_model->insert($request->user_id,$request->role_id);
         if($inserted_data){
             $response = [
                         'message'=>'inserted_successfully',
@@ -216,12 +222,12 @@ class RoleControllerApi extends Controller
 
     public function removeUserToRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'id'=>'required|exists:role_user.id|numeric|min:1|max:7'
+            'id'=>'required|exists:role_user,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -242,34 +248,31 @@ class RoleControllerApi extends Controller
     public function listUserWithRole(){
         $user_ids = $this->RoleUser_model->getUserId();
 
-        $display_data = array()
-        
-        foreach($user_ids as $user_id){
-            $user_data = array();
+        $display_data = array();
+        if(count($role_ids)){
+            foreach($user_ids as $user_id){
+                $user_data = array();
 
-            $user_email = $this->UserOrganisation_model->getById($user_id);
-            $user_data['user_id']=$user_id
-            $user_data['user_email'] = $user_email->email;
-
-            $role_ids = $this->RoleUser_model->checkRole(['user_id'=>$user_id]);
-
-            $roles = array();
-            foreach($role_ids as $role_id){
-               $role =  $this->Role_model->findById($role_id);
-               $roles[]=$role
+                $user_email = $this->UserOrganisation_model->getById($user_id->user_id);
+                $user_data['user_id']=$user_id->user_id;
+                $user_data['user_email'] = $user_email->first()->email;
+                $role_ids = $this->RoleUser_model->checkRole(['user_id'=>$user_id->user_id]);
+                $roles = array();
+                foreach($role_ids as $role_id){
+                   $role =  $this->Role_model->findById($role_id->role_id);
+                   $roles[]=$role;
+                }
+                $user_data['user_role']=$roles;
+                $display_data[]=$user_data; 
             }
-            $user_data['user_role']=$roles;
-            $display_data[]=$user_data; 
         }
-
-        if(is_null($display_data)){
-            $response = [
-                        'message'=>'success',
-                        'status_code'=>200
-                        'data'=>$display_data
-                        ];
-            return Response::json($response,$response['status_code']);
-        }
+        
+        $response = [
+                    'message'=>'success',
+                    'status_code'=>200,
+                    'data'=>$display_data
+                    ];
+        return Response::json($response,$response['status_code']);
 
     }    
 }

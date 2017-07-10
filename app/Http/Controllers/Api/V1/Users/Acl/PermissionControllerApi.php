@@ -21,10 +21,10 @@ class PermissionControllerApi extends Controller
         $this->Role_model = new Role_model();
     }
 
-    public function addPermission(Request $request){
+    public function addPerm(Request $request){
         $validates = Validator::make($request->all(),[
-            'perm_name'=>'required|alpha_dash|min:5|max:15|unique:permissions,name',
-            'desc'=>'alpha_numeric|min:5|max:100'
+            'perm_name'=>'required|string|min:5|max:50|unique:permissions,name',
+            'desc'=>'string|min:5|max:100'
             ]);
 
         if($validates->fails()){
@@ -34,7 +34,7 @@ class PermissionControllerApi extends Controller
                         ];
             return Response::json($response,$response['status_code']);
         }
-        $request->request->add(['slug' => strtolower($perm_name)]);
+        $request->request->add(['slug' => strtolower($request->perm_name)]);
         $inserted_data = $this->Permission_model->insert($request);
         if($inserted_data){
             $response = [
@@ -48,9 +48,9 @@ class PermissionControllerApi extends Controller
 
     public function editPerm(Request $request){
         $validates = Validator::make($request->all(),[
-            'perm_id'=>'required|exists:permissions.id|numeric|min:1|max:7',
-            'perm_name'=>'required|alpha_dash|min:5|max:15|unique:roles,name',
-            'desc'=>'alpha_numeric|min:5|max:100'
+            'perm_id'=>'required|exists:permissions,id|numeric|digits_between: 1,7',
+            'perm_name'=>'required|string|min:5|max:50|unique:permissions,name',
+            'desc'=>'string|min:5|max:100'
             ]);
 
         if($validates->fails()){
@@ -61,15 +61,6 @@ class PermissionControllerApi extends Controller
             return Response::json($response,$response['status_code']);
         }
 
-        $perm_data = array('permission_id'=>$request->perm_id);
-        $check_perm_assign = $this->Permission_model->checkPerm($role_data);
-        if(count($check_perm_assign)){
-            $response = [
-                        'message'=>'Please_Remove_perm_assign_to_role_from_PermRole_table',
-                        'status_code'=>403
-                        ];
-            return Response::json($response,$response['status_code']);
-        }
         $update_data = array();
         if(isset($request->perm_id) && $request->perm_id){
             $update_data['name'] = $request->perm_name;
@@ -82,13 +73,24 @@ class PermissionControllerApi extends Controller
             $update_data['description'] = $request->desc;
         }
 
-        if(is_null($update_data)){
+        if(!count($update_data)){
             $response = [
                         'message'=>'please_provide_atleast_one_data_to_update',
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
         }
+
+        $perm_data = array('permission_id'=>$request->perm_id);
+        $check_perm_assign = $this->Permission_model->checkPerm($perm_data);
+        if(count($check_perm_assign)){
+            $response = [
+                        'message'=>'Please_Remove_perm_assign_to_role_from_PermRole_table',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+        
 
         $perm_id = array('id'=>$request->perm_id);
 
@@ -105,7 +107,7 @@ class PermissionControllerApi extends Controller
 
     public function deletePerm(Request $request){
         $validates = Validator::make($request->all(),[
-            'perm_id'=>'required|exists:permissions.id|numeric|min:1|max:7'
+            'perm_id'=>'required|exists:permissions,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
@@ -117,7 +119,7 @@ class PermissionControllerApi extends Controller
         }
 
         $perm_data = array('permission_id'=>$request->perm_id);
-        $check_perm_assign = $this->Permission_model->checkPerm($role_data);
+        $check_perm_assign = $this->Permission_model->checkPerm($perm_data);
         if(count($check_perm_assign)){
             $response = [
                         'message'=>'Please_Remove_perm_assign_to_role_from_PermRole_table',
@@ -139,14 +141,14 @@ class PermissionControllerApi extends Controller
     }
 
 
-     public function listRole(Request $request){
+     public function listPerm(Request $request){
         $validates = Validator::make($request->all(),[
-            'perm_id'=>'exists:roles.id|numeric|min:1|max:7'
+            'perm_id'=>'exists:roles,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -156,7 +158,7 @@ class PermissionControllerApi extends Controller
         if($list){
             $response = [
                         'message'=>'success',
-                        'status_code'=>200
+                        'status_code'=>200,
                         'data'=>$list
                         ];
             return Response::json($response,$response['status_code']);
@@ -165,13 +167,13 @@ class PermissionControllerApi extends Controller
 
     public function addPermToUser(Request $request){
         $validates = Validator::make($request->all(),[
-            'role_id'=>'required|exists:roles.id|numeric|min:1|max:7',
-            'permission_id'=>'required|exists:permissions.id|numeric|min:1|max:7'
+            'role_id'=>'required|exists:roles,id|numeric|digits_between: 1,7',
+            'permission_id'=>'required|exists:permissions,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
@@ -184,13 +186,14 @@ class PermissionControllerApi extends Controller
 
         if(count($is_exists)){
             $response = [
-                        'message'=>'already_exists_data_in_table'
+                        'message'=>'already_exists_data_in_table',
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
         }
 
-        $inserted_data = $this->Role_model->findByIdForPermission($request->role_id,$request->permission_id);
+         $inserted_data = $this->Role_model->findByIdForPermission($request->role_id,$request->permission_id);
+
         if($inserted_data){
             $response = [
                         'message'=>'inserted_successfully',
@@ -202,19 +205,18 @@ class PermissionControllerApi extends Controller
 
     public function removePermToRole(Request $request){
         $validates = Validator::make($request->all(),[
-            'id'=>'required|exists:permission_role.id|numeric|min:1|max:7',
-            'role_id'=>'required|exists:roles.id|numeric|min:1|max:7',
+            'id'=>'required|exists:permission_role,id|numeric|digits_between: 1,7'
             ]);
 
         if($validates->fails()){
             $response = [
-                        'message'=>$validates->errors()->all()
+                        'message'=>$validates->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
         }
 
-        $removed_data = $this->Role_model->detachPermission($request->id);
+        $removed_data = $this->Permission_model->deletePermAssignRole($request->id);
         if($removed_data){
             $response = [
                         'message'=>'deleted_successfully',
@@ -225,37 +227,37 @@ class PermissionControllerApi extends Controller
     }
 
 
-    public function listUserWithRole(){
+    public function listRoleWithPerm(){
         $role_ids = $this->Permission_model->getUserId();
 
-        $display_data = array()
-        
-        foreach($role_ids as $role_id){
-            $user_data = array();
+        $display_data = array();
+        if(count($role_ids)){
 
-            $role_name = $this->Role_model->findById($role_id);
-            $user_data['role_id']=$role_id
-            $user_data['role_name'] = $role_name->name;
+            foreach($role_ids as $role_id){
+                $user_data = array();
 
-            $perm_ids = $this->Permission_model->checkPerm(['role_id'=>$role_id]);
+                $role_name = $this->Role_model->findById($role_id->role_id);
+                $user_data['role_id']=$role_id->role_id;
+                $user_data['role_name'] = $role_name->first()->name;
 
-            $perms = array();
-            foreach($perm_ids as $perm_id){
-               $perm =  $this->Permission_model->findById($perm_id);
-               $perms[]=$perm
+                $perm_ids = $this->Permission_model->checkPerm(['role_id'=>$role_id->role_id]);
+
+                $perms = array();
+                foreach($perm_ids as $perm_id){
+                   $perm =  $this->Permission_model->findById($perm_id->permission_id);
+                   $perms[]=$perm;
+                }
+                $user_data['user_perm']=$perms;
+                $display_data[]=$user_data; 
             }
-            $user_data['user_perm']=$roles;
-            $display_data[]=$user_data; 
-        }
 
-        if(is_null($display_data)){
-            $response = [
-                        'message'=>'success',
-                        'status_code'=>200
-                        'data'=>$display_data
-                        ];
-            return Response::json($response,$response['status_code']);
         }
+        $response = [
+                    'message'=>'success',
+                    'status_code'=>200,
+                    'data'=>$display_data
+                    ];
+        return Response::json($response,$response['status_code']);
 
     } 
 

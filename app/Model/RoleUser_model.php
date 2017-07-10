@@ -80,7 +80,7 @@ class RoleUser_model {
 	} 
 
 	public function removeUserToRole($id){
-		$get_id = $this->findById($id);
+		$get_id = role_user::find($id);
 		return $get_id->delete();
 	}
 
