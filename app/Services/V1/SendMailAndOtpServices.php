@@ -9,6 +9,7 @@ use App\Model\UserOrganisation_model;
 
 use Event;
 use App\Events\SendMail;
+use App\Events\SendOtp;
 
 class SendMailAndOtpServices{
 
@@ -136,12 +137,17 @@ class SendMailAndOtpServices{
                                     ,'email_otp'=>$verify_email_otp
                                     ,'token'=>$verify_token
                                 );
-        $data = array(
+        $email_data = array(
                         'user_email'=>$email,
                         'random_num'=>$verify_email_otp,
                         'token_data'=>$verify_token
                     );
-        Event::fire(new SendMail($data));
+        $sms_data = array(
+                    'mobile'=>$mobile,
+                    'message'=>'Your Verify OTP is '.$verify_mobile_otp,
+                );
+        Event::fire(new SendMail($email_data));
+        Event::fire(new SendOtp($sms_data));
         // var_dump($email_mobile_data);exit;
 
         $this->saveVerifyEmailMobileData($email_mobile_data);

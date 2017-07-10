@@ -19,9 +19,10 @@ class SendOtp
      *
      * @return void
      */
-    public function __construct()
+    public $user_data = array();
+    public function __construct($userdata = array())
     {
-        //
+        $this->user_data = $userdata;
     }
 
     /**
@@ -31,6 +32,6 @@ class SendOtp
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return [];
     }
 }
