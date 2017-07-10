@@ -186,10 +186,10 @@ class UserController extends Controller
                                 ],403);
         }
         $data = array(
-                        'token' => $request->token,
-                        'email_otp' => $request->email_otp,
-                        'mobile_otp' => $request->mobile_otp
-                    );
+                    'token' => $request->token,
+                    'email_otp' => $request->email_otp,
+                    'mobile_otp' => $request->mobile_otp
+                );
 
         $check_if_exists = $this->SendMailAndOtpServices->verifyEmailMobileUser($data);
         if(count($check_if_exists)){
@@ -390,7 +390,7 @@ class UserController extends Controller
                                 ],200);
     }
 
-    public function verifyUserToken(){
+    public function verifyUserToken(Request $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
         ]);
@@ -417,6 +417,24 @@ class UserController extends Controller
 
         return Response::json($display_data,$display_data['status_code']);
 
+    }
+    
+    public function activeUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'is_activate' => 'required|numeric|in:0,1',
+        ]);
+        if(!$validator->fails()){
+            $User_org = $this->UserOrganisation_model->getIdByUserId($request->id);
+            $request->request->add([ 'update' => 1,'id' => $User_org->id]);
+            $this->UserOrganisation_model->SaveUserOrg($request);
+            return Response::json(['status_code' => 200 ,'message' => 'success'],200);
+        }else{
+            return Response::json([
+            'message' => $validator->errors()->all(),
+            'status_code' => 403
+            ],403);
+        }
     }
 
 } 

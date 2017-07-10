@@ -25,7 +25,7 @@ class UserOrganisation_model {
         }
         
         public function getIdByUserId($id) {
-            return User_Organisation::selectRaw('*')->where('user_master_id',$id)->first();
+            return User_Organisation::where('user_master_id',$id)->first();
         }
         
         
@@ -61,6 +61,7 @@ class UserOrganisation_model {
         }
         
         public function SaveUserOrg($request) {
+//            dd($request->all());
             if(isset($request->update) && $request->update == 1){
                 $User_Org = User_Organisation::find($request->id);
             }else{
@@ -83,6 +84,9 @@ class UserOrganisation_model {
             }
             if(isset($request->password) && $request->password){
                 $User_Org->password = $request->password;
+            }
+            if(isset($request->is_activate) && $request->is_activate){
+                $User_Org->is_activate = $request->is_activate;
             }
             if(isset($request->role) && $request->role){
                 $User_Org->role = $request->role;

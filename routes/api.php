@@ -41,13 +41,16 @@ Route::post('assign_perm','Api\V1\Users\Acl\PermissionControllerApi@addPermToUse
 Route::post('revoke_perm','Api\V1\Users\Acl\PermissionControllerApi@removePermToRole');
 Route::get('list_assign_perm','Api\V1\Users\Acl\PermissionControllerApi@listRoleWithPerm');
 
+Route::post('/User/updatestatus','Api\V1\UserController@activeUser');
+
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token
         Route::get('user', 'Api\V1\UserController@getAuthUser');
     //end
 
         Route::get('userinfo','Api\V1\UserController@getUserInfo');
-
+        
+        
 	Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');
 	Route::post('/Match/update',        'Api\V1\CricketDetail\Match\MatchMastersControllerApi@updateMatch');
@@ -92,7 +95,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 	Route::post('/Achievement/list','Api\V1\Users\Player\UserAchievementControllerApi@listAchievement');
 	Route::post('/Achievement/add','Api\V1\Users\Player\UserAchievementControllerApi@addAchievement');
-            Route::post('/Achievement/update','Api\V1\Users\Player\UserAchievementControllerApi@updateAchievement');
+        Route::post('/Achievement/update','Api\V1\Users\Player\UserAchievementControllerApi@updateAchievement');
 	Route::post('/Achievement/delete','Api\V1\Users\Player\UserAchievementControllerApi@deleteAchievement');
 
 	Route::post('/CriProfile/list','Api\V1\Users\Player\UserCricketProfileControllerApi@listCriProfile');
@@ -107,6 +110,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/UserBio/update','Api\V1\Users\Player\UsersBioControllerApi@updateUsersBio');
         
         Route::post('/User/bulk','Api\V1\Users\Player\UsersBulkControllerApi@upload');
+        
 
 	//Vrajesh API start
 
