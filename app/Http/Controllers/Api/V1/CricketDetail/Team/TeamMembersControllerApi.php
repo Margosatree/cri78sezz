@@ -52,7 +52,7 @@ class TeamMembersControllerApi extends Controller
             $Rule_Max_Player_Count = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id,7);
             $Team_Members_Count = $this->TeamMembers_model->getCountByWhereQuery([
                 'tournament_id' => $request->tournament_id,
-                'user_master_id' => $request->user_master_id
+                'team_id' => $request->user_master_id
             ]);
             if($Team_Members_Count < $Rule_Max_Player_Count){
                 $Team_Member_Exists = $this->TeamMembers_model->getWhereQuery([

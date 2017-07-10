@@ -44,8 +44,8 @@ class UsersBulkControllerApi extends Controller
             $excel_B64 = base64_decode($excel_B64);
             file_put_contents(public_path('images/'. $filename), $excel_B64);
             $data = Excel::load(public_path('images/'. $filename), function($reader) {
-//            })->get();
-            })->get()->toArray();
+            })->get();
+//            })->get()->toArray();
 //            echo json_encode($data);die();
             if(!empty($data) && $data->count()){
                 $Errors = array();

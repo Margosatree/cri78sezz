@@ -59,7 +59,7 @@ class MatchMastersControllerApi extends Controller
         return response()->json($output);
     }
     
-        public function addMatch(Request $request){
+    public function addMatch(Request $request){
         $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|numeric',
             'team1' => 'required|numeric',
