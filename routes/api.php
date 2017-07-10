@@ -27,11 +27,19 @@ Route::post('modifiy_role','Api\V1\Users\Acl\RoleControllerApi@editRole');
 Route::post('remove_role','Api\V1\Users\Acl\RoleControllerApi@deleteRole');
 Route::get('list_role','Api\V1\Users\Acl\RoleControllerApi@listRole');
 
+Route::post('assign_role','Api\V1\Users\Acl\RoleControllerApi@addRoleToUser');
+Route::post('revoke_role','Api\V1\Users\Acl\RoleControllerApi@removeUserToRole');
+Route::get('list_assign_role','Api\V1\Users\Acl\RoleControllerApi@listUserWithRole');
+
 
 Route::post('create_perm','Api\V1\Users\Acl\PermissionControllerApi@addPerm');
 Route::post('modifiy_perm','Api\V1\Users\Acl\PermissionControllerApi@editPerm');
 Route::post('remove_perm','Api\V1\Users\Acl\PermissionControllerApi@deletePerm');
 Route::get('list_perm','Api\V1\Users\Acl\PermissionControllerApi@listPerm');
+
+Route::post('assign_perm','Api\V1\Users\Acl\PermissionControllerApi@addPermToUser');
+Route::post('revoke_perm','Api\V1\Users\Acl\PermissionControllerApi@removePermToRole');
+Route::get('list_assign_perm','Api\V1\Users\Acl\PermissionControllerApi@listRoleWithPerm');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token

@@ -66,5 +66,9 @@ class Permission_model {
 		return DB::table('permission_role')->select('role_id')->distinct()->get();
 	}
 
+	public function deletePermAssignRole($id){
+		return DB::table('permission_role')->where('id', $id)->delete();
+	}
+
 
 }

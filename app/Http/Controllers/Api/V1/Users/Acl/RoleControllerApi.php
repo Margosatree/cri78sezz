@@ -210,7 +210,7 @@ class RoleControllerApi extends Controller
             return Response::json($response,$response['status_code']);
         }
 
-        $inserted_data = $this->RoleUser_model->insert($request);
+        $inserted_data = $this->RoleUser_model->insert($request->user_id,$request->role_id);
         if($inserted_data){
             $response = [
                         'message'=>'inserted_successfully',
@@ -249,33 +249,30 @@ class RoleControllerApi extends Controller
         $user_ids = $this->RoleUser_model->getUserId();
 
         $display_data = array();
-        
-        foreach($user_ids as $user_id){
-            $user_data = array();
+        if(count($role_ids)){
+            foreach($user_ids as $user_id){
+                $user_data = array();
 
-            $user_email = $this->UserOrganisation_model->getById($user_id);
-            $user_data['user_id']=$user_id;
-            $user_data['user_email'] = $user_email->email;
-
-            $role_ids = $this->RoleUser_model->checkRole(['user_id'=>$user_id]);
-
-            $roles = array();
-            foreach($role_ids as $role_id){
-               $role =  $this->Role_model->findById($role_id);
-               $roles[]=$role;
+                $user_email = $this->UserOrganisation_model->getById($user_id->user_id);
+                $user_data['user_id']=$user_id->user_id;
+                $user_data['user_email'] = $user_email->first()->email;
+                $role_ids = $this->RoleUser_model->checkRole(['user_id'=>$user_id->user_id]);
+                $roles = array();
+                foreach($role_ids as $role_id){
+                   $role =  $this->Role_model->findById($role_id->role_id);
+                   $roles[]=$role;
+                }
+                $user_data['user_role']=$roles;
+                $display_data[]=$user_data; 
             }
-            $user_data['user_role']=$roles;
-            $display_data[]=$user_data; 
         }
-
-        if(is_null($display_data)){
-            $response = [
-                        'message'=>'success',
-                        'status_code'=>200,
-                        'data'=>$display_data
-                        ];
-            return Response::json($response,$response['status_code']);
-        }
+        
+        $response = [
+                    'message'=>'success',
+                    'status_code'=>200,
+                    'data'=>$display_data
+                    ];
+        return Response::json($response,$response['status_code']);
 
     }    
 }

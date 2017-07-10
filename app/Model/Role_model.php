@@ -33,7 +33,7 @@ class Role_model {
 
 	public function detachPermission($id,$roleId){
 		$role = $this->findById($roleId);
-		$role->permissions()->detach($id);
+		return $role->permissions()->detach($id);
 	}
 
 	public function insert($request){
