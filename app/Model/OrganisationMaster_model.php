@@ -31,7 +31,7 @@ class OrganisationMaster_model {
         }
 
         public function allCondtion($where_data){
-            return Organisation_Master::where($where_data)->get()
+            return Organisation_Master::where($where_data)->get();
         }
         
         public function SaveOrg($request) {
