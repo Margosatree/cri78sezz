@@ -29,6 +29,10 @@ class OrganisationMaster_model {
             return Organisation_Master::selectRaw('*')
                     ->where('name',$name)->value('name');
         }
+
+        public function allCondtion($where_data){
+            return Organisation_Master::where($where_data)->get()
+        }
         
         public function SaveOrg($request) {
             if(isset($request->update) && $request->update == 1){

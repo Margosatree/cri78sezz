@@ -155,13 +155,24 @@ class OrganizationMasterControllerApi extends Controller
 
     public function updateSpoc(Request $request){
         $validator = Validator::make($request->all(), [
-            'id'=>'required|exists:organization_masters,id|numeric|digits_between: 1,7',
-            'spoc' => 'required|numeric|digits_between: 1,7',
+             'id'=>'required|exists:organization_masters,id|numeric|digits_between: 1,7',
+            'spoc' => 'required|exists:user_masters,id|numeric|digits_between: 1,7',
         ]);
         if($validator->fails()){
             $response = [
                         'message'=>$validates->errors()->all(),
                         'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $send_data = ['organization_master_id'=>$request->id,
+                      'user_master_id'=>$request->spoc];
+        $check_user_with_org = $this->OrganisationMaster_model->allCondtion($send_data);
+        if(!count($check_user_with_org)){
+            $response = [
+                        'message'=>'Please Provide Correct User wih organiztion',
+                        'status_code'=>404
                         ];
             return Response::json($response,$response['status_code']);
         }
