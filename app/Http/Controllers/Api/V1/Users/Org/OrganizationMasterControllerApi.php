@@ -141,4 +141,39 @@ class OrganizationMasterControllerApi extends Controller
         }
         return response()->json($response,$response['status']);
     }
+
+    public function listUserByOrgId(){
+        $user = JWTAuth::parseToken()->authenticate();
+        $user_org_data = $this->UserOrganisation_model->getlistOrgUser($user->organization_master_id);
+
+        $response = array('status_code' => 200, 
+                            'message' => 'success', 
+                            'data' => $user_org_data
+                        );
+        return response()->json($response,$response['status_code']);
+    }
+
+    public function updateSpoc(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id'=>'required|exists:organization_masters,id|numeric|digits_between: 1,7'
+            'spoc' => 'required|numeric|digits_between: 1,7',
+        ]);
+        if($validator->fails()){
+            $response = [
+                        'message'=>$validates->errors()->all(),
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+        $request->request->add(['update' => 1]);
+
+        $Org = $this->OrganisationMaster_model->SaveOrg($request);
+        if($Org){
+            $output = array('status_code' => 200 ,'msg' => 'Sucess');
+        }else{
+            $output = array('status_code' => 400 ,'msg' => 'Transection Fail');
+        }
+        
+         return Response::json($response,$response['status_code']);
+    }
 }

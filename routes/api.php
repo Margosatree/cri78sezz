@@ -89,6 +89,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/Org/delete','Api\V1\Users\Org\OrganizationMasterControllerApi@deleteOrg');
 
 	Route::get('/Org/mylist','Api\V1\Users\Org\OrganizationMasterControllerApi@listOrgById');
+	Route::get('/Org/orguserlist','Api\V1\Users\Org\OrganizationMasterControllerApi@listUserByOrgId');
+	Route::post('/Org/updateSpoc','Api\V1\Users\Org\OrganizationMasterControllerApi@updateSpoc');
 
 	Route::post('/Achievement/list','Api\V1\Users\Player\UserAchievementControllerApi@listAchievement');
 	Route::post('/Achievement/add','Api\V1\Users\Player\UserAchievementControllerApi@addAchievement');
