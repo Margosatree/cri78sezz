@@ -160,7 +160,7 @@ class OrganizationMasterControllerApi extends Controller
         ]);
         if($validator->fails()){
             $response = [
-                        'message'=>$validates->errors()->all(),
+                        'message'=>$validator->errors()->all(),
                         'status_code'=>403
                         ];
             return Response::json($response,$response['status_code']);
