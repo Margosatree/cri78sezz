@@ -169,7 +169,7 @@ class OrganizationMasterControllerApi extends Controller
 
         $send_data = ['organization_master_id'=>$request->id,
                       'user_master_id'=>$request->spoc];
-        $check_user_with_org = $this->OrganisationMaster_model->allCondtion($send_data);
+        $check_user_with_org = $this->UserOrganisation_model->allCondtion($send_data);
         if(!count($check_user_with_org)){
             $response = [
                         'message'=>'Please Provide Correct User wih organiztion',

@@ -30,9 +30,7 @@ class OrganisationMaster_model {
                     ->where('name',$name)->value('name');
         }
 
-        public function allCondtion($where_data){
-            return Organisation_Master::where($where_data)->get();
-        }
+        
         
         public function SaveOrg($request) {
             if(isset($request->update) && $request->update == 1){

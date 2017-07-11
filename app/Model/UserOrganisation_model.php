@@ -28,7 +28,9 @@ class UserOrganisation_model {
             return User_Organisation::where('user_master_id',$id)->first();
         }
         
-        
+        public function allCondtion($where_data){
+            return Organisation_Master::where($where_data)->get();
+        }
         
         public function getOrgById($id) {
             return User_Organisation::selectRaw('user_master_id')->where('organization_master_id',$id)->get();
