@@ -114,7 +114,7 @@ class UserOrganisation_model {
                                     ->leftJoin('user_masters um','User_Organisation.user_master_id','=','um.id')
                                     ->leftJoin('organization_masters om','User_Organisation.organization_master_id','=','organization_masters.id')
                                     ->where('User_Organisation.organization_master_id','=',$org_id)
-                                    ->get()
+                                    ->get();
         }
         
 }
