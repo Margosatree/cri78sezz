@@ -181,9 +181,9 @@ class OrganizationMasterControllerApi extends Controller
 
         $Org = $this->OrganisationMaster_model->SaveOrg($request);
         if($Org){
-            $output = array('status_code' => 200 ,'msg' => 'Sucess');
+            $response = array('status_code' => 200 ,'msg' => 'Sucess');
         }else{
-            $output = array('status_code' => 400 ,'msg' => 'Transection Fail');
+            $response = array('status_code' => 400 ,'msg' => 'Transection Fail');
         }
         
          return Response::json($response,$response['status_code']);
