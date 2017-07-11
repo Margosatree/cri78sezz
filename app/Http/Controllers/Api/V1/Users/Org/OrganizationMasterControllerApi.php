@@ -155,7 +155,7 @@ class OrganizationMasterControllerApi extends Controller
 
     public function updateSpoc(Request $request){
         $validator = Validator::make($request->all(), [
-            'id'=>'required|exists:organization_masters,id|numeric|digits_between: 1,7'
+            'id'=>'required|exists:organization_masters,id|numeric|digits_between: 1,7',
             'spoc' => 'required|numeric|digits_between: 1,7',
         ]);
         if($validator->fails()){
