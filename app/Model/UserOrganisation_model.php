@@ -112,7 +112,7 @@ class UserOrganisation_model {
         public function getlistOrgUser($org_id){
             return User_Organisation::select(['um.id AS um_id','um.first_name','um.last_name','um.email','um.phone','om.id AS om_id','om.name'])
                                     ->leftJoin('user_masters AS um','user_organizations.user_master_id','=','um.id')
-                                    ->leftJoin('organization_masters AS om','user_organizations.organization_master_id','=','organization_masters.id')
+                                    ->leftJoin('organization_masters AS om','user_organizations.organization_master_id','=','om.id')
                                     ->where('user_organizations.organization_master_id','=',$org_id)
                                     ->get();
         }
