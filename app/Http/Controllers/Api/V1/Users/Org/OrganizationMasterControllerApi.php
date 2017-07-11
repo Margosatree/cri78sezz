@@ -6,6 +6,7 @@ use App\Model\OrganisationMaster_model;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use JWTAuth;
 use DB;
 use Validator;
