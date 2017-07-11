@@ -29,7 +29,7 @@ class UserOrganisation_model {
         }
         
         public function allCondtion($where_data){
-            return Organisation_Master::where($where_data)->get();
+            return User_Organisation::where($where_data)->get();
         }
         
         public function getOrgById($id) {
