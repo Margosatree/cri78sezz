@@ -85,17 +85,17 @@ class TournamentMasterControllerApi extends Controller {
                 $request->request->add(['organization_master_id' => $user->organization_master_id]);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 if($Tournament){
-                    $output = array('status' => 200 ,'msg' => 'Sucess');
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Tournament Name Already Exist');
+                $output = array('status_code' => 400 ,'message' => 'Tournament Name Already Exist');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function updateTournament(Request $request){
@@ -125,20 +125,20 @@ class TournamentMasterControllerApi extends Controller {
                 file_put_contents(public_path('images/'. $filename), $data);
                 $request->request->add(['tournament_logo' => $filename]);
 
-                $request->request->add(['update' => 1,'id' => $request->id,'organization_master_id' => $user->organization_master_id]);
+                $request->request->add(['update' => 1,'updated_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 if($Tournament){
-                    $output = array('status' => 200 ,'msg' => 'Sucess');
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Tournament Name Already Exist');
+                $output = array('status_code' => 400 ,'message' => 'Tournament Name Already Exist');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function deleteTournament(Request $request){
@@ -146,18 +146,28 @@ class TournamentMasterControllerApi extends Controller {
             'id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
+            DB::beginTransaction();
             $Tour_Mast = $this->TournamentMaster_model->getById($request->id);
-            if($Tour_Mast){
-                $Tour_Mast->delete();
-                $this->TournamentDetails_model->deleteById($request->id);
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+            if($Tour_Mast->delete()){
+                $user = JWTAuth::parseToken()->authenticate();
+                $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
+                $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
+                $Tour_Det = $this->TournamentDetails_model->getById($request->id);
+                if($Tour_Det->delete()){
+                    DB::commit();
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
+                }else{
+                    DB::rollBack();
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
+                }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                DB::rollBack();
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
 
@@ -165,11 +175,11 @@ class TournamentMasterControllerApi extends Controller {
         $user = JWTAuth::parseToken()->authenticate();
         $datas = $this->TournamentMaster_model->getMyTourDetails($user->user_master_id);
         if($datas){
-            $response = array('status' => 200 ,'msg' => 'success','data' => $datas);
+            $output = array('status_code' => 200 ,'message' => 'success','data' => $datas);
         }else{
-            $response = array('status' => 404 ,'msg' => 'transation_failed');
+            $output = array('status_code' => 404 ,'message' => 'transation_failed');
         }
-        return response()->json($response,$response['status']);
+        return response()->json($output,$output['status_code']);
     }
 
 

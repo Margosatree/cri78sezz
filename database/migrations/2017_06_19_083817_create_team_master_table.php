@@ -15,6 +15,7 @@ class CreateTeamMasterTable extends Migration {
 		Schema::create('team_master', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->integer('tournament_id');
 			$table->string('team_name', 191)->nullable();
 			$table->integer('team_owner_id')->nullable();
 			$table->string('team_type', 191)->nullable();

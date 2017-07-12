@@ -21,7 +21,7 @@ class CreateUserOrganizationsTable extends Migration {
             $table->date('registration_date')->nullable();
             $table->string('email', 191);
             $table->string('password', 191);
-            $table->integer('is_activate')->default(0);
+            $table->integer('status')->default(0);
             $table->enum('role', array('admin','organizer','user'));
             $table->string('remember_token', 100)->nullable();
             $table->integer('deleted_by')->nullable();

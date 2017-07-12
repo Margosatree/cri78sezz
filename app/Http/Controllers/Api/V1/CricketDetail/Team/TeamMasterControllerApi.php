@@ -33,19 +33,21 @@ class TeamMasterControllerApi extends Controller
     }
     
     public function listTeam(Request $request){
-        $organization_master_id = 1;//have to find user id from login
+        $user = JWTAuth::parseToken()->authenticate();
+            $organization_master_id = $user->organization_master_id;
         $Teams = $this->TeamMaster_model->getTeamDetail($organization_master_id);
         if($Teams){
-            $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Teams);
+            $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Teams);
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail');
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
     
     public function addTeam(Request $request){
         $validator = Validator::make($request->all(), [
             'team_name' => 'required|max:190',
+            'tournament_id' => 'required|numeric|min:1',
             'team_owner_id' => 'required|numeric|min:1',
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric|min:1',
@@ -66,17 +68,17 @@ class TeamMasterControllerApi extends Controller
                 $request->request->add(['team_logo' => $filename]);
                 $Team = $this->TeamMaster_model->SaveTeam($request);
                 if($Team){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                    $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Team);
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
+                $output = array('status_code' => 400 ,'message' => 'Team Name Already Exist');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function updateTeam(Request $request){
@@ -102,21 +104,22 @@ class TeamMasterControllerApi extends Controller
                 file_put_contents(public_path('images/'. $filename), $data);
                 $params['team_logo'] = $filename;
                 $request->request->add(['team_logo' => $filename]);
-
-                $request->request->add(['update' => 1,'id' => $request->id]);
+                
+                $user = JWTAuth::parseToken()->authenticate();
+                $request->request->add(['update' => 1,'id' => $request->id,'updated_by' => $user->user_master_id]);
                 $Team = $this->TeamMaster_model->SaveTeam($request);
                 if($Team){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                    $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Team);
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Team Name Already Exist');
+                $output = array('status_code' => 400 ,'message' => 'Team Name Already Exist');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     /**
@@ -130,17 +133,19 @@ class TeamMasterControllerApi extends Controller
             'id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
+            $user = JWTAuth::parseToken()->authenticate();
+            $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id]);
+            $this->TeamMaster_model->SaveTeam($request);
             $Team = $this->TeamMaster_model->deleteById($request->id);
             if($Team){
-                $Team->delete();
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function listMyTeam(){

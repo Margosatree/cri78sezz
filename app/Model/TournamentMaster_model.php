@@ -10,7 +10,7 @@ class TournamentMaster_model {
     }
 
     public function getId($org_id,$Tournament){
-            return Tournament_Master::selectRaw('id')
+            return Tournament_Master::select('id')
                 ->where('organization_master_id',$org_id)
                 ->where('id',$Tournament)->get();
     }
@@ -18,17 +18,21 @@ class TournamentMaster_model {
     public function getById($id) {
         return Tournament_Master::find($id);
     }
-
+    
     public function allCondtion($where_data){
             return Tournament_Master::where($where_data)->get();
     }
+    
+    public function deleteById($id) {
+        return Tournament_Master::find($id)->delete();
+    }
         
     public function getTourByOrgId($org_id){
-            return Tournament_Master::selectRaw('*')->where('organization_master_id',$org_id)->get();
+            return Tournament_Master::where('organization_master_id',$org_id)->get();
     }
     
     public function getOrgIDByTourId($id){
-            return Tournament_Master::selectRaw('*')->where('id',$id)->value('organization_master_id');
+            return Tournament_Master::where('id',$id)->value('organization_master_id');
     }
         
     public function TourNameExists($org_id,$name,$notinuserid = null){

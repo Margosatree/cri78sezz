@@ -21,11 +21,15 @@ class TournamentRules_model {
         return Tournament_Rules::find($id);
     }
     
+    public function deleteById($id) {
+        return $this->getById($id)->delete();
+    }
+    
     public function SaveRule($request) {
         if(isset($request->update) && $request->update == 1){
-            $Rules = Rule_Master::find($request->id);
+            $Rules = Tournament_Rules::find($request->id);
         }else{
-            $Rules = new Tournament_Details;
+            $Rules = new Tournament_Rules;
         }
         if(isset($request->name) && $request->name){
             $Rules->name = $request->name;
@@ -44,6 +48,12 @@ class TournamentRules_model {
         }
         if(isset($request->range_to) && $request->range_to){
             $Rules->range_to = $request->range_to;
+        }
+        if(isset($request->deleted_by) && $request->deleted_by){
+            $Rules->deleted_by = $request->deleted_by;
+        }
+        if(isset($request->updated_by) && $request->updated_by){
+            $Rules->updated_by = $request->updated_by;
         }
         $Rules->save();
         return $Rules;

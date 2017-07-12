@@ -22,14 +22,14 @@ class TournamentDetails_model {
         }
         
         public function getTourDetById($id) {
-            return Tournament_Details::selectRaw('*')->where('tournament_id',$id)->get();
+            return Tournament_Details::where('tournament_id',$id)->get();
         }
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
-            return Tournament_Details::selectRaw('*')->where('tournament_id',$tour_id)->where('rule_id',$rule_id)->get()->first();
+            return Tournament_Details::where('tournament_id',$tour_id)->where('rule_id',$rule_id)->get()->first();
         }
         
         public function getRulesByTourId($tour_id) {
-            return Tournament_Details::selectRaw('rule_id')
+            return Tournament_Details::select('rule_id')
                     ->where('tournament_id',$tour_id)->get();
         }
         
@@ -48,6 +48,8 @@ class TournamentDetails_model {
                     'value' => $request->value,
                     'range_from' => $request->range_from,
                     'range_to' => $request->range_to,
+                    'updated_by' => $request->updated_by,
+                    'deleted_by' => $request->deleted_by,
                 ]);
             }else{
                 $Tour_Detail = new Tournament_Details;

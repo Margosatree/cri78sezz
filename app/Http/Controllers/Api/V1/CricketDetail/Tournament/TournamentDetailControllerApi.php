@@ -41,14 +41,14 @@ class TournamentDetailControllerApi extends Controller
         if(!$validator->fails()){
             $Tour_Dets = $this->TournamentDetails_model->getTourDetById($request->tournament_id);
             if($Tour_Dets){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tour_Dets);
+                $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Tour_Dets);
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
     
     public function addTourDet(Request $request){
@@ -63,14 +63,14 @@ class TournamentDetailControllerApi extends Controller
         if(!$validator->fails()){
             $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
             if($Tour_Det){
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function updateTourDet(Request $request){
@@ -85,20 +85,21 @@ class TournamentDetailControllerApi extends Controller
         if(!$validator->fails()){
             $Rule_Exists = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
             if($Rule_Exists){
-                $request->request->add(['update' => 1]);
+                $user = JWTAuth::parseToken()->authenticate();
+                $request->request->add(['update' => 1,'updated_by' => $user->user_master_id]);
                 $Tour_Det = $this->TournamentDetails_model->SaveTourDetail($request);
                 if($Tour_Det){
-                    $output = array('status' => 200 ,'msg' => 'Sucess');
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                    $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Rule Not Exists');
+                $output = array('status_code' => 400 ,'message' => 'Rule Not Exists');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function deleteTourDet(Request $request){
@@ -109,15 +110,18 @@ class TournamentDetailControllerApi extends Controller
         if(!$validator->fails()){
             $Tour_Dets = $this->TournamentDetails_model->getTourDetByIdRuleId($request->tournament_id, $request->rule_id);
             if($Tour_Dets){
+                $user = JWTAuth::parseToken()->authenticate();
+                $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id]);
+                $this->TournamentDetails_model->SaveTourDetail($request);
                 $this->TournamentDetails_model->deleteRuleByRuleId($request->tournament_id, $request->rule_id);
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
             }else{
-                $output = array('status' => 400 ,'msg' => 'Rule Not Exists');
+                $output = array('status_code' => 400 ,'message' => 'Rule Not Exists');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function getTourPendRules(Request $request){

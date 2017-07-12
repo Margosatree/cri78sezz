@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\CricketDetail\Match;
 
 use Illuminate\Http\Request;
 use JWTAuth;
+use JWTAuthException;
 use Validator;
 use App\Model\MatchMaster_model;
 use App\Model\UserOrganisation_model;
@@ -48,18 +49,19 @@ class MatchMastersControllerApi extends Controller
             'tournament_id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
-            $organization_master_id = 1; //have to find Org id from login
+            $user = JWTAuth::parseToken()->authenticate();
+            $organization_master_id = $user->organization_master_id;
             $Tour_id = $this->TournamentMaster_model->getId($organization_master_id,$request->tournament_id);
             $Matches = $this->MatchMaster_model->checkTourId($Tour_id);
             if($Matches){
-                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Matches);
+                $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Matches);
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
     
     public function addMatch(Request $request){
@@ -85,22 +87,23 @@ class MatchMastersControllerApi extends Controller
                     if($validateTeam == 2){ break; }
                 }
                 if($validateTeam == 2){
+                    $user = JWTAuth::parseToken()->authenticate();
                     $Matches = $this->MatchMaster_model->SaveMatch($request);
                     if($Matches){
-                        $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Matches);
+                        $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Matches);
                     }else{
-                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                        $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                     }
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Team Not Exists In Tournament');
+                    $output = array('status_code' => 400 ,'message' => 'Team Not Exists In Tournament');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Please Select Another Team');
+                $output = array('status_code' => 400 ,'message' => 'Please Select Another Team');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function updateMatch(Request $request){
@@ -128,23 +131,25 @@ class MatchMastersControllerApi extends Controller
                     if($validateTeam == 2){ break; }
                 }
                 if($validateTeam == 2){
+                    $user = JWTAuth::parseToken()->authenticate();
                     $Match = $this->MatchMaster_model->getDetailByTourMatch($request->tournament_id,$request->match_id);
                     if($Match){
+                        $request->request->add(['updated_by' => $user->user_master_id]);
                         $this->MatchMaster_model->updateByTourId($request->tournament_id,$request->match_id,$request);
-                        $output = array('status' => 200 ,'msg' => 'Sucess');
+                        $output = array('status_code' => 200 ,'message' => 'Sucess');
                     }else{
-                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                        $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                     }
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Team Not Exists In Tournament');
+                    $output = array('status_code' => 400 ,'message' => 'Team Not Exists In Tournament');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Please Select Another Team');
+                $output = array('status_code' => 400 ,'message' => 'Please Select Another Team');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function deleteMatch(Request $request){
@@ -153,17 +158,20 @@ class MatchMastersControllerApi extends Controller
             'match_id' => 'required|numeric',
         ]);
         if(!$validator->fails()){
+            $user = JWTAuth::parseToken()->authenticate();
             $Match = $this->MatchMaster_model->getDetailByTourMatch($request->tournament_id,$request->match_id);
             if($Match){
+                $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id]);
+                $this->MatchMaster_model->SaveMatch($request);
                 $Match = $this->MatchMaster_model->deleteByTourMatch($request->tournament_id,$request->match_id);
-                $output = array('status' => 200 ,'msg' => 'Sucess');
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
             }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function listMyMatch(){

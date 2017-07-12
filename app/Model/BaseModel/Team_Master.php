@@ -4,7 +4,7 @@ namespace App\Model\BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Team_Master extends Model
+class updated_byTeam_Master extends Model
 {
     use SoftDeletes;
     protected $table = 'team_master';

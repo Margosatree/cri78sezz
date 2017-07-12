@@ -43,6 +43,8 @@ Route::get('list_assign_perm','Api\V1\Users\Acl\PermissionControllerApi@listRole
 
 Route::post('/User/updatestatus','Api\V1\UserController@activeUser');
 
+
+
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token
         Route::get('user', 'Api\V1\UserController@getAuthUser');
@@ -81,7 +83,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/TourDet/pendrules','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@getTourPendRules');
 
 	Route::post('/TourRule/list','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@listRules');
-	Route::post('/TourRule/add','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@addRules');
+        Route::post('/TourRule/add','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@addRules');
+        Route::post('/TourRule/update','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@updateRules');
+        Route::post('/TourRule/delete','Api\V1\CricketDetail\Tournament\TournamentRulesControllerApi@deleteRules');
 
 	Route::post('/ChangePass/updateUser','Api\V1\Other\ChangePasswordControllerApi@updatePass');
 	Route::post('/ChangePass/updateAdmin','Api\V1\Other\ChangePasswordControllerApi@adminUpdatePass');
