@@ -248,7 +248,72 @@ class TournamentMasterControllerApi extends Controller {
         }
         return Response::json($response,$response['status_code']);
 
+    }
 
+    public function addUserInTourBULK(){
+
+        $validates = Validator::make($request->all(),[
+            'user_id.*'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
+            'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+            ]);
+
+        if($validates->fails()){
+            $response = [
+                        'message'=>$validates->errors()->all(),
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $user = JWTAuth::parseToken()->authenticate();
+        foreach($request->user_id as $us_id){
+            $user_org = array('user_master_id'=>$us_id
+                              ,'organization_master_id'=>$user->organization_master_id);
+            $check_user_with_orgId = $this->UserOrganisation_model->allCondtion($user_org);
+            if(!count($check_user_with_orgId)){
+                 $response = [
+                            'message'=>'UserId is From Different Organiztion',
+                            'status_code'=>403
+                            ];
+                return Response::json($response,$response['status_code']);
+            }
+        }
+
+        $tour_org = array('id'=>$request->tour_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+        if(!count($check_tour_with_orgId)){
+             $response = [
+                        'message'=>'TourId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+        
+        $bulk_insert =array();
+        foreach($request->user_id as $us_id){
+            
+            $user_tour = array('user_id'=>$us_id
+                              ,'tour_id'=>$request->tour_id);
+            $check_tour_with_user = $this->TournamentUser_model->allCondtion($user_tour);
+            if(!count($check_tour_with_user)){
+                 $bulk_insert[]=$user_tour;
+            }
+        }
+
+        $insert_data = $this->TournamentUser_model->insertUserTour($bulk_insert);
+        if($insert_data){
+            $response = [
+                        'message'=>'inserted_successfully',
+                        'status_code'=>200
+                        ];
+        }else{
+            $response = [
+                        'message'=>'failed_to_insert_data',
+                        'status_code'=>403
+                        ];
+        }
+        return Response::json($response,$response['status_code']);
     }
 
     public function removeUserFromTour(Request $request){
