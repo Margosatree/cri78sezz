@@ -117,6 +117,7 @@ class UsersBulkControllerApi extends Controller
                             $User_Mst_Data['username'] = $value['username'];
                             $User_Mst_Data['phone'] = $value['phone'];
                             $User_Mst_Data['email'] = $value['email'];
+//                            dd($User_Mst_Data);
                             $User_master = $this->UserMaster_model->insert($User_Mst_Data);
                             
                             $User_Org_Data = new \stdClass();

@@ -98,7 +98,6 @@ class UserOrganisation_model {
             if(isset($request->role) && $request->role){
                 $User_Org->role = $request->role;
             }
-            dd($User_Org);
             $User_Org->save();
             return $User_Org;
         }

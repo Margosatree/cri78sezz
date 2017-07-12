@@ -68,7 +68,7 @@ class TeamMasterControllerApi extends Controller
                 $request->request->add(['team_logo' => $filename]);
                 $Team = $this->TeamMaster_model->SaveTeam($request);
                 if($Team){
-                    $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Team);
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
                     $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }
@@ -109,7 +109,7 @@ class TeamMasterControllerApi extends Controller
                 $request->request->add(['update' => 1,'id' => $request->id,'updated_by' => $user->user_master_id]);
                 $Team = $this->TeamMaster_model->SaveTeam($request);
                 if($Team){
-                    $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Team);
+                    $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
                     $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                 }

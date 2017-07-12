@@ -46,7 +46,8 @@ class TournamentMasterControllerApi extends Controller {
     }
     
     public function listTournament(){
-        $organization_master_id = 1;//have to find Org id from login
+        $user = JWTAuth::parseToken()->authenticate();
+        $organization_master_id = $user->organization_master_id;//have to find Org id from login
         $Tournaments = $this->TournamentMaster_model->getTourByOrgId($organization_master_id);
         if($Tournaments){
             $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Tournaments);
@@ -60,6 +61,7 @@ class TournamentMasterControllerApi extends Controller {
         $validator = Validator::make($request->all(), [
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
+            'organization_master_id' => 'required|numeric|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
             'reg_start_date' => 'required|date|before:end_date',
@@ -103,6 +105,7 @@ class TournamentMasterControllerApi extends Controller {
             'id' => 'required|numeric|min:1',
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
+            'organization_master_id' => 'required|numeric|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
             'reg_start_date' => 'required|date|before:end_date',
@@ -276,7 +279,7 @@ class TournamentMasterControllerApi extends Controller {
             return Response::json($response,$response['status_code']);
         }
 
-        $tour_org = array('id'=>$$user_tour_details->first()->tour_id
+        $tour_org = array('id'=>$user_tour_details->first()->tour_id
                           ,'organization_master_id'=>$user->organization_master_id);
         $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
         if(!count($check_tour_with_orgId)){
