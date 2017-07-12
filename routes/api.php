@@ -76,6 +76,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/TourMast/delete',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@deleteTournament');
 	Route::get('/TourMast/mytour',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listMyTour');
 
+	Route::post('/TourMast/utbulkadd',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addUserInTourBULK');
+
 	Route::post('/TourDet/list','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@listTourDet');
 	Route::post('/TourDet/add','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@addTourDet');
 	Route::post('/TourDet/update','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@updateTourDet');
