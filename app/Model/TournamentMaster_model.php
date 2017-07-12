@@ -18,6 +18,10 @@ class TournamentMaster_model {
     public function getById($id) {
         return Tournament_Master::find($id);
     }
+
+    public function allCondtion($where_data){
+            return Tournament_Master::where($where_data)->get();
+    }
         
     public function getTourByOrgId($org_id){
             return Tournament_Master::selectRaw('*')->where('organization_master_id',$org_id)->get();

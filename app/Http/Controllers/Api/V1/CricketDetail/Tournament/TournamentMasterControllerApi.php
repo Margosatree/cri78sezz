@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Api\V1\CricketDetail\Tournament;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Validator;
 
 use App\Model\UserMaster_model;
+use App\Model\UserOrganisation_model;
 use App\Model\TournamentDetails_model;
 use App\Model\TournamentMaster_model;
 use App\Model\TournamentRules_model;
 use App\Model\OrganisationMaster_model;
+use App\Model\TournamentUser_model;
 class TournamentMasterControllerApi extends Controller {
     /**
      * Display a listing of the resource.
@@ -23,6 +26,8 @@ class TournamentMasterControllerApi extends Controller {
     protected $TournamentDetails_model;
     protected $TournamentMaster_model;
     protected $TournamentRules_model;
+    protected $UserOrganisation_model;
+    protected $TournamentUser_model;
     
     public function __construct(){
 //        $this->middleware('auth:admin',['only'=>['index']]);
@@ -36,6 +41,8 @@ class TournamentMasterControllerApi extends Controller {
         $this->TournamentDetails_model = new TournamentDetails_model();
         $this->TournamentMaster_model = new TournamentMaster_model();
         $this->TournamentRules_model = new TournamentRules_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
+        $this->TournamentUser_model = new TournamentUser_model();
     }
     
     public function listTournament(){
@@ -163,6 +170,164 @@ class TournamentMasterControllerApi extends Controller {
             $response = array('status' => 404 ,'msg' => 'transation_failed');
         }
         return response()->json($response,$response['status']);
+    }
+
+
+    public function addUserInTour(Request $request){
+        $validates = Validator::make($request->all(),[
+            'user_id'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
+            'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+            ]);
+
+        if($validates->fails()){
+            $response = [
+                        'message'=>$validates->errors()->all(),
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $user = JWTAuth::parseToken()->authenticate();
+        $user_org = array('user_master_id'=>$request->user_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_user_with_orgId = $this->UserOrganisation_model->allCondtion($user_org);
+        if(!count($check_user_with_orgId)){
+             $response = [
+                        'message'=>'UserId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $tour_org = array('id'=>$request->tour_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+        if(!count($check_tour_with_orgId)){
+             $response = [
+                        'message'=>'TourId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $user_tour = array('user_id'=>$request->user_id
+                          ,'tour_id'=>$request->tour_id);
+        $check_tour_with_user = $this->TournamentUser_model->allCondtion($user_tour);
+        if(count($check_tour_with_user)){
+             $response = [
+                        'message'=>'User is Already in Tournament',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $insert_data = $this->TournamentUser_model->insertUserTour($user_tour);
+        if($insert_data){
+            $response = [
+                        'message'=>'inserted_successfully',
+                        'status_code'=>200
+                        ];
+        }else{
+            $response = [
+                        'message'=>'failed_to_insert_data',
+                        'status_code'=>403
+                        ];
+        }
+        return Response::json($response,$response['status_code']);
+
+
+    }
+
+    public function removeUserFromTour(Request $request){
+        $validates = Validator::make($request->all(),[
+            'id'=>'required|exists:tournament_users,id|numeric|digits_between: 1,7'
+            ]);
+
+        if($validates->fails()){
+            $response = [
+                        'message'=>$validates->errors()->all(),
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $user_tour_id = array('id'=>$request->id);
+        $user_tour_details = $this->TournamentUser_model->allCondtion($user_tour_id);
+
+        $user = JWTAuth::parseToken()->authenticate();
+        $user_org = array('user_master_id'=>$user_tour_details->first()->user_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_user_with_orgId = $this->UserOrganisation_model->allCondtion($user_org);
+        if(!count($check_user_with_orgId)){
+             $response = [
+                        'message'=>'UserId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $tour_org = array('id'=>$$user_tour_details->first()->tour_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+        if(!count($check_tour_with_orgId)){
+             $response = [
+                        'message'=>'TourId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $delete_data = $this->TournamentUser_model->removeUserFromTour($request->id);
+        if($delete_data){
+            $response = [
+                        'message'=>'deleted_successfully',
+                        'status_code'=>200
+                        ];
+        }else{
+            $response = [
+                        'message'=>'failed_to_delete_data',
+                        'status_code'=>403
+                        ];
+        }
+        return Response::json($response,$response['status_code']);
+
+
+    }
+
+    public function listUserWithTour(Request $request){
+
+        $validates = Validator::make($request->all(),[
+            'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+            ]);
+
+        if($validates->fails()){
+            $response = [
+                        'message'=>$validates->errors()->all(),
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $tour_org = array('id'=>$request->tour_id
+                          ,'organization_master_id'=>$user->organization_master_id);
+        $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+        if(!count($check_tour_with_orgId)){
+             $response = [
+                        'message'=>'TourId is From Different Organiztion',
+                        'status_code'=>403
+                        ];
+            return Response::json($response,$response['status_code']);
+        }
+
+        $display_data = $this->TournamentUser_model->getUserByTourDetails($request->tour_id);
+        $response = [
+                        'message'=>'success',
+                        'status_code'=>200,
+                        'data'=>$display_data
+                    ];
+         return Response::json($response,$response['status_code']);             
     }
     
 }

@@ -19,7 +19,7 @@ class User_Organisation extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_master_id','organization_master_id', 'registration_type','is_activate',
+        'user_master_id','organization_master_id', 'registration_type','status',
         'registration_date','email', 'password','role', 'remember_token','current_password'
     ];
 

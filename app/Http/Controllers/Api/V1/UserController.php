@@ -421,20 +421,25 @@ class UserController extends Controller
     
     public function activeUser(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric',
-            'is_activate' => 'required|numeric|in:0,1',
+            'id' => 'required|numeric|exists:user_masters,id|digits_between: 1,7',
+            'status' => 'required|digits:1|in:0,1',
         ]);
-        if(!$validator->fails()){
-            $User_org = $this->UserOrganisation_model->getIdByUserId($request->id);
-            $request->request->add([ 'update' => 1,'id' => $User_org->id]);
-            $this->UserOrganisation_model->SaveUserOrg($request);
-            return Response::json(['status_code' => 200 ,'message' => 'success'],200);
-        }else{
+
+        if($validator->fails()){
             return Response::json([
-            'message' => $validator->errors()->all(),
-            'status_code' => 403
-            ],403);
+                    'message' => $validator->errors()->all(),
+                    'status_code' => 403
+                    ],403);
         }
+
+        $User_org = $this->UserOrganisation_model->getIdByUserId($request->id);
+        $where_data = array('id'=>$User_org->id);
+        $update_datas = array('status'=>$request->status);
+        $update_status = $this->UserOrganisation_model->updateUserOrg($where_data,$update_datas);
+        if($update_status){
+            return Response::json(['status_code' => 200 ,'message' => 'success'],200);
+        }
+        return Response::json(['status_code' => 403 ,'message' => 'failed'],403);
     }
 
 } 

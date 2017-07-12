@@ -61,10 +61,15 @@ class UserOrganisation_model {
                     'role' => config('constants.role.User'),
                 ]);
         }
+
+        public function updateUserOrg($where_data,$update_data){
+            return User_Organisation::where($where_data)->update($update_data);
+        }
         
         public function SaveUserOrg($request) {
 //            dd($request->all());
             if(isset($request->update) && $request->update == 1){
+                dd($request->id);
                 $User_Org = User_Organisation::find($request->id);
             }else{
                 $User_Org = new User_Organisation;
@@ -87,12 +92,13 @@ class UserOrganisation_model {
             if(isset($request->password) && $request->password){
                 $User_Org->password = $request->password;
             }
-            if(isset($request->is_activate) && $request->is_activate){
-                $User_Org->is_activate = $request->is_activate;
+            if(isset($request->status) && $request->status){
+                $User_Org->status = $request->status;
             }
             if(isset($request->role) && $request->role){
                 $User_Org->role = $request->role;
             }
+            dd($User_Org);
             $User_Org->save();
             return $User_Org;
         }
