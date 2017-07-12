@@ -16,6 +16,7 @@ use App\Services\V1\SendMailAndOtpServices;
 
 class UserController extends Controller
 {   
+    
 
     //call model class via object
 
