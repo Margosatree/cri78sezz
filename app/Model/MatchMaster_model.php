@@ -56,6 +56,12 @@ class MatchMaster_model {
                 if(isset($request->innings) && $request->innings){
                     $arr['innings'] = $request->innings;
                 }
+                if(isset($request->deleted_by) && $request->deleted_by){
+                    $arr['deleted_by'] = $request->deleted_by;
+                }
+                if(isset($request->updated_by) && $request->updated_by){
+                    $arr['updated_by'] = $request->updated_by;
+                }
                 $Match->update($arr);
             }else{
                 $Match = new Match_Master;
@@ -86,6 +92,12 @@ class MatchMaster_model {
                 if(isset($request->innings) && $request->innings){
                     $Match->innings = $request->innings;
                 }
+                if(isset($request->deleted_by) && $request->deleted_by){
+                    $Match->deleted_by = $request->deleted_by;
+                }
+                if(isset($request->updated_by) && $request->updated_by){
+                    $Match->updated_by = $request->updated_by;
+                }
                 $Match->save();
             }
             return $Match;
@@ -102,6 +114,8 @@ class MatchMaster_model {
                 'match_date' => $request->match_date,
                 'overs' => $request->overs,
                 'innings' => $request->innings,
+                'updated_by' => $request->updated_by,
+                'deleted_by' => $request->deleted_by,
             ]);
             return $Match;
 	}

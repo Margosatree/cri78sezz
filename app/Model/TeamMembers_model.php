@@ -48,6 +48,12 @@ class TeamMembers_model {
             if(isset($request->selected_as) && $request->selected_as){
                 $Team_Member->selected_as = $request->selected_as;
             }
+            if(isset($request->updated_by) && $request->updated_by){
+                $Team_Member->updated_by = $request->updated_by;
+            }
+            if(isset($request->deleted_by) && $request->deleted_by){
+                $Team_Member->deleted_by = $request->deleted_by;
+            }
             $Team_Member->save();
             return $Team_Member;
 	}

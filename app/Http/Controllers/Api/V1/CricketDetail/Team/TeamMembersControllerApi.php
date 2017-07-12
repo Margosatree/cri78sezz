@@ -57,20 +57,20 @@ class TeamMembersControllerApi extends Controller
                 if(!$Team_Member_Exists){
                     $Team = $this->TeamMembers_model->SaveTeamMembers($request);
                     if($Team){
-                        $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Team);
+                        $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Team);
                     }else{
-                        $output = array('status' => 400 ,'msg' => 'Transection Fail');
+                        $output = array('status_code' => 400 ,'message' => 'Transection Fail');
                     }
                 }else{
-                    $output = array('status' => 400 ,'msg' => 'Member Already Exists In Other Team');
+                    $output = array('status_code' => 400 ,'message' => 'Member Already Exists In Other Team');
                 }
             }else{
-                $output = array('status' => 400 ,'msg' => 'Team Member Limit Reached');
+                $output = array('status_code' => 400 ,'message' => 'Team Member Limit Reached');
             }
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
 
     public function updateTeamMembers(Request $request){
@@ -95,8 +95,8 @@ class TeamMembersControllerApi extends Controller
                                     'status_code'=>404
                                 ],404);
         }
-
-        $request->request->add(['update' => 1]);
+        $user = JWTAuth::parseToken()->authenticate();
+        $request->request->add(['update' => 1,'updated_by' => $user->user_master_id]);
 
         $team = $this->TeamMembers_model->SaveTeamMembers($request);
         if($team){
@@ -139,6 +139,9 @@ class TeamMembersControllerApi extends Controller
                                 ],404);
         }
 
+        $user = JWTAuth::parseToken()->authenticate();
+        $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id]);
+        $this->TeamMembers_model->SaveTeamMembers($request);
         $delete_team_member = $this->TeamMembers_model->deleteById($request->id);
         if($delete_team_member){
             $response = array('status_code' => 200 

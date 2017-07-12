@@ -38,6 +38,9 @@ class TeamMaster_model {
             if(isset($request->team_name) && $request->team_name){
                 $Team->team_name = $request->team_name;
             }
+            if(isset($request->tournament_id) && $request->tournament_id){
+                $Team->tournament_id = $request->tournament_id;
+            }
             if(isset($request->team_owner_id) && $request->team_owner_id){
                 $Team->team_owner_id = $request->team_owner_id;
             }
@@ -53,12 +56,18 @@ class TeamMaster_model {
             if(isset($request->team_logo) && $request->team_logo){
                 $Team->team_logo = $request->team_logo;
             }
+            if(isset($request->deleted_by) && $request->deleted_by){
+                $Team->deleted_by = $request->deleted_by;
+            }
+            if(isset($request->updated_by) && $request->updated_by){
+                $Team->updated_by = $request->updated_by;
+            }
             $Team->save();
             return $Team;
 	}
 
 	public function deleteById($id){
-            return Team_Master::find($id);
+            return Team_Master::find($id)->delete();
 	}
 
    

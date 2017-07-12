@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\CricketDetail\Tournament;
-
+use JWTAuth;
+use JWTAuthException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
@@ -16,8 +17,8 @@ class TournamentRulesControllerApi extends Controller
      * @return \Illuminate\Http\Response
      */
     public function __construct(){
-        $this->middleware('auth:admin',['only'=>['index']]);
-        $this->middleware('auth',['except'=>['index']]);
+//        $this->middleware('auth:admin',['only'=>['index']]);
+//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
     
@@ -29,77 +30,82 @@ class TournamentRulesControllerApi extends Controller
         $this->TournamentRules_model = new TournamentRules_model();
     }
     
-    public function listRules(){
+    public function listRules(Request $request){
         $Rules = $this->TournamentRules_model->getAll();
         if($Rules){
-            $output = array('status' => 200 ,'msg' => 'Sucess', 'data' => $Rules);
+            $output = array('status_code' => 200 ,'message' => 'Sucess', 'data' => $Rules);
         }else{
-            $output = array('status' => 400 ,'msg' => 'Transection Fail');
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail');
         }
-        return response()->json($output);
+        return response()->json($output,$output['status_code']);
     }
     
     public function addRules(Request $request){
-        $this->validate($request,[
-            'name' => 'required|max:190',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:190|unique:tournament_rule_master,deleted_at,NULL',
             'specification' => 'required|max:190',
             'value' => 'max:190',
-            'range_from' => 'required|date|before:end_date',
-            'range_to' => 'required|date|after:start_date',
+            'range_from' => 'required|max:190',
+            'range_to' => 'required|max:190',
         ]);
         
-        $Rule = new Tournament_Master;
-        $Rule->name = request('name');
-        $Rule->specification = request('specification');
-        $Rule->value = request('value');
-        $Rule->range_from = request('range_from');
-        $Rule->range_to = request('range_to');
-        $Rule->save();
-        return redirect()->route('rule.index');
+        if(!$validator->fails()){
+            $user = JWTAuth::parseToken()->authenticate();
+            $Tournament = $this->TournamentRules_model->SaveRule($request);
+            if($Tournament){
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
+            }else{
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
+            }
+        }else{
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
+        }
+        return response()->json($output,$output['status_code']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function updateRules(Request $request){
+        
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'name' => 'required|max:190|unique:tournament_rule_master,id,'.$request->id,
+            'specification' => 'required|max:190',
+            'value' => 'max:190',
+            'range_from' => 'required|max:190',
+            'range_to' => 'required|max:190',
+        ]);
+        
+        if(!$validator->fails()){
+            $user = JWTAuth::parseToken()->authenticate();
+            $request->request->add(['update' => 1,'updated_by' => $user->user_master_id]);
+            $Rule = $this->TournamentRules_model->SaveRule($request);
+            if($Rule){
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
+            }else{
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
+            }
+        }else{
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
+        }
+        return response()->json($output,$output['status_code']);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    public function deleteRules(Request $request){
+        $validator = Validator::make($request->all(),[
+            'id' => 'required|numeric|min:1',
+        ]);
+        if(!$validator->fails()){
+            $user = JWTAuth::parseToken()->authenticate();
+            $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id]);
+            $this->TournamentRules_model->SaveRule($request);
+            $Rule = $this->TournamentRules_model->deleteById($request->id);
+            if($Rule){
+                $output = array('status_code' => 200 ,'message' => 'Sucess');
+            }else{
+                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
+            }
+        }else{
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
+        }
+        return response()->json($output,$output['status_code']);
     }
 }

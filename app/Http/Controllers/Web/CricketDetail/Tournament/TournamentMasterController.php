@@ -130,7 +130,7 @@ class TournamentMasterController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request,[
-            'id' => 'required|numeric'
+            'id' => 'required|numeric',
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
             'tournament_logo' => 'max:190',

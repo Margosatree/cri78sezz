@@ -10,7 +10,7 @@ class Tournament_Rules extends Model
     protected $table = 'tournament_rule_master';
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'name','specification', 'value','range_from','range_to'
+        'name','specification', 'value','range_from','range_to','deleted_by','updated_by'
     ];
 
     protected $hidden = [
