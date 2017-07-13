@@ -149,7 +149,7 @@ class TournamentMasterControllerApi extends Controller {
 
     public function deleteTournament(Request $request){
         $validator = Validator::make($request->all(),[
-            'id' => 'required|numeric|min:1|exists:tournament_master,id|exists:tournament_details,tournament_id'
+            'id' => 'required|numeric|min:1|exists:tournament_master,id'
         ]);
         if(!$validator->fails()){
             DB::beginTransaction();
