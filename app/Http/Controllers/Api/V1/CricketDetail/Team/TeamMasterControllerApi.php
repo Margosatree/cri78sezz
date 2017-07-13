@@ -96,14 +96,16 @@ class TeamMasterControllerApi extends Controller
         if(!$validator->fails()){
             $Team_name = $this->TeamMaster_model->TeamNameExistsByOwner($request->owner_id,$request->team_name);
             if(!$Team_name){
-                $data = $request->image;
-                $mime_data = $request->mime;
-                $rand_str = str_random(40);
-                $filename = "$rand_str.$mime_data";
-                $data = base64_decode($data);
-                file_put_contents(public_path('images/'. $filename), $data);
-                $params['team_logo'] = $filename;
-                $request->request->add(['team_logo' => $filename]);
+                if(isset($request->image) && isset($request->mime) && $request->image && $request->mime){
+                        $data = $request->image;
+                        $mime_data = $request->mime;
+                        $rand_str = str_random(40);
+                        $filename = "$rand_str.$mime_data";
+                        $data = base64_decode($data);
+                        file_put_contents(public_path('images/'. $filename), $data);
+                        $params['team_logo'] = $filename;
+                        $request->request->add(['team_logo' => $filename]);
+                }
                 
                 $user = JWTAuth::parseToken()->authenticate();
                 $request->request->add(['update' => 1,'id' => $request->id,'updated_by' => $user->user_master_id]);
