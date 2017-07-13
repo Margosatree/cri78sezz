@@ -10,7 +10,7 @@ class TournamentDetails_model {
     }
         
         public function getById($id) {
-            return Tournament_Details::find($id);
+            return Tournament_Master::find($id);
         }
         
         public function deleteById($id) {
@@ -26,8 +26,10 @@ class TournamentDetails_model {
         }
 
         public function getTourDetailById($id) {
-            return Tournament_Details::leftJoin('tournament_rule_master AS trm','tournament_details.rule_id','=','trm.id')
-                                     ->where('tournament_details.tournament_id',$id)->get();
+            return Tournament_Details::select(['trm.id','trm.name','tournament_details.specification','tournament_details.value','tournament_details.range_from','tournament_details.range_to'])
+                                     ->leftJoin('tournament_rule_master AS trm','tournament_details.rule_id','=','trm.id')
+                                     ->where('tournament_details.tournament_id',$id)
+                                     ->get();
         }
 
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
