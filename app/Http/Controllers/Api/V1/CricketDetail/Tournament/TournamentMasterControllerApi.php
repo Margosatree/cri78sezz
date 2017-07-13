@@ -157,6 +157,7 @@ class TournamentMasterControllerApi extends Controller {
             if($Tour_Mast->delete()){
                 $user = JWTAuth::parseToken()->authenticate();
                 $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
+                dd($request);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
                 $Tour_Det = $this->TournamentDetails_model->getById($request->id);
                 if($Tour_Det->delete()){
