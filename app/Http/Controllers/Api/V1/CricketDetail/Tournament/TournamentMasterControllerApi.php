@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Validator;
+use DB;
 
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
