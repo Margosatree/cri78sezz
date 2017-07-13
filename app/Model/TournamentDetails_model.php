@@ -24,6 +24,12 @@ class TournamentDetails_model {
         public function getTourDetById($id) {
             return Tournament_Details::where('tournament_id',$id)->get();
         }
+
+        public function getTourDetailById($id) {
+            return Tournament_Details::leftJoin('tournament_rule_master AS trm','tournament_details.rule_id','=','trm.id')
+                                     ->where('tournament_id',$id)->get();
+        }
+
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
             return Tournament_Details::where('tournament_id',$tour_id)->where('rule_id',$rule_id)->get()->first();
         }

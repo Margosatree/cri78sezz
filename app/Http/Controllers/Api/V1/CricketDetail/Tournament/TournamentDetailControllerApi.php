@@ -39,7 +39,7 @@ class TournamentDetailControllerApi extends Controller
             'tournament_id' => 'required|numeric|min:1',
         ]);
         if(!$validator->fails()){
-            $Tour_Dets = $this->TournamentDetails_model->getTourDetById($request->tournament_id);
+            $Tour_Dets = $this->TournamentDetails_model->getTourDetailById($request->tournament_id);
             if($Tour_Dets){
                 $output = array('status_code' => 200 ,'message' => 'Sucess','data' => $Tour_Dets);
             }else{

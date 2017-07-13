@@ -154,11 +154,10 @@ class TournamentMasterControllerApi extends Controller {
         if(!$validator->fails()){
             DB::beginTransaction();
             $Tour_Mast = $this->TournamentMaster_model->getById($request->id);
-            if($Tour_Mast->delete()){
-                $user = JWTAuth::parseToken()->authenticate();
+            $user = JWTAuth::parseToken()->authenticate();
                 $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
-                dd($request);
                 $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
+            if($Tour_Mast->delete()){
                 $Tour_Det = $this->TournamentDetails_model->getById($request->id);
                 if($Tour_Det->delete()){
                     DB::commit();
