@@ -89,8 +89,8 @@ class TeamMasterControllerApi extends Controller
             'team_type' => 'required|max:190',
             'order_id' => 'required|numeric',
             'owner_id' => 'required|numeric',
-            'image'=>'required',
-            'mime'=>'required|in:png,jpg,gif,jpeg'
+            'image'=>'string',
+            'mime'=>'in:png,jpg,gif,jpeg'
         ]);
 
         if(!$validator->fails()){
@@ -132,7 +132,7 @@ class TeamMasterControllerApi extends Controller
      */
     public function deleteTeam(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|min:1',
+            'id' => 'required|numeric|min:1|exists:team_master,id',
         ]);
         if(!$validator->fails()){
             $user = JWTAuth::parseToken()->authenticate();
