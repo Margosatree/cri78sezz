@@ -149,18 +149,17 @@ class TournamentMasterControllerApi extends Controller {
 
     public function deleteTournament(Request $request){
         $validator = Validator::make($request->all(),[
-            'id' => 'required|numeric|min:1',
+            'id' => 'required|numeric|min:1|exists:tournament_master,id|exists:tournament_details,tournament_id'
         ]);
         if(!$validator->fails()){
             DB::beginTransaction();
             $Tour_Mast = $this->TournamentMaster_model->getById($request->id);
+            $user = JWTAuth::parseToken()->authenticate();
+            $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
+            $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
             if($Tour_Mast->delete()){
-                $user = JWTAuth::parseToken()->authenticate();
-                $request->request->add(['update' => 1,'deleted_by' => $user->user_master_id,'organization_master_id' => $user->organization_master_id]);
-                dd($request);
-                $Tournament = $this->TournamentMaster_model->SaveTourMaster($request);
-                $Tour_Det = $this->TournamentDetails_model->getById($request->id);
-                if($Tour_Det->delete()){
+                $Tour_Det = $this->TournamentDetails_model->deleteById($request->id);
+                if($Tour_Det){
                     DB::commit();
                     $output = array('status_code' => 200 ,'message' => 'Sucess');
                 }else{
@@ -169,7 +168,7 @@ class TournamentMasterControllerApi extends Controller {
                 }
             }else{
                 DB::rollBack();
-                $output = array('status_code' => 400 ,'message' => 'Transection Fail');
+                $output = array('status_code' => 400 ,'message' => 'Transection 123 Fail');
             }
         }else{
             $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());

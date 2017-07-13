@@ -10,7 +10,7 @@ class TournamentDetails_model {
     }
         
         public function getById($id) {
-            return Tournament_Master::find($id);
+            return Tournament_Details::find($id);
         }
         
         public function deleteById($id) {

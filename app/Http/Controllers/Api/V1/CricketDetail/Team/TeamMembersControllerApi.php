@@ -121,7 +121,7 @@ class TeamMembersControllerApi extends Controller
      */
     public function deleteTeamMembers(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|min:1',
+            'id' => 'required|numeric|min:1|exists:team_members,id',
         ]);
 
         if($validator->fails()){
