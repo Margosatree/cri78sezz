@@ -27,7 +27,7 @@ class TournamentDetails_model {
 
         public function getTourDetailById($id) {
             return Tournament_Details::leftJoin('tournament_rule_master AS trm','tournament_details.rule_id','=','trm.id')
-                                     ->where('tournament_id',$id)->get();
+                                     ->where('tournament_details.tournament_id',$id)->get();
         }
 
         public function getTourDetByIdRuleId($tour_id,$rule_id) {
