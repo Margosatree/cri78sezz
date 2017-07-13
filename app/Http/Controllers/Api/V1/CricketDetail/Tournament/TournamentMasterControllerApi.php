@@ -61,7 +61,7 @@ class TournamentMasterControllerApi extends Controller {
         $validator = Validator::make($request->all(), [
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
-            'organization_master_id' => 'required|numeric|min:1',
+            // 'organization_master_id' => 'required|numeric|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
             'reg_start_date' => 'required|date|before:end_date',
@@ -105,7 +105,7 @@ class TournamentMasterControllerApi extends Controller {
             'id' => 'required|numeric|min:1',
             'tournament_name' => 'required|max:190',
             'tournament_location' => 'required|max:190',
-            'organization_master_id' => 'required|numeric|min:1',
+            // 'organization_master_id' => 'required|numeric|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
             'reg_start_date' => 'required|date|before:end_date',
