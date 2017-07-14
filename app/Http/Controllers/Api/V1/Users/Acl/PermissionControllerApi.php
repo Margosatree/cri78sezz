@@ -238,13 +238,14 @@ class PermissionControllerApi extends Controller
 
                 $role_name = $this->Role_model->findById($role_id->role_id);
                 $user_data['role_id']=$role_id->role_id;
-                $user_data['role_name'] = $role_name->first()->name;
+                $user_data['role_name'] = $role_name->name;
 
                 $perm_ids = $this->Permission_model->checkPerm(['role_id'=>$role_id->role_id]);
 
                 $perms = array();
                 foreach($perm_ids as $perm_id){
                    $perm =  $this->Permission_model->findById($perm_id->permission_id);
+                   $role['rp_id']=$perm->id;
                    $perms[]=$perm;
                 }
                 $user_data['user_perm']=$perms;
