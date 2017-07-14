@@ -249,7 +249,7 @@ class RoleControllerApi extends Controller
         $user_ids = $this->RoleUser_model->getUserId();
 
         $display_data = array();
-        if(count($role_ids)){
+        if(count($user_ids)){
             foreach($user_ids as $user_id){
                 $user_data = array();
 

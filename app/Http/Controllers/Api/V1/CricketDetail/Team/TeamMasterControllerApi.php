@@ -161,4 +161,40 @@ class TeamMasterControllerApi extends Controller
         }
         return response()->json($response,$response['status']);
     }
+
+    // public function listTeamByTour(Request $request){
+
+    //     $validates = Validator::make($request->all(),[
+    //         'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+    //         ]);
+
+    //     if($validates->fails()){
+    //         $response = [
+    //                     'message'=>$validates->error_get_last(oid)   ()->all(),
+    //                     'status_code'=>403
+    //                     ];
+    //         return Response::json($response,$response['status_code']);
+    //     }
+
+    //     $user = JWTAuth::parseToken()->authenticate();
+
+    //     $tour_org = array('id'=>$request->tour_id
+    //                       ,'organization_master_id'=>$user->organization_master_id);
+    //     $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+    //     if(!count($check_tour_with_orgId)){
+    //          $response = [
+    //                     'message'=>'TourId is From Different Organiztion',
+    //                     'status_code'=>403
+    //                     ];
+    //         return Response::json($response,$response['status_code']);
+    //     }
+
+    //     $display_data = $this->TournamentUser_model->getUserByTourDetails($request->tour_id);
+    //     $response = [
+    //                     'message'=>'success',
+    //                     'status_code'=>200,
+    //                     'data'=>$display_data
+    //                 ];
+    //      return Response::json($response,$response['status_code']);             
+    // }
 }

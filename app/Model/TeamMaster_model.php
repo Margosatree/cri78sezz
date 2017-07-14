@@ -70,5 +70,15 @@ class TeamMaster_model {
             return Team_Master::find($id)->delete();
 	}
 
+
+    // public function getUserByTourDetails($tour_id){
+    //         return Team_Master::leftJoin('tournament_master AS tm'
+    //                                     ,'tm.id','=','tournament_users.tour_id')
+    //                              ->leftJoin('user_masters AS um'
+    //                                     ,'um.id','=','tournament_users.user_id')
+    //                              ->where('tournament_users.tour_id','=',$tour_id)
+    //                              ->get();
+    // }
+
    
 }
