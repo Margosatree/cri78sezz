@@ -255,7 +255,7 @@ class RoleControllerApi extends Controller
 
                 $user_email = $this->UserOrganisation_model->getById($user_id->user_id);
                 $user_data['user_id']=$user_id->user_id;
-                $user_data['user_email'] = $user_email->first()->email;
+                $user_data['user_email'] = $user_email->email;
                 $role_ids = $this->RoleUser_model->checkRole(['user_id'=>$user_id->user_id]);
                 $roles = array();
                 foreach($role_ids as $role_id){
