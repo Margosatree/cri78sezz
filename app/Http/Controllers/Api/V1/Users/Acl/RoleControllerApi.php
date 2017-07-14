@@ -260,7 +260,7 @@ class RoleControllerApi extends Controller
                 $roles = array();
                 foreach($role_ids as $role_id){
                    $role =  $this->Role_model->findById($role_id->role_id);
-                   $role['urole_id']=$$role_id->id;
+                   $role['urole_id']=$role_id->id;
                    $roles[]=$role;
                 }
                 $user_data['user_role']=$roles;
