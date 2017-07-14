@@ -245,7 +245,7 @@ class PermissionControllerApi extends Controller
                 $perms = array();
                 foreach($perm_ids as $perm_id){
                    $perm =  $this->Permission_model->findById($perm_id->permission_id);
-                   $perm['rp_id']=$perm->id;
+                   $perm['rp_id']=$perm_id->id;
                    $perms[]=$perm;
                 }
                 $user_data['user_perm']=$perms;
