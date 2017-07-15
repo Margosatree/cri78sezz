@@ -334,10 +334,26 @@ class UserController extends Controller
         }    
     }
 
+    public function getUserInfoById(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_master_id' => 'required|exists:user_masters,id|numeric|digits_between:1,7'
+        ]);
+        if($validator->fails()){
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
+        }
+        $this->_getUserInfo($request->user_master_id);
+    }
 
     public function getUserInfo(){
         $user = JWTAuth::parseToken()->authenticate();
-        $user_details = $this->UserOrganisation_model->getUserDetail($user->user_master_id);
+        $this->_getUserInfo($user->user_master_id);
+    }
+
+    private function _getUserInfo($user_master_id){
+        $user_details = $this->UserOrganisation_model->getUserDetail($user_master_id);
         $user_data = array();
         $user_data['bio'] =array(
                              'id'=>$user_details->um_id
