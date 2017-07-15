@@ -55,15 +55,13 @@ class UsersBioControllerApi extends Controller
                                  'country'=>$user_Bio->country,
                                  'pin'=>$user_Bio->pin,
                                 ];
-                if($user_imgs){
-                    foreach ($user_imgs as $user_img) {
-                        $display_data['display_img'] = $user_img->display_img;
-                    }
+                foreach ($user_imgs as $user_img) {
+                    $display_data['display_img'] = $user_img->display_img;
                 }
                 $display_datas[]=$display_data;
                 
             }
-                $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_data);
+            $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_datas);
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
