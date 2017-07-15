@@ -7,20 +7,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Validator;
 use App\Model\UserMaster_model;
+use App\Model\UserCricketProfile_model;
 
 class UsersBioControllerApi extends Controller
 {
 
     protected $UserMaster_model;
+    protected $UserCricketProfile_model;
     
     public function __construct(){
-//        $this->middleware('auth:admin',['only'=>['index']]);
-//        $this->middleware('auth',['except'=>['index']]);
         $this->_initModel();
     }
 
     protected function _initModel(){
         $this->UserMaster_model = new UserMaster_model();
+        $this->UserCricketProfile_model = new UserCricketProfile_model();
     }
     
     public function listUsersBio(Request $request){
@@ -33,8 +34,15 @@ class UsersBioControllerApi extends Controller
                 $where['id'] = $request->id;
             }
             $User_Bios = $this->UserMaster_model->getAllFilter($where);
-            if($User_Bios){
-                $output = array('status' => 200 ,'msg' => 'sucess','data' => $User_Bios);
+            $display_data = array();
+            foreach ($User_Bios as $user_Bio) {
+                $where_data = ['user_master_id'=>$user_Bio->id];
+                $user_img = $this->UserCricketProfile_model->getAllFilter($where_data);
+                $display_data = (array)$user_Bio;
+                $display_data['display_img']= $user_img->display_img;
+            }
+            if(count($display_data)){
+                $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_data);
             }else{
                 $output = array('status' => 400 ,'msg' => 'Transection Fail');
             }
