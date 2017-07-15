@@ -38,7 +38,11 @@ class UsersBioControllerApi extends Controller
             foreach ($User_Bios as $user_Bio) {
                 $where_data = ['user_master_id'=>$user_Bio->id];
                 $user_imgs = $this->UserCricketProfile_model->getAllFilter($where_data);
-                $display_data = (array)$user_Bio;
+                // $display_data = (array)$user_Bio;
+                foreach ($user_imgs as $user_img) {
+                    $display_data['display_img'] = $user_img->display_img;
+                }
+                
             }
             if(count($display_data)){
                 $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_data);
