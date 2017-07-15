@@ -344,12 +344,22 @@ class UserController extends Controller
                                     'status_code'=>403
                                 ],403);
         }
-        $this->_getUserInfo($request->user_master_id);
+        $user_data = $this->_getUserInfo($request->user_master_id);
+        return response()->json([
+                                    'message'=>'successfu.',
+                                    'status_code'=>200,
+                                    'data'=>$user_data
+                                ],200);
     }
 
     public function getUserInfo(){
         $user = JWTAuth::parseToken()->authenticate();
-        $this->_getUserInfo($user->user_master_id);
+        $user_data = $this->_getUserInfo($user->user_master_id);
+        return response()->json([
+                                    'message'=>'successfu.',
+                                    'status_code'=>200,
+                                    'data'=>$user_data
+                                ],200);
     }
 
     private function _getUserInfo($user_master_id){
@@ -400,11 +410,8 @@ class UserController extends Controller
                                 ,'is_completed'=>$user_details->is_completed
                                 ,'display_img'=>$user_details->display_img
                                 );
-        return response()->json([
-                                    'message'=>'successfu.',
-                                    'status_code'=>200,
-                                    'data'=>$user_data
-                                ],200);
+        return $user_data;
+        
     }
 
     public function verifyUserToken(Request $request){
