@@ -78,7 +78,8 @@ class OrganizationMasterControllerApi extends Controller
 
     public function updateOrg(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:191',
+            'id'=>'required|digits_between:1,7|exists:organization_masters,id'
+            'name' => 'required|max:191|unique:organization_masters,deleted_at,NULL',
             'address' => 'required|max:191',
             'landmark' => 'required|max:191',
             'city' => 'required|max:191',
@@ -87,7 +88,7 @@ class OrganizationMasterControllerApi extends Controller
             'pincode' => 'required|numeric|digits:6',
             'business_type' => 'required|max:191',
             'business_operation' => 'required|max:191',
-            'spoc' => 'required|max:191',
+            'spoc' => 'max:191',
         ]);
         if(!$validator->fails()){
             $Org_Exists = $this->OrganisationMaster_model->OrgNameExists($request->name);
@@ -96,7 +97,7 @@ class OrganizationMasterControllerApi extends Controller
                     $request->request->add(['is_verified' => $request->is_verified]);
                 }
                 $organization_master_id = 1;
-                $request->request->add(['update' => 1,'id' => $organization_master_id]);
+                $request->request->add(['update' => 1]);
                 $Org = $this->OrganisationMaster_model->SaveOrg($request);
                 if($Org){
                     $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);

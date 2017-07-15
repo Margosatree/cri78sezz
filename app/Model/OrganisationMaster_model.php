@@ -44,6 +44,9 @@ class OrganisationMaster_model {
             if(isset($request->address) && $request->address){
                 $Org->address = $request->address;
             }
+            if(isset($request->landmark) && $request->landmark){
+                $Org->landmark = $request->landmark;
+            }
             if(isset($request->city) && $request->city){
                 $Org->city = $request->city;
             }
