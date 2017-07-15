@@ -78,7 +78,7 @@ class OrganizationMasterControllerApi extends Controller
 
     public function updateOrg(Request $request){
         $validator = Validator::make($request->all(), [
-            'id'=>'required|digits_between:1,7|exists:organization_masters,id'
+            'id'=>'required|digits_between:1,7|exists:organization_masters,id',
             'name' => 'required|max:191|unique:organization_masters,deleted_at,NULL',
             'address' => 'required|max:191',
             'landmark' => 'required|max:191',
