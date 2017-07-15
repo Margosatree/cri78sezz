@@ -55,7 +55,7 @@ class UsersBioControllerApi extends Controller
                                  'country'=>$user_Bio->country,
                                  'pin'=>$user_Bio->pin,
                                 ];
-                if(count($user_imgs)){
+                if($user_imgs){
                     foreach ($user_imgs as $user_img) {
                         $display_data['display_img'] = $user_img->display_img;
                     }
@@ -63,11 +63,7 @@ class UsersBioControllerApi extends Controller
                 $display_datas[]=$display_data;
                 
             }
-            if(count($display_datas)){
                 $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_data);
-            }else{
-                $output = array('status' => 400 ,'msg' => 'Transection Fail');
-            }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
         }
