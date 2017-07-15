@@ -91,21 +91,16 @@ class OrganizationMasterControllerApi extends Controller
             'spoc' => 'max:191',
         ]);
         if(!$validator->fails()){
-            $Org_Exists = $this->OrganisationMaster_model->OrgNameExists($request->name);
-            if(!$Org_Exists){
-                if(isset($request->is_verified) && $request->is_verified){
-                    $request->request->add(['is_verified' => $request->is_verified]);
-                }
-                $organization_master_id = 1;
-                $request->request->add(['update' => 1]);
-                $Org = $this->OrganisationMaster_model->SaveOrg($request);
-                if($Org){
-                    $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
-                }else{
-                    $output = array('status' => 400 ,'msg' => 'Transection Fail');
-                }
+            if(isset($request->is_verified) && $request->is_verified){
+                $request->request->add(['is_verified' => $request->is_verified]);
+            }
+            $organization_master_id = 1;
+            $request->request->add(['update' => 1]);
+            $Org = $this->OrganisationMaster_model->SaveOrg($request);
+            if($Org){
+                $output = array('status' => 200 ,'msg' => 'Sucess','data' => $Org);
             }else{
-                $output = array('status' => 400 ,'msg' => 'Organisation Name Already Exists');
+                $output = array('status' => 400 ,'msg' => 'Transection Fail');
             }
         }else{
             $output = array('status' => 400 ,'msg' => 'Transection Fail','errors' => $validator->errors()->all());
