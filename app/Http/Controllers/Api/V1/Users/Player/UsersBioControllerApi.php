@@ -34,17 +34,18 @@ class UsersBioControllerApi extends Controller
                 $where['id'] = $request->id;
             }
             $User_Bios = $this->UserMaster_model->getAllFilter($where);
-            $display_data = array();
+            $display_datas = array();
             foreach ($User_Bios as $user_Bio) {
                 $where_data = ['user_master_id'=>$user_Bio->id];
                 $user_imgs = $this->UserCricketProfile_model->getAllFilter($where_data);
-                // $display_data = (array)$user_Bio;
+                $display_data = (array)$user_Bio;
                 foreach ($user_imgs as $user_img) {
                     $display_data['display_img'] = $user_img->display_img;
                 }
+                $display_datas[]=$display_data;
                 
             }
-            if(count($display_data)){
+            if(count($display_datas)){
                 $output = array('status' => 200 ,'msg' => 'sucess','data' => $display_data);
             }else{
                 $output = array('status' => 400 ,'msg' => 'Transection Fail');
