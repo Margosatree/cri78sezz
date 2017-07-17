@@ -56,7 +56,7 @@ class UsersBioControllerApi extends Controller
                                  'pin'=>$user_Bio->pin,
                                 ];
                 foreach ($user_imgs as $user_img) {
-                    $display_data['display_img'] = $user_img->display_img;
+                    $display_data['display_img'] = $user_img->first()->display_img;
                 }
                 $display_datas[]=$display_data;
                 

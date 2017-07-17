@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Users\Player;
-
-use Auth;
+use JWTAuth;
+use JWTAuthException;
 use Hash;
 use Excel;
 use Session;
@@ -114,6 +114,7 @@ class UsersBulkControllerApi extends Controller
                             $Errors[$value['id']] = $User_Data;
                         }
                         if(!isset($username) && !isset($phone) && !isset($email)){
+                            $user = JWTAuth::parseToken()->authenticate();
                             $User_Mst_Data['username'] = $value['username'];
                             $User_Mst_Data['phone'] = $value['phone'];
                             $User_Mst_Data['email'] = $value['email'];
@@ -122,9 +123,9 @@ class UsersBulkControllerApi extends Controller
                             
                             $User_Org_Data = new \stdClass();
                             $User_Org_Data->user_master_id = $User_master->id;
-                            $User_Org_Data->organization_master_id = 1;
+                            $User_Org_Data->organization_master_id = $user->organization_master_id;
                             $User_Org_Data->email = $User_master->email;
-                            $User_Org_Data->password = $User_master->username.'@123';
+//                            $User_Org_Data->password = $User_master->username.'@123';
                             $User_Org_Data->role = 'user';
                             $User_Org = $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
                         }else{
