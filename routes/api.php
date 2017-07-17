@@ -41,7 +41,7 @@ Route::post('assign_perm','Api\V1\Users\Acl\PermissionControllerApi@addPermToUse
 Route::post('revoke_perm','Api\V1\Users\Acl\PermissionControllerApi@removePermToRole');
 Route::get('list_assign_perm','Api\V1\Users\Acl\PermissionControllerApi@listRoleWithPerm');
 
-Route::post('/User/updatestatus','Api\V1\UserController@activeUser');
+
 
 
 
@@ -53,6 +53,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('userinfo','Api\V1\UserController@getUserInfo');
         Route::post('userinfobyid','Api\V1\UserController@getUserInfoById');
         
+        Route::post('/User/updatestatus','Api\V1\UserController@activeUser');
         
 	Route::post('/Match/list',          'Api\V1\CricketDetail\Match\MatchMastersControllerApi@listMatch');
 	Route::post('/Match/add',           'Api\V1\CricketDetail\Match\MatchMastersControllerApi@addMatch');
