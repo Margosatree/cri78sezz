@@ -117,7 +117,11 @@ class UserOrganisation_model {
         }
 
         public function getlistOrgUser($org_id){
-            return User_Organisation::select(['um.id AS um_id','um.first_name','um.last_name','um.email','um.phone','om.id AS om_id','om.name','cp.display_img'])
+            return User_Organisation::select(['um.id AS um_id','um.first_name','um.last_name','um.email',
+                                    'um.phone','um.gender','um.date_of_birth','um.physically_challenged',
+                                    'um.username','om.id AS om_id','om.name','cp.your_role','cp.batsman_style',
+                                    'cp.batsman_order','cp.bowler_style','cp.player_type','cp.description',
+                                    'cp.display_img'])
                                     ->leftJoin('user_masters AS um','user_organizations.user_master_id','=','um.id')
                                     ->leftJoin('organization_masters AS om','user_organizations.organization_master_id','=','om.id')
                                     ->leftJoin('cricket_profiles AS cp','user_organizations.user_master_id','=','cp.user_master_id')
