@@ -14,6 +14,7 @@ class UserMaster_model {
     public function getAll() {
         return User_Master::all();
     }
+    
     public function getAllFilter($where_array = false) {
         if($where_array){
             return User_Master::selectRaw('*')->where($where_array)->get();
@@ -34,9 +35,11 @@ class UserMaster_model {
     public function userExists($username) {
         return User_Master::selectRaw('count(id) as count')->where('username', $username)->get()->first();
     }
+    
     public function phoneExists($phone) {
         return User_Master::selectRaw('count(id) as count')->where('phone',$phone)->get()->first();
     }
+    
     public function emailExists($email) {
         return User_Master::selectRaw('count(id) as count')->where('email',$email)->get()->first();
     }
@@ -122,11 +125,9 @@ class UserMaster_model {
         return User_Master::where($check_data)->update($update_data);
     }
 
-
     public function getVirtualUserDetail($where_array) {
         return VirtualUser::orWhere($where_array)->first();;
     }
-
 
     public function insertViratualUser($request){
         if(isset($request->update) && $request->update == 1){
@@ -156,4 +157,10 @@ class UserMaster_model {
         return $id->delete();
     }
 
+    public function listUserDetails(){
+        return User_Master::leftJoin('user_organizations as uo', 'uo.user_master_id', '=', 'user_masters.id')
+            ->leftJoin('cricket_profiles as cp', 'cp.user_master_id', '=', 'user_masters.id')
+            ->select('user_masters.*','uo.status','cp.display_img')
+            ->get()->toArray();
+    }
 }

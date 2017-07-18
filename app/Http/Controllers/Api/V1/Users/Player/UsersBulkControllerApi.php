@@ -128,12 +128,9 @@ class UsersBulkControllerApi extends Controller
                             $User_Org_Data->email = $User_master->email;
 //                            $User_Org_Data->password = $User_master->username.'@123';
                             $User_Org_Data->role = 'user';
-                            $User_Org = $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
+                            $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
                         }
-                        unset($username);
-                        unset($phone);
-                        unset($email);
-                        unset($User_Data);
+                        unset($username);unset($phone);unset($email);unset($User_Data);
                     }else{
                         $Errors = array('status_code' => 400, 'message' => 'Invalid File Format');
                     }
