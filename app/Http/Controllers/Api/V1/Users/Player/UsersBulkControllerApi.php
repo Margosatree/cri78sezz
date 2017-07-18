@@ -69,12 +69,13 @@ class UsersBulkControllerApi extends Controller
                         if($value['phone'] != ""){
                             if(!is_numeric($value['phone'])){
                                 $phone['numeric'] = 'Should Be A Number';
+                            }else{
+                                if(!preg_match('/(7|8|9)\d{9}/', $value['phone'])){
+                                    $phone['phonenumber'] = 'Phone Number Should Start With 9|8|7';
+                                }
                             }
                             if(strlen(''.$value['phone']) != 10){
                                 $phone['lengh'] = 'Invalid Phone Number';
-                            }
-                            if(!preg_match('/(7|8|9)\d{9}/', $value['phone'])){
-                                $phone['phonenumber'] = 'Phone Number Should Start With 9|8|7';
                             }
                             $Phone_Exists = $this->UserMaster_model->phoneExists($value['phone']);
                             if($Phone_Exists->count){
@@ -107,11 +108,11 @@ class UsersBulkControllerApi extends Controller
                             $User_Data['email'] = $email;
                         }
                         if(isset($User_Data) && count($User_Data) > 0){
-                            $User_Data['u_id'] = $value['id'];
+                            $User_Data['u_id'] = ++$count;
                             $User_Data['u_username'] = $value['username'];
                             $User_Data['u_phone'] = $value['phone'];
                             $User_Data['u_email'] = $value['email'];
-                            $Errors[$value['id']] = $User_Data;
+                            array_push($Errors, $User_Data);
                         }
                         if(!isset($username) && !isset($phone) && !isset($email)){
                             $user = JWTAuth::parseToken()->authenticate();
@@ -128,21 +129,27 @@ class UsersBulkControllerApi extends Controller
 //                            $User_Org_Data->password = $User_master->username.'@123';
                             $User_Org_Data->role = 'user';
                             $User_Org = $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
-                        }else{
-                            $count++;
                         }
+                        unset($username);
+                        unset($phone);
+                        unset($email);
+                        unset($User_Data);
                     }else{
-                        $Errors = array('status' => 400, 'msg' => 'Invalid File Format');
+                        $Errors = array('status_code' => 400, 'message' => 'Invalid File Format');
                     }
                 }
                 if($Errors == null){
-                    $Errors['status'] = 200;
-                    $Errors['msg'] = 'Sucess';
+                    $output['status_code'] = 200;
+                    $output['message'] = 'Sucess';
+                }else{
+                    $output['status_code'] = 400;
+                    $output['message'] = 'Error In Some Entries';
+                    $output['data'] = $Errors;
                 }
-                return response()->json($Errors);
             }
         }else{
-            dd('Invalid');
+            $output = array('status_code' => 400 ,'message' => 'Transection Fail','errors' => $validator->errors()->all());
         }
+         return response()->json($output,$output['status_code']);
     }
 }
