@@ -29,8 +29,6 @@ class OrganisationMaster_model {
             return Organisation_Master::selectRaw('*')
                     ->where('name',$name)->value('name');
         }
-
-        
         
         public function SaveOrg($request) {
             if(isset($request->update) && $request->update == 1){

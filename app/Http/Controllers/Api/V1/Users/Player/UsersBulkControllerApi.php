@@ -127,6 +127,7 @@ class UsersBulkControllerApi extends Controller
                             $User_Org_Data->organization_master_id = $user->organization_master_id;
                             $User_Org_Data->email = $User_master->email;
 //                            $User_Org_Data->password = $User_master->username.'@123';
+                            $User_Org_Data->status = 0;
                             $User_Org_Data->role = 'user';
                             $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
                         }
