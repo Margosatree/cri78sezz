@@ -126,7 +126,7 @@ class UserMaster_model {
     }
 
     public function getVirtualUserDetail($where_array) {
-        return VirtualUser::orWhere($where_array)->first();;
+        return VirtualUser::orWhere($where_array)->first();
     }
 
     public function insertViratualUser($request){
@@ -147,7 +147,21 @@ class UserMaster_model {
         if(isset($request->password) && $request->password){
             $User_master->password = $request->password;
         }
-
+        if(isset($request->expected_role_id) && $request->expected_role_id){
+            $User_master->expected_role_id = $request->expected_role_id;
+        }
+        if(isset($request->created_by) && $request->created_by){
+            $User_master->created_by = $request->created_by;
+        }
+        if(isset($request->add_prifix) && $request->add_prifix){
+            $User_master->add_prifix = $request->add_prifix;
+        }
+        if(isset($request->prifix_id) && $request->prifix_id){
+            $User_master->prifix_id = $request->prifix_id;
+        }
+        if(isset($request->org_id) && $request->org_id){
+            $User_master->org_id = $request->org_id;
+        }
         $User_master->save();
         return $User_master;
     }

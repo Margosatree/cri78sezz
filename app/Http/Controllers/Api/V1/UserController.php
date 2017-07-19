@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers\Api\V1;
-
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +12,8 @@ use App\Model\Role_model;
 use App\Model\RoleUser_model;
 use App\Model\ResetVerify_model;
 use App\Services\V1\SendMailAndOtpServices;
+use App\Model\TournamentUser_model;
+use App\Model\TournamentMaster_model;
 
 class UserController extends Controller
 {   
@@ -26,6 +27,8 @@ class UserController extends Controller
     protected $RoleUser_model;
     protected $SendMailAndOtpServices;
     protected $ResetVerify_model;
+    protected $TournamentUser_model;
+    protected $TournamentMaster_model;
 
 
     public function __construct(){
@@ -35,6 +38,8 @@ class UserController extends Controller
         $this->RoleUser_model=new RoleUser_model();
         $this->SendMailAndOtpServices =new SendMailAndOtpServices();
         $this->ResetVerify_model =new ResetVerify_model();
+        $this->TournamentUser_model = new TournamentUser_model();
+        $this->TournamentMaster_model = new TournamentMaster_model();
     }
 
     public function register(Request $request){
@@ -89,8 +94,85 @@ class UserController extends Controller
 
     }
    
-    private function __register($request){
+    public function registerInvite(Request $request){
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|max:50|alpha_num|unique:user_masters',
+            'phone' => [
+                'required',
+                'unique:user_masters',
+                'min:10',
+                'numeric',
+                'regex:/(7|8|9)\d{9}/'
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:user_masters',
+                'regex:/(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/',
+            ],
+            'password' => [
+                'required',
+                'regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
+            ],
+            'expected_role_id' => [
+                'required',
+                'numeric',
+                'min:1'
+            ],
+            'add_prifix' => [
+                'required',
+                'max:191',
+                'in:tournament,team,player'
+            ],
+                'prifix_id' => [
+                'required',
+                'numeric',
+                'min:1',
+                'exists:roles,id'
+            ],
+                'org_id' => [
+                'required',
+                'numeric',
+                'min:1',
+                'exists:organization_masters,id'
+            ]
+        ]);
+        if($validator->fails()){
+            return Response::json([
+                                    'message'=>$validator->errors()->all(),
+                                    'status_code'=>403
+                                ],403);
+        }
+        $user = JWTAuth::parseToken()->authenticate();
+        $data = array(
+                        'username'=>$request->username,
+                        'phone'=>$request->phone,
+                        'email'=>$request->email,
+                        'password'=>$request->password,
+                        'expected_role_id'=>$request->expected_role_id,
+                        'created_by'=>$user->organization_master_id,
+                        'add_prifix'=>$request->add_prifix,
+                        'prifix_id'=>$request->prifix_id,
+                        'org_id'=>$request->org_id,
+                    );
 
+        $verify_token =$this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+
+        $vuser_data = $this->UserMaster_model->getVirtualUserDetail($data);
+        if($vuser_data){
+            $this->UserMaster_model->deleteVUser($vuser_data->id);
+        }
+        $User_Master = $this->UserMaster_model->insertViratualUser((object)$data);
+
+        $data['verify_token'] = $verify_token;
+        $display_data = ['status_code'=>200
+                        ,'message'=>'user_created_successfully'
+                        ,'data'=>$data];
+        return response()->json($display_data,200);
+
+    }
+    
+    private function __register($request){
         $data = array(
                         'username'=>$request->username,
                         'phone'=>$request->phone,
@@ -101,13 +183,69 @@ class UserController extends Controller
         // $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
         
         $User_Master = $this->UserMaster_model->insert($data);
-
-        $OrgData = ['um_id'=>$User_Master->id,'email'=>$data['email'],
-                    'organization_master_id' => 0,'password'=>$data['password']];
+        if(isset($request->org_id) && $request->org_id > 0){
+            $Org_id = $request->org_id;
+        }else{
+            $Org_id = 0;
+        }
+        $OrgData = [
+            'um_id'=>$User_Master->id,
+            'email'=>$data['email'],
+            'organization_master_id' => $Org_id,
+            'password'=>$data['password']
+        ];
         $user_orgId = $this->UserOrganisation_model->insert($OrgData);
-
-        $user_role = $this->Role_model->getPlayerId();
-        $normal_user = $user_role->id;
+        
+        
+        //if role exists in request then directly added.
+        if(isset($request->expected_role_id) && $request->expected_role_id > 0){
+            $normal_user = $request->expected_role_id;
+            if($request->add_prifix == "tournament"){
+                $tournament = new \stdClass();
+                $tournament->user_id = $User_Master->id;
+                $tournament->tour_id = $request->prifix_id;
+//                $tournament->$tournament->add([ 'user_id' => $User_Master->id,'tour_id' => $request->prifix_id ]);
+//                $dd($request);
+//                $validator = Validator::make($tournament,[
+//                    'user_id'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
+//                    'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+//                ]);
+//                if($validator->fails()){
+                if(false){
+                    $response = ['message'=>$validates->errors()->all(),'status_code'=>403];
+                    return Response::json($response,$response['status_code']);
+                }else{
+                    $tour_org = array('id'=>$tournament->tour_id,'organization_master_id'=>$request->org_id);
+                    $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+                    if(!count($check_tour_with_orgId)){
+                        $response = ['message'=>'TourId is From Different Organiztion','status_code'=>403];
+                        return Response::json($response,$response['status_code']);
+                    }
+                    $user_tour = array('user_id'=>$tournament->user_id,'tour_id'=>$tournament->tour_id);
+                    $check_tour_with_user = $this->TournamentUser_model->allCondtion($user_tour);
+                    if(count($check_tour_with_user)){
+                        $response = ['message'=>'User is Already in Tournament','status_code'=>403];
+                        return Response::json($response,$response['status_code']);
+                    }
+                    $insert_data = $this->TournamentUser_model->insertUserTour($user_tour);
+                    if($insert_data){
+                        $response = ['message'=>'inserted_successfully','status_code'=>200];
+                    }else{
+                        $response = ['message'=>'failed_to_insert_data','status_code'=>403];
+                    }
+                    return Response::json($response,$response['status_code']);
+                }
+            }else if($request->add_prifix == "team"){
+                
+            }else if($request->add_prifix == "player"){
+                
+            }
+        }else{
+            $user_role = $this->Role_model->getPlayerId();
+            $normal_user = $user_role->id;
+        }
+        
+        
 
         $user_role = $this->RoleUser_model->insert($user_orgId->id,$normal_user);
 
@@ -168,6 +306,7 @@ class UserController extends Controller
                                     'data'=>$data
                                 ],200);
     }
+    
     public function getAuthUser(){
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -203,6 +342,13 @@ class UserController extends Controller
             $objData['phone']= $user_mobile_email->phone;
             $objData['email']= $user_mobile_email->email;
             $objData['password']= $user_mobile_email->password;
+            
+            $objData['expected_role_id']= $user_mobile_email->expected_role_id;
+            $objData['created_by']= $user_mobile_email->created_by;
+            $objData['add_prifix']= $user_mobile_email->add_prifix;
+            $objData['prifix_id']= $user_mobile_email->prifix_id;
+            $objData['prifix_id']= $user_mobile_email->prifix_id;
+            $objData['org_id']= $user_mobile_email->org_id;
             
             $this->__register((object)$objData);
             return Response::json([

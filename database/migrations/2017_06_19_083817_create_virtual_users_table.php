@@ -12,16 +12,21 @@ class CreateVirtualUsersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('virtual_users', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('phone', 191);
-			$table->string('email', 191);
-			$table->string('username', 191)->nullable();
-			$table->string('password', 191);
-			$table->softDeletes();
-			$table->timestamps();
-		});
+            Schema::create('virtual_users', function(Blueprint $table)
+            {
+                $table->increments('id');
+                $table->string('phone', 191);
+                $table->string('email', 191);
+                $table->string('username', 191)->nullable();
+                $table->string('password', 191);
+                $table->integer('expected_role_id', 191)->nullable();
+                $table->integer('created_by', 191)->nullable();
+                $table->string('add_prifix')->nullable();
+                $table->integer('prifix_id')->nullable();
+                $table->integer('org_id')->nullable();
+                $table->softDeletes();
+                $table->timestamps();
+            });
 	}
 
 

@@ -47,6 +47,8 @@ Route::get('list_assign_perm','Api\V1\Users\Acl\PermissionControllerApi@listRole
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 	//use for just retrive value via token
+        Route::post('auth/invite', 'Api\V1\UserController@registerInvite');
+    
         Route::get('user', 'Api\V1\UserController@getAuthUser');
     //end
 
@@ -81,7 +83,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/TourMast/utadd',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addUserInTour');
 	Route::post('/TourMast/utdelete',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@removeUserFromTour');
 	Route::post('/TourMast/utlist',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@listUserWithTour');
-
 	Route::post('/TourMast/utbulkadd',     'Api\V1\CricketDetail\Tournament\TournamentMasterControllerApi@addUserInTourBULK');
 
 	Route::post('/TourDet/list','Api\V1\CricketDetail\Tournament\TournamentDetailControllerApi@listTourDet');

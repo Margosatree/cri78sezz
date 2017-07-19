@@ -170,7 +170,6 @@ class TournamentMasterControllerApi extends Controller {
         return response()->json($output,$output['status_code']);
     }
 
-
     public function listMyTour(){
         $user = JWTAuth::parseToken()->authenticate();
         $datas = $this->TournamentMaster_model->getMyTourDetails($user->user_master_id);
@@ -182,11 +181,10 @@ class TournamentMasterControllerApi extends Controller {
         return response()->json($output,$output['status_code']);
     }
 
-
     public function addUserInTour(Request $request){
         $validates = Validator::make($request->all(),[
-            'user_id'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
-            'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
+                'user_id'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
+                'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
             ]);
 
         if($validates->fails()){
