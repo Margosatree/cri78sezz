@@ -12,6 +12,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Model\UserMaster_model;
 use App\Model\UserOrganisation_model;
+use Event;
+use App\Events\SendMailQueue;
+use App\Services\V1\SendMailAndOtpServices;
 
 class UsersBulkControllerApi extends Controller
 {
@@ -20,6 +23,7 @@ class UsersBulkControllerApi extends Controller
 
     protected $UserMaster_model;
     protected $UserOrganisation_model;
+    protected $SendMailAndOtpServices;
 
     public function __construct(){
         $this->_initModel();
@@ -29,6 +33,7 @@ class UsersBulkControllerApi extends Controller
     protected function _initModel(){
         $this->UserMaster_model = new UserMaster_model();
         $this->UserOrganisation_model = new UserOrganisation_model();
+        $this->SendMailAndOtpServices = new SendMailAndOtpServices();
     }
     public function upload(Request $request){
         $validator = Validator::make($request->all(), [
@@ -54,15 +59,15 @@ class UsersBulkControllerApi extends Controller
                     if(isset($value['username']) && isset($value['phone']) && isset($value['email'])){
                         if($value['username'] != ""){
                             if(strlen(''.$value['username']) > 50){
-                                $username['lengh'] = 'Username Filed Is Too Long';
+                                $username['lengh'] = 'Username Filed Is Too Long Max 50';
                             }
                             if(!ctype_alnum(''.$value['username'])){
                                 $username['alpha_num'] = 'Must Be Alphanumeric';
                             }
-                            $Username_Exists = $this->UserMaster_model->userExists($value['username']);
-                            if($Username_Exists->count){
-                                $username['unique'] = 'Username Already Exists';
-                            }
+//                            $Username_Exists = $this->UserMaster_model->userExists($value['username']);
+//                            if($Username_Exists->count){
+//                                $username['unique'] = 'Username Already Exists';
+//                            }
                         }else{
                             $username['data'] = 'Data Not Found';
                         }
@@ -115,21 +120,33 @@ class UsersBulkControllerApi extends Controller
                             array_push($Errors, $User_Data);
                         }
                         if(!isset($username) && !isset($phone) && !isset($email)){
-                            $user = JWTAuth::parseToken()->authenticate();
-                            $User_Mst_Data['username'] = $value['username'];
-                            $User_Mst_Data['phone'] = $value['phone'];
-                            $User_Mst_Data['email'] = $value['email'];
-//                            dd($User_Mst_Data);
-                            $User_master = $this->UserMaster_model->insert($User_Mst_Data);
+                            $virtual_data['username'] = $value['username'];
+                            $virtual_data['phone'] = $value['phone'];
+                            $virtual_data['email'] = $value['email'];
+                            $virtual_data['password'] = str_random(40);
+//                            dd($virtual_data);
+//                            $user = JWTAuth::parseToken()->authenticate();
+//                            $User_Mst_Data['username'] = $value['username'];
+//                            $User_Mst_Data['phone'] = $value['phone'];
+//                            $User_Mst_Data['email'] = $value['email'];
+////                            dd($User_Mst_Data);
+//                            $User_master = $this->UserMaster_model->insert($User_Mst_Data);
+//                            
+//                            $User_Org_Data = new \stdClass();
+//                            $User_Org_Data->user_master_id = $User_master->id;
+//                            $User_Org_Data->organization_master_id = $user->organization_master_id;
+//                            $User_Org_Data->email = $User_master->email;
+////                            $User_Org_Data->password = $User_master->username.'@123';
+//                            $User_Org_Data->status = 0;
+//                            $User_Org_Data->role = 'user';
+//                            $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
                             
-                            $User_Org_Data = new \stdClass();
-                            $User_Org_Data->user_master_id = $User_master->id;
-                            $User_Org_Data->organization_master_id = $user->organization_master_id;
-                            $User_Org_Data->email = $User_master->email;
-//                            $User_Org_Data->password = $User_master->username.'@123';
-                            $User_Org_Data->status = 0;
-                            $User_Org_Data->role = 'user';
-                            $this->UserOrganisation_model->SaveUserOrg($User_Org_Data);
+                            $vuser_data = $this->UserMaster_model->getVirtualUserDetail($virtual_data);
+                            if($vuser_data){
+                                $this->UserMaster_model->deleteVUser($vuser_data->id);
+                            }
+                            $this->UserMaster_model->insertViratualUser((object)$virtual_data);
+                            $this->SendMailAndOtpServices->sendVerifyNotify($virtual_data['email'],$virtual_data['phone']);
                         }
                         unset($username);unset($phone);unset($email);unset($User_Data);
                     }else{

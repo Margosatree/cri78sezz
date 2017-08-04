@@ -14,6 +14,9 @@ use App\Model\ResetVerify_model;
 use App\Services\V1\SendMailAndOtpServices;
 use App\Model\TournamentUser_model;
 use App\Model\TournamentMaster_model;
+use App\Model\TournamentDetails_model;
+use App\Model\TeamMembers_model;
+use App\Model\TeamMaster_model;
 
 class UserController extends Controller
 {   
@@ -29,22 +32,27 @@ class UserController extends Controller
     protected $ResetVerify_model;
     protected $TournamentUser_model;
     protected $TournamentMaster_model;
-
+    protected $TournamentDetails_model;
+    protected $TeamMembers_model;
+    protected $TeamMaster_model;
 
     public function __construct(){
-        $this->UserMaster_model=new UserMaster_model();
-        $this->UserOrganisation_model=new UserOrganisation_model();
-        $this->Role_model=new Role_model();
-        $this->RoleUser_model=new RoleUser_model();
-        $this->SendMailAndOtpServices =new SendMailAndOtpServices();
-        $this->ResetVerify_model =new ResetVerify_model();
+        $this->UserMaster_model = new UserMaster_model();
+        $this->UserOrganisation_model = new UserOrganisation_model();
+        $this->Role_model = new Role_model();
+        $this->RoleUser_model= new RoleUser_model();
+        $this->SendMailAndOtpServices = new SendMailAndOtpServices();
+        $this->ResetVerify_model = new ResetVerify_model();
         $this->TournamentUser_model = new TournamentUser_model();
         $this->TournamentMaster_model = new TournamentMaster_model();
+        $this->TournamentDetails_model = new TournamentDetails_model();
+        $this->TeamMembers_model = new TeamMembers_model();
+        $this->TeamMaster_model = new TeamMaster_model();
     }
 
     public function register(Request $request){
         $validator = Validator::make($request->all(), [
-            'username' => 'required|max:50|alpha_num|unique:user_masters',
+            'username' => 'required|max:50|alpha_num',
             'phone' => [
                 'required',
                 'unique:user_masters',
@@ -78,7 +86,7 @@ class UserController extends Controller
                         'password'=>$request->password,
                     );
 
-        $verify_token =$this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
+        $verify_token = $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
 
         $vuser_data = $this->UserMaster_model->getVirtualUserDetail($data);
         if($vuser_data){
@@ -95,6 +103,15 @@ class UserController extends Controller
     }
    
     public function registerInvite(Request $request){
+        if(isset($request->add_prifix) && $request->add_prifix){
+            if($request->add_prifix == "tournament"){
+                $prifix_id_validation = 'exists:tournament_master,id';
+            }else if($request->add_prifix == "team"){
+                $prifix_id_validation = 'exists:team_master,id';
+            }
+        }
+        
+        
         $validator = Validator::make($request->all(), [
             'username' => 'required|max:50|alpha_num|unique:user_masters',
             'phone' => [
@@ -124,13 +141,13 @@ class UserController extends Controller
                 'max:191',
                 'in:tournament,team,player'
             ],
-                'prifix_id' => [
+            'prifix_id' => [
                 'required',
                 'numeric',
                 'min:1',
-                'exists:roles,id'
+                $prifix_id_validation
             ],
-                'org_id' => [
+            'org_id' => [
                 'required',
                 'numeric',
                 'min:1',
@@ -181,7 +198,15 @@ class UserController extends Controller
                     );
 
         // $this->SendMailAndOtpServices->sendVerifyNotify($data['email'],$data['phone']);
-        
+        $user_exists_request = array(
+            'phone'=>$request->phone,
+            'email'=>$request->email,
+        );
+        $user_exists = $this->UserMaster_model->getAllFilter($user_exists_request);
+        if(is_object($user_exists) && isset($user_exists->first()->id) && $user_exists->first()->id){
+            $output = ['status_code'=>400,'message'=>'Already Verified'];
+            return response()->json($output,200);
+        }
         $User_Master = $this->UserMaster_model->insert($data);
         if(isset($request->org_id) && $request->org_id > 0){
             $Org_id = $request->org_id;
@@ -201,27 +226,18 @@ class UserController extends Controller
         if(isset($request->expected_role_id) && $request->expected_role_id > 0){
             $normal_user = $request->expected_role_id;
             if($request->add_prifix == "tournament"){
-                $tournament = new \stdClass();
-                $tournament->user_id = $User_Master->id;
-                $tournament->tour_id = $request->prifix_id;
-//                $tournament->$tournament->add([ 'user_id' => $User_Master->id,'tour_id' => $request->prifix_id ]);
-//                $dd($request);
-//                $validator = Validator::make($tournament,[
-//                    'user_id'=>'required|exists:user_masters,id|numeric|digits_between: 1,7',
-//                    'tour_id'=>'required|exists:tournament_master,id|numeric|digits_between: 1,7',
-//                ]);
-//                if($validator->fails()){
-                if(false){
-                    $response = ['message'=>$validates->errors()->all(),'status_code'=>403];
-                    return Response::json($response,$response['status_code']);
-                }else{
-                    $tour_org = array('id'=>$tournament->tour_id,'organization_master_id'=>$request->org_id);
+//                $tournament_exists = $this->TournamentMaster_model->getById($request->prifix_id);
+//                if($tournament_exists){
+//                    $response = ['Tournament Not Exists','status_code'=>403];
+//                    return Response::json($response,$response['status_code']);
+//                }else{
+                    $tour_org = array('id'=>$request->prifix_id,'organization_master_id'=>$request->org_id);
                     $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
                     if(!count($check_tour_with_orgId)){
                         $response = ['message'=>'TourId is From Different Organiztion','status_code'=>403];
                         return Response::json($response,$response['status_code']);
                     }
-                    $user_tour = array('user_id'=>$tournament->user_id,'tour_id'=>$tournament->tour_id);
+                    $user_tour = array('user_id'=>$User_Master->id,'tour_id'=>$request->prifix_id);
                     $check_tour_with_user = $this->TournamentUser_model->allCondtion($user_tour);
                     if(count($check_tour_with_user)){
                         $response = ['message'=>'User is Already in Tournament','status_code'=>403];
@@ -233,12 +249,71 @@ class UserController extends Controller
                     }else{
                         $response = ['message'=>'failed_to_insert_data','status_code'=>403];
                     }
-                    return Response::json($response,$response['status_code']);
-                }
+//                    return Response::json($response,$response['status_code']);
+//                }
             }else if($request->add_prifix == "team"){
+                $team_master = $this->TeamMaster_model->getById($request->prifix_id);
                 
-            }else if($request->add_prifix == "player"){
-                
+//                $validator = Validator::make($request->all(), [
+//                    'tournament_id' => 'required|trim|numeric',
+//                    'team_id' => 'required|trim|numeric',
+//                    'user_master_id' => 'required|trim|numeric',
+//                    'selected_as' => 'required|trim|max:190'
+//                ]);
+                $Rule_Max_Player_Count = $this->TournamentDetails_model->getTourDetByIdRuleId($team_master->tournament_id,7);
+                if($Rule_Max_Player_Count){
+                    $Team_Members_Count = $this->TeamMembers_model->getCountByWhereQuery([
+                        'tournament_id' => $team_master->tournament_id,
+                        'team_id' => $request->prifix_id
+                    ]);
+                    
+                    
+                    
+                    $tour_org = array('id'=>$team_master->tournament_id,'organization_master_id'=>$request->org_id);
+                    $check_tour_with_orgId = $this->TournamentMaster_model->allCondtion($tour_org);
+                    if(!count($check_tour_with_orgId)){
+                        $response = ['message'=>'TourId is From Different Organiztion','status_code'=>403];
+                        return Response::json($response,$response['status_code']);
+                    }
+                    $user_tour = array('user_id'=>$User_Master->id,'tour_id'=>$team_master->tournament_id);
+                    $check_tour_with_user = $this->TournamentUser_model->allCondtion($user_tour);
+                    if(count($check_tour_with_user)){
+                        $response = ['message'=>'User is Already in Tournament','status_code'=>403];
+                        return Response::json($response,$response['status_code']);
+                    }
+                    $insert_data = $this->TournamentUser_model->insertUserTour($user_tour);
+                    if($insert_data){
+                        $response = ['message'=>'inserted_successfully','status_code'=>200];
+                    }else{
+                        $response = ['message'=>'failed_to_insert_data','status_code'=>403];
+                    }
+                    
+                    
+                    
+                    if($Team_Members_Count < $Rule_Max_Player_Count->value){
+                        $Team_Member_Exists = $this->TeamMembers_model->getWhereQuery([
+                            'tournament_id' => $team_master->tournament_id,
+                            'user_master_id' => $User_Master->id
+                        ]);
+                        if(!$Team_Member_Exists){
+                            $data = new \stdClass();
+                            $data->tournament_id = $team_master->tournament_id;
+                            $data->team_id = $request->prifix_id;
+                            $data->user_master_id = $User_Master->id;
+                            $data->selected_as = null;
+                            $Team = $this->TeamMembers_model->SaveTeamMembers($data);
+                        }else{
+                            $output = array('status_code' => 400 ,'message' => 'Member Already Exists In Other Team');
+                            return response()->json($output,200);
+                        }
+                    }else{
+                        $output = array('status_code' => 400 ,'message' => 'Team Member Limit Reached');
+                        return response()->json($output,200);
+                    }
+                }else{
+                    $output = ['status_code'=>404,'message'=>'Rule Not Define,Please Add rules For same'];
+                    return response()->json($output,200);
+                }
             }
         }else{
             $user_role = $this->Role_model->getPlayerId();
@@ -350,7 +425,10 @@ class UserController extends Controller
             $objData['prifix_id']= $user_mobile_email->prifix_id;
             $objData['org_id']= $user_mobile_email->org_id;
             
-            $this->__register((object)$objData);
+            $response = $this->__register((object)$objData);
+            if($response){
+                return $response;
+            }
             return Response::json([
                                     'message'=>'successfuly_verified.',
                                     'status_code'=>200
@@ -362,7 +440,6 @@ class UserController extends Controller
                                 ],403);
         }
     }
-
 
     public function forgetPassword(Request $request){
 

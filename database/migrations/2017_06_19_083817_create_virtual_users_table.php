@@ -19,9 +19,9 @@ class CreateVirtualUsersTable extends Migration {
                 $table->string('email', 191);
                 $table->string('username', 191)->nullable();
                 $table->string('password', 191);
-                $table->integer('expected_role_id', 191)->nullable();
-                $table->integer('created_by', 191)->nullable();
-                $table->string('add_prifix')->nullable();
+                $table->integer('expected_role_id')->nullable();
+                $table->integer('created_by')->nullable();
+                $table->string('add_prifix', 191)->nullable();
                 $table->integer('prifix_id')->nullable();
                 $table->integer('org_id')->nullable();
                 $table->softDeletes();

@@ -27,7 +27,7 @@ class TeamMembersControllerApi extends Controller
     }
 
     protected function _initModel(){
-         $this->UserMaster_model = new UserMaster_model();
+        $this->UserMaster_model = new UserMaster_model();
         $this->TeamMembers_model = new TeamMembers_model();
         $this->TournamentDetails_model = new TournamentDetails_model();
     }
@@ -161,6 +161,10 @@ class TeamMembersControllerApi extends Controller
         if($team_members){
             foreach($team_members as $team_member){
                  $user_owner = $this->UserMaster_model->getById($team_member->team_owner_id);
+//                 dd($user_owner);
+//                 if(){
+//                     
+//                 }
                  $data_arr = array('team_member'=>$team_member);
                  $data_arr['team_member']['first_name']=$user_owner->first_name;
                  $data_arr['team_member']['last_name']=$user_owner->last_name;

@@ -17,7 +17,7 @@ class UserMaster_model {
     
     public function getAllFilter($where_array = false) {
         if($where_array){
-            return User_Master::selectRaw('*')->where($where_array)->get();
+            return User_Master::where($where_array)->get();
         }else{
             return User_Master::all();
         }

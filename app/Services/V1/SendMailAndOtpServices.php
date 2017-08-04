@@ -23,9 +23,9 @@ class SendMailAndOtpServices{
     protected $UserOrganisation_model;
 
 	public function __construct(){
-        $this->UserMaster_model=new UserMaster_model();
-		$this->ResetVerify_model = new ResetVerify_model();
-        $this->UserOrganisation_model=new UserOrganisation_model();
+            $this->UserMaster_model=new UserMaster_model();
+            $this->ResetVerify_model = new ResetVerify_model();
+            $this->UserOrganisation_model=new UserOrganisation_model();
 	}
 
     
